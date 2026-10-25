@@ -1,0 +1,58 @@
+/* CSS-side motion rules — DESIGN.md §4. JS-driven motion lives in src/lib/motion.ts. */
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* Press feedback */
+:where(a, button):active {
+  transform: scale(0.97);
+  transition: transform var(--dur-instant) var(--ease-out);
+}
+
+/* Page transitions (Astro ClientRouter) — exit faster than enter */
+::view-transition-old(root) {
+  animation: vt-fade-out calc(var(--dur-page) * 0.3) var(--ease-in-out) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-fade-in calc(var(--dur-page) * 0.5) var(--ease-out-expo) both;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* §4.5 Reduced motion: no movement, short fades only */
+@media (prefers-reduced-motion: reduce) {
+  :where(a, button):active {
+    transform: none;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 150ms;
+  }
+}

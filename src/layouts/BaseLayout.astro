@@ -1,0 +1,58 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { t, url, otherLocale, type Locale } from '../lib/i18n';
+
+import '@fontsource-variable/inter';
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource/geist-mono/400.css';
+// Japanese fonts: imported by /ja/ pages via <JaFonts /> only.
+
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/typography.css';
+import '../styles/motion.css';
+
+interface Props {
+  locale: Locale;
+  /** Path without locale prefix, used for the language switch, e.g. 'work/circula'. */
+  path?: string;
+  title?: string;
+  description?: string;
+  /** Sets the per-project accent via [data-project]. */
+  project?: string;
+}
+
+const { locale, path = '', title, description, project } = Astro.props;
+const siteName = t(locale, 'site.name');
+const pageTitle = title
+  ? `${title} — ${siteName}`
+  : `${siteName} — ${t(locale, 'site.role')}`;
+const metaDescription = description ?? t(locale, 'site.description');
+const alt = otherLocale(locale);
+const canonical = new URL(url(locale, path), Astro.site);
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={metaDescription} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={alt} href={new URL(url(alt, path), Astro.site)} />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`} />
+    <ClientRouter />
+  </head>
+  <body data-project={project}>
+    <a class="skip-link" href="#main">{t(locale, 'a11y.skip')}</a>
+    <main id="main">
+      <slot />
+    </main>
+    <script>
+      import { startLifecycle } from '../lib/lifecycle';
+      startLifecycle();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,119 @@
+/* Design tokens — source of truth: DESIGN.md §1–§4. Keep in sync with src/lib/motion.ts. */
+
+:root {
+  /* Ink (text, UI) */
+  --ink-900: #0e0e0e;
+  --ink-700: #2b2b2b;
+  --ink-500: #696969;
+  --ink-300: #a6a6a6; /* decorative only — never body text */
+
+  /* Paper (backgrounds) */
+  --paper-0: #ffffff;
+  --paper-100: #f6f5f2;
+  --paper-200: #eceae5;
+  --line: #dedbd5;
+
+  /* Inverted surfaces */
+  --surface-inverse: var(--ink-900);
+  --on-inverse: var(--paper-100);
+
+  /* Per-project accent (overridden by [data-project]) */
+  --accent: var(--ink-900);
+  --accent-2: var(--accent);
+  --accent-soft: color-mix(in oklab, var(--accent) 12%, var(--paper-100));
+
+  /* Focus */
+  --focus-ring: 0 0 0 2px var(--paper-100), 0 0 0 4px var(--ink-900);
+
+  /* Type families */
+  --font-display: 'Instrument Serif', 'Shippori Mincho', serif;
+  --font-body: 'Inter Variable', 'Zen Kaku Gothic New', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'Zen Kaku Gothic New', ui-monospace, monospace;
+  --font-display-ja: 'Shippori Mincho', serif;
+  --font-body-ja: 'Zen Kaku Gothic New', 'Inter Variable', system-ui, sans-serif;
+
+  /* Fluid type scale */
+  --fs-hero: clamp(4.5rem, 14vw, 13rem);
+  --fs-display: clamp(2.75rem, 6.5vw, 6rem);
+  --fs-h1: clamp(2rem, 4vw, 3.5rem);
+  --fs-h2: clamp(1.5rem, 2.6vw, 2.25rem);
+  --fs-h3: 1.25rem;
+  --fs-body-lg: 1.125rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-label: 0.75rem;
+
+  --lh-tight: 0.95;
+  --lh-head: 1.1;
+  --lh-body: 1.6;
+  --lh-body-ja: 1.9;
+
+  --tracking-hero: -0.04em;
+  --tracking-head: -0.02em;
+  --tracking-label: 0.08em;
+
+  /* Space (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --space-11: 192px;
+
+  --section-gap: clamp(96px, 14vw, 192px);
+  --page-margin: clamp(16px, 4vw, 64px);
+  --gutter: clamp(16px, 2vw, 32px);
+  --max-width: 1440px;
+  --text-width: 68ch;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.04), 0 12px 32px -12px rgb(0 0 0 / 0.18);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --dur-instant: 100ms;
+  --dur-fast: 180ms;
+  --dur-base: 280ms;
+  --dur-slow: 500ms;
+  --dur-reveal: 900ms;
+  --dur-page: 1000ms;
+
+  --stagger-text: 40ms;
+  --stagger-item: 80ms;
+}
+
+/* Project accents — AUDIT.md §6 */
+[data-project='circula'] {
+  --accent: #f39237;
+}
+[data-project='reverie'] {
+  --accent: #1e3a8a; /* night */
+  --accent-2: #f07a3c; /* morning */
+}
+[data-project='nextscore'] {
+  --accent: #24543c; /* splash-screen glow (sampled, approx.) */
+  --accent-2: #1bc257; /* UI green */
+}
+[data-project='nba-lab'] {
+  --accent: #1d4ed8; /* Dimers Blue */
+  --accent-2: #efe300; /* Dimers Yellow — fills / dark surfaces only */
+}
+[data-project='brim-cc'] {
+  --accent: #8c1b1c;
+}
+[data-project='honne-festa'] {
+  --accent: #670000;
+  --accent-2: #c3b99d;
+}

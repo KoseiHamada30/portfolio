@@ -1,0 +1,65 @@
+/* Type roles — DESIGN.md §2. */
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 400;
+  line-height: var(--lh-head);
+  letter-spacing: var(--tracking-head);
+  text-wrap: balance;
+}
+
+.display,
+h1,
+h2 {
+  font-family: var(--font-display);
+}
+
+p {
+  margin: 0;
+  max-width: var(--text-width);
+  text-wrap: pretty;
+}
+
+em,
+.italic {
+  font-style: italic;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+/* Japanese: more leading, no letter-spacing, no italics, Mincho for emphasis. */
+:lang(ja) {
+  font-family: var(--font-body-ja);
+  line-height: var(--lh-body-ja);
+  line-break: strict;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+:lang(ja) :is(h1, h2, .display) {
+  font-family: var(--font-display-ja);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+:lang(ja) p {
+  max-width: 36em;
+}
+
+:lang(ja) :is(em, .italic) {
+  font-style: normal;
+  font-family: var(--font-display-ja);
+}
+
+:lang(ja) .label {
+  letter-spacing: 0;
+}

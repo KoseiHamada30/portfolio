@@ -1,0 +1,33 @@
+---
+// Phase A placeholder — replaced by the real home page in a later phase.
+import { t, url, otherLocale, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const alt = otherLocale(locale);
+---
+
+<section class="container placeholder">
+  <p class="label">{t(locale, 'site.role')}</p>
+  <h1 class="display">{t(locale, 'site.name')}</h1>
+  <p>{t(locale, 'home.placeholder')}</p>
+  <a href={url(alt)} hreflang={alt} lang={alt} aria-label={t(locale, 'nav.langLabel')}>
+    {t(locale, 'nav.lang')}
+  </a>
+</section>
+
+<style>
+  .placeholder {
+    display: grid;
+    gap: var(--space-5);
+    padding-block: var(--section-gap);
+  }
+
+  h1 {
+    font-size: var(--fs-display);
+    line-height: var(--lh-tight);
+  }
+</style>
