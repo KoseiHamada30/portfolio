@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check"
+    "check": "astro check",
+    "check:motion": "node scripts/check-motion.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.5",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "playwright": "^1.64.1",
     "typescript": "^6.0.3"
   }
 }

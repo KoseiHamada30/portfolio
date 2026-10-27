@@ -56,3 +56,39 @@ html.lenis body {
     animation-duration: 150ms;
   }
 }
+
+/* Reveal start states (src/lib/reveal.ts). Only applied once JS has run (html.js),
+   so content stays visible if scripts fail. */
+.js :is([data-reveal~='lines'], [data-reveal~='fade'], [data-reveal~='image']) {
+  opacity: 0;
+}
+
+[data-reveal~='lines'] {
+  /* SplitText line masks: keep descenders inside the mask */
+  padding-block-end: 0.06em;
+}
+
+[data-reveal~='image'],
+[data-reveal~='parallax'] {
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+:is([data-reveal~='image'], [data-reveal~='parallax']) > :is(img, video, picture) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* Marquee (src/lib/marquee.ts) */
+[data-marquee] {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+[data-marquee] > * {
+  flex: none;
+  will-change: transform;
+}

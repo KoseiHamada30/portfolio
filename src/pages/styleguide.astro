@@ -1,0 +1,174 @@
+---
+// Internal styleguide — the tokens from DESIGN.md §1–§3 rendered on one page.
+// Not linked from the site, noindex, English only (see DECISIONS.md).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/i18n';
+
+const inks = ['--ink-900', '--ink-700', '--ink-500', '--ink-300'];
+const papers = ['--paper-0', '--paper-100', '--paper-200', '--line'];
+const accents = ['circula', 'reverie', 'nextscore', 'nba-lab', 'brim-cc', 'honne-festa'];
+const typeScale = ['--fs-hero', '--fs-display', '--fs-h1', '--fs-h2', '--fs-h3', '--fs-body-lg', '--fs-body', '--fs-small', '--fs-label'];
+const spaces = ['--space-1', '--space-2', '--space-3', '--space-4', '--space-5', '--space-6', '--space-7', '--space-8', '--space-9', '--space-10', '--space-11'];
+---
+
+<BaseLayout locale="en" path="styleguide" title="Styleguide" noindex>
+  <div class="container guide">
+    <header class="guide-header">
+      <p class="label">(Styleguide) Tokens — DESIGN.md §1–§3</p>
+      <nav class="guide-nav" aria-label="Internal pages">
+        <a href={url('en', 'lab')} data-lab-link="lab">• Lab</a>
+        <a href={url('en')}>• Home</a>
+      </nav>
+    </header>
+
+    <section class="guide-section">
+      <h1 class="guide-title" data-reveal="lines">Black ink on warm paper.</h1>
+    </section>
+
+    <section class="guide-section">
+      <h2 class="guide-h2" data-reveal="lines">Colour</h2>
+      <div class="swatches" data-reveal="fade">
+        {[...inks, ...papers].map((token) => (
+          <div class="swatch">
+            <span class="swatch-chip" style={`background: var(${token})`}></span>
+            <code class="label">{token}</code>
+          </div>
+        ))}
+      </div>
+      <div class="swatches" data-reveal="fade">
+        {accents.map((project) => (
+          <div class="swatch" data-project={project}>
+            <span class="swatch-chip swatch-chip--split"></span>
+            <code class="label">{project}</code>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2 class="guide-h2" data-reveal="lines">Type scale</h2>
+      <ul class="scale" data-reveal="fade">
+        {typeScale.map((token) => (
+          <li>
+            <code class="label">{token}</code>
+            <span class="scale-sample" style={`font-size: var(${token})`}>Kosei</span>
+          </li>
+        ))}
+      </ul>
+      <p class="guide-body" data-reveal="fade">
+        Inter for UI and body, Instrument Serif for display, Geist Mono for labels like (01) and (App design).
+      </p>
+    </section>
+
+    <section class="guide-section">
+      <h2 class="guide-h2" data-reveal="lines">Space</h2>
+      <ul class="spaces" data-reveal="fade">
+        {spaces.map((token) => (
+          <li>
+            <code class="label">{token}</code>
+            <span class="space-bar" style={`width: var(${token})`}></span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .guide {
+    padding-block: var(--space-9);
+  }
+
+  .guide-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .guide-nav {
+    display: flex;
+    gap: var(--space-5);
+  }
+
+  .guide-nav a {
+    text-decoration: none;
+    padding-block: var(--space-3);
+  }
+
+  .guide-section {
+    display: grid;
+    gap: var(--space-6);
+    padding-block: var(--space-9);
+    border-top: 1px solid var(--line);
+  }
+
+  .guide-section:first-of-type {
+    border-top: 0;
+  }
+
+  .guide-title {
+    font-size: var(--fs-display);
+    line-height: var(--lh-tight);
+  }
+
+  .guide-h2 {
+    font-size: var(--fs-h1);
+  }
+
+  .guide-body {
+    font-size: var(--fs-body-lg);
+  }
+
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: var(--space-5);
+  }
+
+  .swatch {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .swatch-chip {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+  }
+
+  .swatch-chip--split {
+    background: linear-gradient(90deg, var(--accent) 50%, var(--accent-2) 50%);
+  }
+
+  .scale,
+  .spaces {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .scale li,
+  .spaces li {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    align-items: baseline;
+    gap: var(--space-4);
+    overflow: hidden;
+  }
+
+  .scale-sample {
+    font-family: var(--font-display);
+    line-height: var(--lh-tight);
+    white-space: nowrap;
+  }
+
+  .space-bar {
+    display: block;
+    height: 12px;
+    background: var(--ink-900);
+    border-radius: 2px;
+  }
+</style>

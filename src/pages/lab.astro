@@ -1,0 +1,207 @@
+---
+// Internal motion lab — every reveal type, a magnetic button and a marquee.
+// Not linked from the site, noindex, English only (see DECISIONS.md).
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/i18n';
+import circula from '../assets/lab/circula_frontpic.png';
+import nextscore from '../assets/lab/nextscore_1.png';
+---
+
+<BaseLayout locale="en" path="lab" title="Motion lab" noindex>
+  <div class="container lab">
+    <header class="lab-header">
+      <p class="label">(Lab) Motion system — DESIGN.md §4</p>
+      <nav class="lab-nav" aria-label="Internal pages">
+        <a href={url('en', 'styleguide')} data-lab-link="styleguide">• Styleguide</a>
+        <a href={url('en')}>• Home</a>
+      </nav>
+    </header>
+
+    <section class="lab-section">
+      <p class="label">data-reveal="lines"</p>
+      <h1 class="lab-hero" data-reveal="lines">
+        Motion explains, then <em>gets out</em> of the way.
+      </h1>
+    </section>
+
+    <section class="lab-section">
+      <p class="label">data-reveal="fade"</p>
+      <p class="lab-body" data-reveal="fade">
+        Paragraphs fade up 16px over 700ms with expo.out, once, when they reach 85% of the viewport.
+      </p>
+      <p class="lab-body" data-reveal="fade" data-reveal-delay="0.12">
+        This one has data-reveal-delay="0.12", so it lands a beat later than the paragraph above.
+      </p>
+    </section>
+
+    <section class="lab-section">
+      <p class="label">data-reveal="image"</p>
+      <figure class="lab-media" data-reveal="image">
+        <Image src={circula} alt="Circula app screens on a phone" widths={[640, 1024, 1440]} sizes="(min-width: 1024px) 70vw, 100vw" />
+      </figure>
+    </section>
+
+    <section class="lab-section">
+      <p class="label">data-reveal="parallax" (desktop ≥ 1024px only)</p>
+      <div class="lab-media lab-media--wide" data-reveal="parallax">
+        <Image src={nextscore} alt="NextScore app screens" widths={[640, 1024, 1440, 1920]} sizes="100vw" />
+      </div>
+    </section>
+
+    <section class="lab-section">
+      <p class="label">data-reveal="counter"</p>
+      <dl class="lab-stats">
+        <div>
+          <dt class="label">Integer with grouping</dt>
+          <dd class="lab-stat" data-reveal="counter">1,280</dd>
+        </div>
+        <div>
+          <dt class="label">One decimal + suffix</dt>
+          <dd class="lab-stat" data-reveal="counter">72.5%</dd>
+        </div>
+        <div>
+          <dt class="label">Prefix</dt>
+          <dd class="lab-stat" data-reveal="counter">×3</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="lab-section">
+      <p class="label">data-magnetic (pointer-fine + full motion only)</p>
+      <div class="lab-buttons">
+        <a class="pill" href="#lab-marquee" data-magnetic>• Contact</a>
+        <button class="pill pill--inverse" type="button" data-magnetic>• View resume</button>
+      </div>
+    </section>
+
+    <section class="lab-section lab-section--last" id="lab-marquee">
+      <p class="label">data-marquee (velocity-aware; pauses on hover/focus)</p>
+    </section>
+  </div>
+
+  <div class="lab-marquee" data-marquee>
+    <div data-marquee-track>
+      <span>LET'S CONNECT</span><span aria-hidden="true">•</span>
+      <span>LET'S CONNECT</span><span aria-hidden="true">•</span>
+    </div>
+  </div>
+  <div class="lab-tail"></div>
+</BaseLayout>
+
+<style>
+  .lab {
+    padding-block: var(--space-9) 0;
+  }
+
+  .lab-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .lab-nav {
+    display: flex;
+    gap: var(--space-5);
+  }
+
+  .lab-nav a {
+    text-decoration: none;
+    padding-block: var(--space-3);
+  }
+
+  .lab-section {
+    display: grid;
+    gap: var(--space-5);
+    padding-block: var(--section-gap);
+    border-top: 1px solid var(--line);
+  }
+
+  .lab-section:first-of-type {
+    border-top: 0;
+  }
+
+  .lab-section--last {
+    padding-block-end: var(--space-6);
+  }
+
+  .lab-hero {
+    font-size: var(--fs-display);
+    line-height: var(--lh-tight);
+    max-width: 14ch;
+  }
+
+  .lab-body {
+    font-size: var(--fs-body-lg);
+  }
+
+  .lab-media {
+    margin: 0;
+    aspect-ratio: 16 / 10;
+    max-width: 70rem;
+  }
+
+  .lab-media--wide {
+    aspect-ratio: 21 / 9;
+    max-width: none;
+  }
+
+  .lab-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: var(--space-6);
+    margin: 0;
+  }
+
+  .lab-stats dd {
+    margin: var(--space-2) 0 0;
+  }
+
+  .lab-stat {
+    font-family: var(--font-display);
+    font-size: var(--fs-h1);
+    line-height: var(--lh-tight);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lab-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--space-6);
+    border: 1px solid var(--ink-900);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .pill--inverse {
+    background: var(--surface-inverse);
+    color: var(--on-inverse);
+  }
+
+  .lab-marquee {
+    background: var(--surface-inverse);
+    color: var(--on-inverse);
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 10vw, 10rem);
+    line-height: 1.1;
+    padding-block: var(--space-6);
+  }
+
+  .lab-marquee span {
+    padding-inline: 0.3em;
+  }
+
+  .lab-tail {
+    height: 60vh;
+  }
+</style>

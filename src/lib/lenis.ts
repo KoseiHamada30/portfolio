@@ -1,10 +1,7 @@
 // Lenis smooth scroll driven by the GSAP ticker (DESIGN.md §4.4).
+// Created on every astro:page-load and destroyed on astro:before-swap (see lifecycle.ts).
 import Lenis from 'lenis';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { prefersReducedMotion } from './motion';
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger, prefersReducedMotion } from './motion';
 
 let lenis: Lenis | null = null;
 
@@ -14,6 +11,7 @@ function raf(time: number) {
 
 export function initLenis(): Lenis | null {
   destroyLenis();
+  // §4.5: disabled entirely under reduced motion — native scrolling instead.
   if (prefersReducedMotion()) return null;
 
   lenis = new Lenis({ lerp: 0.1, anchors: true, autoRaf: false });
