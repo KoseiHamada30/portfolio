@@ -29,7 +29,7 @@ export function createComposition(root: HTMLElement): Composition {
     word.style.removeProperty('--word-size');
     const available = root.clientWidth - parseFloat(getComputedStyle(root).paddingLeft) * 2;
     const size = parseFloat(getComputedStyle(word).fontSize);
-    const width = word.scrollWidth;
+    const width = word.getBoundingClientRect().width;
     if (width > 0) word.style.setProperty('--word-size', `${(size * available) / width}px`);
   };
 

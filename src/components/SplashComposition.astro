@@ -92,6 +92,8 @@ const COPIES = 4; // glyph copies per letter strip for the roll
     line-height: 0.82;
     letter-spacing: -0.055em;
     white-space: nowrap;
+    /* shrink-wrap the text so the fit in splash-composition.ts measures glyphs, not the grid cell */
+    width: max-content;
     color: var(--ink-900);
     /* sit flush with the top edge like the reference */
     margin-block-start: -0.06em;
