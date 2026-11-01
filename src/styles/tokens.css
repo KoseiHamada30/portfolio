@@ -22,12 +22,19 @@
   --accent-2: var(--accent);
   --accent-soft: color-mix(in oklab, var(--accent) 12%, var(--paper-100));
 
+  /* Stage & Sheet (DESIGN.md §8.1) */
+  --stage: #232323;
+  --stage-ink: #edebe4;
+  --stage-dim: rgb(0 0 0 / 0.45);
+  --sheet: var(--paper-100);
+
   /* Focus */
   --focus-ring: 0 0 0 2px var(--paper-100), 0 0 0 4px var(--ink-900);
 
   /* Type families */
   --font-display: 'Instrument Serif', 'Shippori Mincho', serif;
   --font-body: 'Inter Variable', 'Zen Kaku Gothic New', system-ui, sans-serif;
+  --font-grotesk: 'Inter Tight Variable', 'Inter Variable', system-ui, sans-serif; /* §8.2 wordmark + slide titles */
   --font-mono: 'Geist Mono', 'Zen Kaku Gothic New', ui-monospace, monospace;
   --font-display-ja: 'Shippori Mincho', serif;
   --font-body-ja: 'Zen Kaku Gothic New', 'Inter Variable', system-ui, sans-serif;

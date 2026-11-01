@@ -13,12 +13,14 @@
     "check": "astro check",
     "check:motion": "node scripts/check-motion.mjs",
     "check:components": "node scripts/check-components.mjs",
-    "check:home": "node scripts/check-home.mjs"
+    "check:home": "node scripts/check-home.mjs",
+    "check:splash": "node scripts/check-splash.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.5",
     "@astrojs/mdx": "^8.1.1",
     "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/inter-tight": "^5.3.0",
     "@fontsource/geist-mono": "^5.3.0",
     "@fontsource/instrument-serif": "^5.3.0",
     "@fontsource/shippori-mincho": "^5.3.0",

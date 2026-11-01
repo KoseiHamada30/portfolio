@@ -1,0 +1,254 @@
+---
+// The splash composition (DESIGN.md §8): full-width KOSEI© wordmark, a centre cover, "+" marks at
+// 1/6 and 5/6, and a bottom row (JP label · intro · counter). Pure layout: it is driven from JS via
+// src/lib/splash-composition.ts (setProgress / setImage / roll), so the splash can drive it by
+// loading progress and the About ending (later) by scroll progress.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { t, pick, type Locale, type Localized } from '../lib/i18n';
+
+export interface SplashCover {
+  id: string;
+  src: ImageMetadata;
+  alt?: Localized;
+  position?: string;
+}
+
+interface Props {
+  locale: Locale;
+  covers: SplashCover[];
+  /** 0–100, rendered as the initial counter value. */
+  progress?: number;
+}
+
+const { locale, covers, progress = 0 } = Astro.props;
+const letters = [...'KOSEI©'];
+const COPIES = 4; // glyph copies per letter strip for the roll
+---
+
+<div class="comp" data-comp>
+  <p class="comp__word" aria-hidden="true" data-comp-word>
+    {
+      letters.map((ch) => (
+        <span class="comp__cell">
+          <span class="comp__strip" data-comp-strip>
+            {Array.from({ length: COPIES }, () => (
+              <span class="comp__glyph">{ch}</span>
+            ))}
+          </span>
+        </span>
+      ))
+    }
+  </p>
+
+  <span class="comp__plus comp__plus--left" aria-hidden="true"></span>
+  <span class="comp__plus comp__plus--right" aria-hidden="true"></span>
+
+  <div class="comp__stage">
+    <div class="comp__media" data-comp-media>
+      {
+        covers.map((cover, i) => (
+          <Image
+            src={cover.src}
+            alt=""
+            widths={[360, 540, 720]}
+            sizes="(min-width: 1024px) 22vw, 50vw"
+            loading="eager"
+            decoding="async"
+            class:list={['comp__img', { 'is-active': i === 0 }]}
+            style={cover.position ? `object-position: ${cover.position}` : undefined}
+            data-comp-img={cover.id}
+          />
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="comp__row">
+    <p class="comp__label" lang="ja">{t(locale, 'splash.label')}</p>
+    <p class="comp__intro" set:html={t(locale, 'intro-text')} />
+    <p class="comp__count" aria-hidden="true" data-comp-count>{Math.round(progress)}</p>
+  </div>
+</div>
+
+<style>
+  .comp {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: 100%;
+    padding: 0 var(--page-margin) var(--space-5);
+  }
+
+  /* ------------------------------------------------------------ wordmark */
+
+  .comp__word {
+    margin: 0;
+    max-width: none;
+    font-family: var(--font-grotesk);
+    font-weight: 800;
+    /* JS fits this to the full width (splash-composition.ts); clamp is the no-JS fallback */
+    font-size: var(--word-size, clamp(5rem, 26vw, 30rem));
+    line-height: 0.82;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
+    color: var(--ink-900);
+    /* sit flush with the top edge like the reference */
+    margin-block-start: -0.06em;
+  }
+
+  .comp__cell {
+    display: inline-block;
+    height: 0.82em;
+    overflow: hidden;
+    vertical-align: top;
+  }
+
+  .comp__strip {
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+  }
+
+  .comp__glyph {
+    display: block;
+    height: 0.82em;
+  }
+
+  /* --------------------------------------------------------- centre image */
+
+  .comp__stage {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    padding-block: var(--space-5);
+  }
+
+  .comp__media {
+    position: relative;
+    height: min(100%, 56vh);
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--paper-200);
+    will-change: transform;
+  }
+
+  .comp__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+  }
+
+  .comp__img.is-active {
+    opacity: 1;
+  }
+
+  /* ----------------------------------------------------------- "+" marks */
+
+  .comp__plus {
+    position: absolute;
+    top: 50%;
+    width: 15px;
+    height: 15px;
+    translate: -50% -50%;
+    color: var(--ink-700);
+  }
+
+  .comp__plus--left {
+    left: calc(100% / 6);
+  }
+
+  .comp__plus--right {
+    left: calc(100% * 5 / 6);
+  }
+
+  .comp__plus::before,
+  .comp__plus::after {
+    content: '';
+    position: absolute;
+    background: currentColor;
+  }
+
+  .comp__plus::before {
+    left: 7px;
+    top: 0;
+    width: 1px;
+    height: 15px;
+  }
+
+  .comp__plus::after {
+    top: 7px;
+    left: 0;
+    width: 15px;
+    height: 1px;
+  }
+
+  /* ----------------------------------------------------------- bottom row */
+
+  .comp__row {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 38rem) 1fr;
+    align-items: end;
+    gap: var(--space-5);
+  }
+
+  .comp__label {
+    font-family: var(--font-body-ja);
+    font-size: 12px;
+    line-height: 1.6;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .comp__intro {
+    justify-self: center;
+    max-width: 38rem;
+    font-size: var(--fs-small);
+    font-weight: 500;
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  .comp__intro :global(b) {
+    font-weight: 600;
+  }
+
+  .comp__count {
+    justify-self: end;
+    font-family: var(--font-grotesk);
+    font-size: clamp(2.5rem, 4.5vw, 4.5rem);
+    font-weight: 800;
+    line-height: 0.82;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 640px) {
+    .comp__row {
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        'intro intro'
+        'label count';
+      gap: var(--space-4);
+    }
+
+    .comp__intro {
+      grid-area: intro;
+    }
+
+    .comp__label {
+      grid-area: label;
+    }
+
+    .comp__count {
+      grid-area: count;
+    }
+
+    .comp__plus {
+      display: none;
+    }
+  }
+</style>

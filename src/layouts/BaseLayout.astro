@@ -7,6 +7,7 @@ import Toast from '../components/Toast.astro';
 import Cursor from '../components/Cursor.astro';
 
 import '@fontsource-variable/inter';
+import '@fontsource-variable/inter-tight/wght.css';
 import '@fontsource/instrument-serif/400.css';
 import '@fontsource/instrument-serif/400-italic.css';
 import '@fontsource/geist-mono/400.css';
@@ -69,6 +70,7 @@ const altHref = url(alt, path);
     <ClientRouter />
   </head>
   <body data-project={project}>
+    <slot name="overlay" />
     <a class="skip-link" href="#main">{t(locale, 'a11y.skip')}</a>
     <Nav locale={locale} alternate={alternate} />
     <main id="main">
@@ -89,6 +91,7 @@ const altHref = url(alt, path);
       import '../lib/hero';
       import '../lib/work';
       import '../lib/shelf';
+      import '../lib/splash'; // last: its onPage hook runs after the page modules
       startLifecycle();
       startNav();
       startCursor();

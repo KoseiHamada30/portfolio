@@ -2,7 +2,7 @@
 //   npm run dev   (in another terminal)
 //   npm run check:motion
 // Env: BASE_URL (default http://localhost:4321/portfolio), PW_CHROMIUM (optional browser path).
-import { chromium } from 'playwright';
+import { launch } from './_browser.mjs';
 
 const BASE = (process.env.BASE_URL ?? 'http://localhost:4321/portfolio').replace(/\/$/, '');
 const ROUNDS = 5;
@@ -30,7 +30,7 @@ async function snapshot(page) {
   }));
 }
 
-const browser = await chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
+const browser = await launch();
 const errors = [];
 
 // ------------------------------------------------------------ 1. leak check

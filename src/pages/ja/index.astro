@@ -2,9 +2,14 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import JaFonts from '../../components/JaFonts.astro';
 import HomePage from '../../components/HomePage.astro';
+import Splash from '../../components/Splash.astro';
+import { getSplashCovers } from '../../lib/content';
+
+const covers = await getSplashCovers();
 ---
 
 <JaFonts />
 <BaseLayout locale="ja">
+  <Splash slot="overlay" locale="ja" covers={covers} />
   <HomePage locale="ja" />
 </BaseLayout>

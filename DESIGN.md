@@ -58,7 +58,7 @@ page transitions, richer case-study layouts, and consistent tokens.
 Rules
 - Body text is always `--ink-900` or `--ink-500`. Accent never carries body text.
 - Accent is used for: progress bar, active section index, small highlights, selection colour, hover underline in that case study.
-- One inverted (dark) band per page max: the footer / connect section.
+- **[Superseded on the Work page by §8.1: the slider sits on a dark `--stage`.]** - One inverted (dark) band per page max: the footer / connect section.
 - Optional dark mode: invert ink/paper tokens only; accents stay. Ship light first.
 
 ---
@@ -67,7 +67,7 @@ Rules
 
 | Role | Latin | Japanese | Notes |
 |---|---|---|---|
-| Display / headlines | **Instrument Serif** (regular + italic) | **Shippori Mincho** (500) | Evolves v1 Lora italic. Italic for emphasis words. |
+| Display / headlines | **Instrument Serif** (regular + italic) | **Shippori Mincho** (500) | Evolves v1 Lora italic. Italic for emphasis words. **[Superseded for the wordmark and slide titles by §8.2 (Inter Tight); Instrument Serif stays for small editorial accents in case studies.]** |
 | UI / body | **Inter** (variable) | **Zen Kaku Gothic New** (400/500) | Evolves v1 Inter. |
 | Labels / meta / index numbers | **Geist Mono** | — (fall back to Zen Kaku Gothic New) | Uppercase, tracked. |
 
@@ -193,18 +193,18 @@ Videos do not autoplay; show poster + play button.
 
 Build these, in this priority order. Each must work with keyboard and touch, and degrade under reduced motion.
 
-1. **Shared-element page transition.** Clicking a project card expands its thumbnail into the case-study hero (Astro `transition:name="cover-{slug}"`). Other content fades and slides 24px. Back navigation reverses it.
-2. **Hero "KOSEI©".** Letters rise from a mask on load (stagger 40ms). Behind: the fluid sphere, rebuilt as a lightweight canvas/CSS gradient blob (no 2MB GIF) that drifts slowly and leans toward the cursor (max 20px).
-3. **Work index with list ↔ grid toggle.** Default: large editorial grid. Toggle to a dense list (index number, title, category, year). In list mode, hovering a row shows a cursor-following preview image (lerp 0.15, slight rotation from velocity). Switching views uses GSAP Flip.
-4. **Contextual cursor** (pointer-fine only). 8px ink dot with `mix-blend-mode: difference`. Grows to a 72px pill labelled "View" / "Play" / "Drag" / "Copy" over relevant elements. Hidden on touch and reduced motion. Never hides the native focus ring.
+1. **Shared-element page transition.** **[Superseded by §8.4 "Open case study" / "Close": the sheet slides up from the bottom.]** Clicking a project card expands its thumbnail into the case-study hero (Astro `transition:name="cover-{slug}"`). Other content fades and slides 24px. Back navigation reverses it.
+2. **Hero "KOSEI©".** **[Superseded by §8.4 "Letter roll" and the splash.]** Letters rise from a mask on load (stagger 40ms). Behind: the fluid sphere, rebuilt as a lightweight canvas/CSS gradient blob (no 2MB GIF) that drifts slowly and leans toward the cursor (max 20px).
+3. **Work index with list ↔ grid toggle.** **[Superseded by §8.4 "Slider": the stage slider is the default, the second view is a text index.]** Default: large editorial grid. Toggle to a dense list (index number, title, category, year). In list mode, hovering a row shows a cursor-following preview image (lerp 0.15, slight rotation from velocity). Switching views uses GSAP Flip.
+4. **Contextual cursor** **[Superseded by §8.3: crosshair cursor with View / Prev / Next / Drag.]** (pointer-fine only). 8px ink dot with `mix-blend-mode: difference`. Grows to a 72px pill labelled "View" / "Play" / "Drag" / "Copy" over relevant elements. Hidden on touch and reduced motion. Never hides the native focus ring.
 5. **Case-study reading rail.** Sticky left rail on desktop listing sections `(01) Challenge … (07) Next steps`. The active item uses `--accent`, and a thin top progress bar shows reading progress. Collapses to a top dropdown on mobile.
 6. **Pinned user-flow scroller.** In case studies, the "UX flow" section pins and scrolls phone screens horizontally while captions swap. Mobile: native horizontal snap scroll instead.
 7. **Nav behaviour.** Hides on scroll down and returns on scroll up. The pill indicator slides between Work¹ and Info². Blurred paper backdrop after 40px scroll.
 8. **Language toggle EN ⇄ JP.** Text swaps with a 180ms crossfade (or ScrambleText on the toggle label only). Choice persists.
 9. **Footer.** Velocity-aware "LET'S CONNECT" marquee. Clicking the email copies it and shows a "Copied ✓" toast for 1.6s. A live Melbourne time label (`MEL 15:36`).
-10. **Next-project handoff.** The end of each case study shows the next project's title at display size. Scrolling or clicking it plays the page transition.
-11. **Side Quests shelf.** A horizontal, draggable shelf (GSAP Draggable + Inertia, plus native scroll/keyboard fallback) of smaller cards for the branding assignment(s) and hackathon.
-12. **First-visit intro (optional, last).** Paper screen, mono counter 00→100, the name slides up, and the curtain lifts. ≤1.6s total, once per session, skipped on click or keypress.
+10. **Next-project handoff.** **[Superseded by §8.4: the current sheet slides away and the next one rises.]** The end of each case study shows the next project's title at display size. Scrolling or clicking it plays the page transition.
+11. **Side Quests shelf.** **[Superseded by §8.4 "Slider": side quests become slider items labelled "Side quest" (update doc §1).]** A horizontal, draggable shelf (GSAP Draggable + Inertia, plus native scroll/keyboard fallback) of smaller cards for the branding assignment(s) and hackathon.
+12. **First-visit intro (optional, last).** **[Superseded by §8.4 splash recipes and §8.5.]** Paper screen, mono counter 00→100, the name slides up, and the curtain lifts. ≤1.6s total, once per session, skipped on click or keypress.
 
 Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds that autoplay, 3D WebGL scenes, or anything that delays content for over 1.6s.
 
@@ -244,3 +244,66 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
 - Performance: LCP < 2.5s, CLS < 0.05, INP < 200ms on mid-range mobile. Lighthouse Performance ≥ 90, Accessibility 100.
 - JS budget: ≈ 120KB gzipped total (GSAP + plugins + Lenis + app code). Load SplitText/Flip/Draggable only on pages that use them.
 - Media: images through `astro:assets` (AVIF/WebP, responsive `srcset`). Videos re-encoded to H.264 MP4 (+ optional WebM), max 1080p and target < 6MB each, with `poster`, `muted playsinline loop`, played only in view.
+
+---
+
+## 8. v2.1 direction: "Stage & Sheet" (photoyoshi-inspired)
+
+> Merged 2026-11-01 from `20261101_photoyoshi-update.md` §2. Where this conflicts with §0–§5, the older items
+> are marked **[Superseded by §8.x]** in place. Patterns only: no photoyoshi name, logo, photos or text.
+
+### 8.1 Colour additions
+```css
+--stage:     #232323;           /* Work slider background (dark stage) */
+--stage-ink: #EDEBE4;           /* text on stage */
+--stage-dim: rgb(0 0 0 / .45);  /* overlay on inactive slides */
+--sheet:     var(--paper-100);  /* the sliding page sheet */
+```
+- Inactive slide image: `filter: grayscale(1) brightness(.55) contrast(1.05)`
+- Hovered inactive slide: `grayscale(0) brightness(.8)`, 500ms `--ease-out`
+- Active slide: full colour, no filter.
+
+### 8.2 Typography change
+- Wordmark + slide titles: heavy grotesk, tight. **Decided: "Inter Tight" 700–800** (self-hosted via Fontsource),
+  tracking -0.055em, line-height .82. (The Adobe "Neue Haas Grotesk Display" option was not chosen.)
+- **Wordmark text: `KOSEI©`** (decided). Size: fills the viewport width minus page margins
+  (fit-text via JS, or `clamp(5rem, 15.5vw, 16rem)` as the no-JS fallback). With six glyphs a full-width fill is
+  very tall (≈ 340px at 1440px), so the splash composition must budget vertical space for it (see 8.6).
+- Slide title: `clamp(3rem, 6.5vw, 6.5rem)`, superscript count in mono e.g. ⁽⁰¹⁾, subline `/App design` in Inter 500.
+- Instrument Serif italic is kept only for small editorial accents inside case studies.
+- Japanese label row: Zen Kaku Gothic New 400, 11–12px. **Decided wording: 「プロダクトデザイナー［•］ハマダコウセイ」.**
+
+### 8.3 Cursor (pointer-fine only)
+- Default: 15px thin crosshair "+" (1px strokes, currentColor, `mix-blend-mode: difference`), follows with lerp .18.
+- Static decorative "+" marks at 1/6 and 5/6 of the viewport width on the splash and the About ending.
+- Over the active slide: the crosshair expands to a label pill "View" (or "Drag" while dragging).
+- Over inactive slides: label "Prev" / "Next" depending on side.
+- Native cursor hidden only inside the slider stage; keyboard focus ring always visible.
+
+### 8.4 Motion recipes (replace §5.1, 5.2, 5.3, 5.10, 5.12)
+| Moment | Recipe |
+|---|---|
+| Letter roll | Each wordmark letter is a vertical strip of 3–4 glyph copies in an overflow-hidden box; translate from yPercent 100 → 0 (or cycle), stagger 50ms, 900ms expo.out. |
+| Splash centre image | Cycles project covers every 140ms while loading (stops at the first project). |
+| Load counter | Real asset progress (fonts + first 4 covers), tweened so it never jumps backwards, min 1.2s, max 2.4s. |
+| Splash exit | Centre image scale 1 → 1.25 (600ms, power3.inOut) while the `--sheet` panel slides from yPercent 100 → 0 (800ms, expo.inOut), background switches to `--stage`, the sheet slides off upward, slider items rise in (stagger 60ms). |
+| Slider | Wheel / drag / arrow keys drive a target index; position lerps (0.09). Velocity adds a subtle skewX (max 4°) and inactive scale .92. Infinite loop. Snaps to the nearest slide after 150ms idle. |
+| Open case study | Click the active slide → `--sheet` rises from the bottom (yPercent 100 → 0, 900ms expo.inOut) carrying the case-study hero; the slider fades to 0.4 behind it. |
+| Close | Top-right "Close" → the sheet slides down (650ms, fast power3.in), the slider reappears on the same slide (index kept in sessionStorage + `?p=slug`). |
+| About → Work | The last section of About is the splash composition. A ScrollTrigger scrub maps progress 0→1 to counter 0→100 + image scale .5→1.4. At 1 (and after 300ms of no reverse scroll), navigate to Work with `?from=about`, and Work plays only the splash exit. |
+
+### 8.5 Reduced motion / touch / no-JS
+- Reduced motion: no letter roll, no counter animation (just show 100), no sheet slide (150ms fade), the slider jumps
+  without skew, and About→Work becomes a normal "Go to Work →" link.
+- Touch: native horizontal swipe with scroll-snap (no custom cursor); tap the active slide to open.
+- No JS: the slider renders as a horizontal scroll-snap list of links; the splash is skipped.
+- The splash shows once per session (sessionStorage); later visits go straight to the slider. "Skip" on any key/click.
+
+### 8.6 Notes from observing the reference (2026-11-01)
+Frames captured from the live site (`references/photoyoshi-splash-frames/`, local only):
+- 0–0.7s blank paper → ~0.9s the whole composition **fades in** with the counter already moving (45) → ~1.5s counter hits 100.
+- 1.5–2.6s hold. **~3.0–4.3s the letter roll plays** as a wave across the wordmark (strips scroll vertically),
+  i.e. the roll is a beat *between* loading and exit, not the entrance. ~6s: image scales up, sheet rises.
+- Wordmark sits flush to the top edge; centre image ≈ 1/4 viewport width, portrait; label row baseline-aligned at the bottom.
+- With `KOSEI©` (6 glyphs) the wordmark is much taller than the reference's 10-letter word, so the centre image and
+  bottom row must be sized from the remaining height, not fixed.

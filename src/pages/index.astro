@@ -1,8 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HomePage from '../components/HomePage.astro';
+import Splash from '../components/Splash.astro';
+import { getSplashCovers } from '../lib/content';
+
+const covers = await getSplashCovers();
 ---
 
 <BaseLayout locale="en">
+  <Splash slot="overlay" locale="en" covers={covers} />
   <HomePage locale="en" />
 </BaseLayout>

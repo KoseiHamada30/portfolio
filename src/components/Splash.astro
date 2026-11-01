@@ -1,0 +1,87 @@
+---
+// First-visit splash (DESIGN.md §8.4–8.5). An overlay above the page: the real page is already in
+// the DOM underneath, so nothing waits on the splash to render. Behaviour: src/lib/splash.ts.
+// Shown once per session; skipped for reduced motion and when JS is off (it needs html.splash-on,
+// which only the inline script below can set).
+import { t, type Locale } from '../lib/i18n';
+import SplashComposition, { type SplashCover } from './SplashComposition.astro';
+
+interface Props {
+  locale: Locale;
+  covers: SplashCover[];
+}
+
+const { locale, covers } = Astro.props;
+---
+
+<script is:inline>
+  // Decide before first paint, so returning visitors never see a flash of the splash.
+  try {
+    if (!sessionStorage.getItem('splash-seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('splash-on');
+    }
+  } catch {}
+</script>
+
+<div class="splash" aria-hidden="true" data-splash>
+  <SplashComposition locale={locale} covers={covers} progress={0} />
+  <p class="splash__skip">{t(locale, 'splash.skip')}</p>
+</div>
+<div class="splash-sheet" aria-hidden="true" data-splash-sheet></div>
+
+<style>
+  .splash,
+  .splash-sheet {
+    display: none;
+  }
+
+  :global(html.splash-on) {
+    overflow: hidden;
+  }
+
+  :global(html.splash-on) .splash {
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+    display: block;
+    /* a shade darker than the page so the rising --sheet reads as a sheet (reference) */
+    background: var(--paper-200);
+    cursor: progress;
+  }
+
+  /* Hidden until splash.ts fades it in (avoids a visible → hidden → fade-in flicker). */
+  :global(html.splash-on) .splash :global([data-comp]) {
+    opacity: 0;
+  }
+
+  .splash-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 960;
+    background: var(--sheet);
+    transform: translateY(100%);
+    pointer-events: none;
+  }
+
+  :global(html.splash-on) .splash-sheet,
+  .splash-sheet:global(.is-active) {
+    display: block;
+  }
+
+  /* Only visible to people who look for it; any key or click skips. */
+  .splash__skip {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--page-margin);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--ink-500);
+    opacity: 0;
+  }
+
+  .splash:hover .splash__skip {
+    opacity: 1;
+  }
+</style>
