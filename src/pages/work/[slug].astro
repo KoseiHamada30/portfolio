@@ -4,8 +4,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import WorkPlaceholder from '../../components/WorkPlaceholder.astro';
 
 export async function getStaticPaths() {
+  // Side quests get the same placeholder page so their stage slides have somewhere to link.
   const projects = await getCollection('projects', ({ data }) => !data.draft);
-  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+  const quests = await getCollection('sidequests', ({ data }) => !data.draft);
+  return [...projects, ...quests].map((project) => ({ params: { slug: project.id }, props: { project } }));
 }
 
 const { project } = Astro.props;

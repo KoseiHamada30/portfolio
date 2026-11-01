@@ -45,12 +45,25 @@ const watch = (page) => {
   const up = await nav.evaluate((el) => ({ hidden: el.classList.contains('is-hidden'), top: el.getBoundingClientRect().top }));
   check('Scrolling up shows it again', !up.hidden && up.top === 0);
 
-  // Pill indicator + persistence across a ClientRouter navigation
+  // Active link + persistence across a ClientRouter navigation (DESIGN.md §8: "Work, About")
   await page.goto(`${BASE}/`);
   await ready(page);
   await page.evaluate(() => (document.querySelector('[data-nav]').__persisted = true));
-  const clipWork = await page.locator('[data-nav-indicator]').evaluate((el) => el.style.clipPath);
-  check('Work¹ is current on /', (await page.locator('[data-nav-item="work"]').getAttribute('aria-current')) === 'page');
+  const home = await page.evaluate(() => {
+    const work = document.querySelector('[data-nav-item="work"]');
+    return {
+      current: work.getAttribute('aria-current'),
+      underline: getComputedStyle(work).textDecorationColor,
+      color: getComputedStyle(document.querySelector('[data-nav]')).color,
+      about: document.querySelector('[data-nav-item="info"]').textContent.trim(),
+      contact: document.querySelector('[data-nav-contact]').getAttribute('href'),
+      footer: !!document.getElementById('contact'),
+    };
+  });
+  check('Work is current on / and underlined', home.current === 'page' && home.underline !== 'rgba(0, 0, 0, 0)', home.underline);
+  check('Nav reads "Work, About"', home.about === 'About');
+  check('Nav text is light on the stage', home.color === 'rgb(237, 235, 228)', home.color);
+  check('No footer on the stage; Contact goes to About#contact', !home.footer && home.contact.endsWith('/info/#contact'), home.contact);
   await page.mouse.move(0, 400);
   await page.click('[data-nav-item="info"]');
   await ready(page, 2);
@@ -60,11 +73,12 @@ const watch = (page) => {
     persisted: document.querySelector('[data-nav]').__persisted === true,
     info: document.querySelector('[data-nav-item="info"]').getAttribute('aria-current'),
     work: document.querySelector('[data-nav-item="work"]').getAttribute('aria-current'),
-    clip: document.querySelector('[data-nav-indicator]').style.clipPath,
+    color: getComputedStyle(document.querySelector('[data-nav]')).color,
+    contact: document.querySelector('[data-nav-contact]').getAttribute('href'),
   }));
   check('Nav element persisted across navigation', after.persisted && after.path.endsWith('/info/'));
-  check('Info² becomes current', after.info === 'page' && after.work === null);
-  check('Indicator moved', after.clip !== clipWork && after.clip.startsWith('inset('), `${clipWork} → ${after.clip}`);
+  check('About becomes current', after.info === 'page' && after.work === null);
+  check('Nav text turns dark on paper; Contact scrolls to this footer', after.color === 'rgb(14, 14, 14)' && after.contact === '#contact', `${after.color} ${after.contact}`);
   await page.close();
 }
 
@@ -113,7 +127,7 @@ const watch = (page) => {
   const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, permissions: ['clipboard-read', 'clipboard-write'] });
   const page = await context.newPage();
   watch(page);
-  await page.goto(`${BASE}/`);
+  await page.goto(`${BASE}/info/`);
   await ready(page);
 
   const clock = await page.locator('[data-clock]').textContent();
@@ -159,7 +173,7 @@ const watch = (page) => {
   check('Hovering data-cursor="view" shows the "View" pill', state.visible && state.label && state.text === 'View', state.text);
   await page.mouse.move(5, 5, { steps: 4 });
   await page.waitForTimeout(300);
-  check('Pill collapses back to the dot elsewhere', !(await page.locator('[data-cursor-root]').evaluate((el) => el.classList.contains('is-label'))));
+  check('Pill collapses back to the crosshair elsewhere', !(await page.locator('[data-cursor-root]').evaluate((el) => el.classList.contains('is-label'))));
   await page.close();
 
   for (const [name, options] of [
@@ -214,7 +228,7 @@ const watch = (page) => {
     order.push(await k.evaluate(() => document.activeElement?.dataset.navItem ?? (document.activeElement?.hasAttribute('data-lang-toggle') ? 'lang' : document.activeElement?.textContent?.trim().slice(0, 12))));
   }
   const normalised = order.map((s) => String(s).replace(/\s+/g, ''));
-  check('Tab order: brand → Work → Info → language → Contact', normalised.join(',') === 'KoseiHamada,work,info,lang,•Contact', order.join(' → '));
+  check('Tab order: brand → Work → About → language → Contact', normalised.join(',') === 'KOSEI©,work,info,lang,•Contact', order.join(' → '));
   await k.close();
 }
 

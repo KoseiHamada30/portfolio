@@ -1,5 +1,5 @@
-// Nav behaviour (DESIGN.md §5.7): hide on scroll down / show on scroll up, blurred backdrop
-// after 40px, and a pill indicator that slides between Work¹ and Info².
+// Nav behaviour (DESIGN.md §5.7, §8): hide on scroll down / show on scroll up, blurred backdrop
+// after 40px, and per-page sync of the active link, language toggle and Contact target.
 // The <Nav /> element is persisted, so this runs once and re-syncs on every page load.
 import { prefersReducedMotion } from './motion';
 
@@ -9,29 +9,6 @@ const DELTA = 6;
 
 function nav() {
   return document.querySelector<HTMLElement>('[data-nav]');
-}
-
-// ------------------------------------------------------------ indicator
-
-function moveIndicator(target: HTMLElement | null) {
-  const pill = nav()?.querySelector<HTMLElement>('[data-nav-pill]');
-  const indicator = pill?.querySelector<HTMLElement>('[data-nav-indicator]');
-  if (!pill || !indicator) return;
-
-  pill.querySelectorAll('[data-nav-item]').forEach((item) => item.classList.toggle('is-lit', item === target));
-  if (!target) {
-    indicator.style.clipPath = '';
-    return;
-  }
-  const box = indicator.getBoundingClientRect();
-  const item = target.getBoundingClientRect();
-  const left = item.left - box.left;
-  const right = box.right - item.right;
-  indicator.style.clipPath = `inset(0 ${right}px 0 ${left}px round 999px)`;
-}
-
-function activeItem(): HTMLElement | null {
-  return nav()?.querySelector<HTMLElement>('[data-nav-item][aria-current="page"]') ?? null;
 }
 
 // ------------------------------------------------------- per-page sync
@@ -64,9 +41,12 @@ function syncPage() {
     if (alternate) toggle.setAttribute('href', new URL(alternate.href).pathname);
   }
 
+  // Contact scrolls to this page's footer, or goes to the page that has one (the Work stage has none).
+  const contact = el.querySelector<HTMLAnchorElement>('[data-nav-contact]');
+  if (contact) contact.setAttribute('href', document.getElementById('contact') ? '#contact' : (contact.dataset.fallback ?? '#contact'));
+
   el.classList.remove('is-hidden');
   updateScroll(true);
-  moveIndicator(activeItem());
 }
 
 // -------------------------------------------------------------- scroll
@@ -111,20 +91,5 @@ export function startNav(): void {
     { passive: true },
   );
 
-  // Hover / focus slides the indicator; leaving returns it to the current page.
-  document.addEventListener('pointerover', (event) => {
-    const pill = nav()?.querySelector('[data-nav-pill]');
-    if (!pill) return;
-    const item = (event.target as Element).closest<HTMLElement>('[data-nav-item]');
-    if (item && pill.contains(item)) moveIndicator(item);
-    else if (!pill.contains(event.target as Node)) moveIndicator(activeItem());
-  });
-  document.addEventListener('focusin', (event) => {
-    const item = (event.target as Element).closest<HTMLElement>('[data-nav-item]');
-    moveIndicator(item ?? activeItem());
-  });
-  window.addEventListener('resize', () => moveIndicator(activeItem()));
-
   document.addEventListener('astro:page-load', syncPage);
-  document.fonts.ready.then(() => moveIndicator(activeItem()));
 }

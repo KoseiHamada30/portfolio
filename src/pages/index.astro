@@ -7,7 +7,7 @@ import { getSplashCovers } from '../lib/content';
 const covers = await getSplashCovers();
 ---
 
-<BaseLayout locale="en">
+<BaseLayout locale="en" surface="stage">
   <Splash slot="overlay" locale="en" covers={covers} />
   <HomePage locale="en" />
 </BaseLayout>

@@ -29,9 +29,11 @@ interface Props {
   noindex?: boolean;
   /** False when the page has no other-language version: no hreflang link, no language toggle. */
   alternate?: boolean;
+  /** 'stage' = the dark Work stage (DESIGN.md §8): light nav, no footer. */
+  surface?: 'paper' | 'stage';
 }
 
-const { locale, title, description, project, noindex = false, alternate = true } = Astro.props;
+const { locale, title, description, project, noindex = false, alternate = true, surface = 'paper' } = Astro.props;
 const path = pathWithoutLocale(Astro.url.pathname);
 const siteName = t(locale, 'site.name');
 const pageTitle = title ? `${title} — ${siteName}` : `${siteName} — ${t(locale, 'site.role')}`;
@@ -69,14 +71,14 @@ const altHref = url(alt, path);
     }
     <ClientRouter />
   </head>
-  <body data-project={project}>
+  <body data-project={project} data-surface={surface}>
     <slot name="overlay" />
     <a class="skip-link" href="#main">{t(locale, 'a11y.skip')}</a>
     <Nav locale={locale} alternate={alternate} />
     <main id="main">
       <slot />
     </main>
-    <Footer locale={locale} />
+    {surface !== 'stage' && <Footer locale={locale} />}
     <Toast />
     <Cursor locale={locale} />
     <script>
@@ -88,9 +90,7 @@ const altHref = url(alt, path);
       import '../lib/magnetic';
       import '../lib/marquee';
       import '../lib/footer';
-      import '../lib/hero';
-      import '../lib/work';
-      import '../lib/shelf';
+      import '../lib/stage';
       import '../lib/splash'; // last: its onPage hook runs after the page modules
       startLifecycle();
       startNav();

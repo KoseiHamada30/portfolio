@@ -8,7 +8,7 @@ import { t, url, pick, type Locale } from '../lib/i18n';
 import CoverPlaceholder from './CoverPlaceholder.astro';
 
 interface Props {
-  project: CollectionEntry<'projects'>;
+  project: CollectionEntry<'projects'> | CollectionEntry<'sidequests'>;
   locale: Locale;
 }
 

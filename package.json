@@ -14,6 +14,7 @@
     "check:motion": "node scripts/check-motion.mjs",
     "check:components": "node scripts/check-components.mjs",
     "check:home": "node scripts/check-home.mjs",
+    "check:stage": "node scripts/check-stage.mjs",
     "check:splash": "node scripts/check-splash.mjs"
   },
   "dependencies": {

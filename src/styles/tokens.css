@@ -28,6 +28,15 @@
   --stage-dim: rgb(0 0 0 / 0.45);
   --sheet: var(--paper-100);
 
+  /* Work stage slider (DESIGN.md §8.1, §8.4) — the Site Tuner can override all of these */
+  --slide-w: min(80svh, 62vw);
+  --slide-gap: clamp(8px, 1.1vw, 20px);
+  --stage-dim-brightness: 0.55;
+  --fs-slide: clamp(3rem, 6.5vw, 6.5rem);
+  --stage-lerp: 0.09; /* position catch-up per frame at 60fps */
+  --stage-skew: 4; /* max skewX in degrees while moving */
+  --stage-scale: 0.92; /* inactive slide scale */
+
   /* Focus */
   --focus-ring: 0 0 0 2px var(--paper-100), 0 0 0 4px var(--ink-900);
 
@@ -99,6 +108,12 @@
 
   --stagger-text: 40ms;
   --stagger-item: 80ms;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --slide-w: 78vw;
+  }
 }
 
 /* Project accents — AUDIT.md §6 */

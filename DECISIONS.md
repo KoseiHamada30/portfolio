@@ -51,3 +51,12 @@ Design and build decisions not covered by DESIGN.md. Newest first.
 | 2026-10-25 | New UI strings with no v1 translation (`site.role`, `site.description`, `nav.lang*`, `a11y.skip`, `home.placeholder`) were translated by Claude. `nav.contact` and `footer.resume` are ported verbatim from v1 `i18n.js`. | TODO(kosei): review the JA wording in `src/i18n/ja.json`. |
 | 2026-10-25 | Removed the scaffold's `AGENTS.md`. | Duplicated by CLAUDE.md. |
 | 2026-10-25 | Built on Astro 7.4 (latest stable). Zod is imported from `astro/zod` (the `astro:content` export is deprecated). | CLAUDE.md asks for latest stable. |
+| 2026-11-01 | Phase 4R-b design happens in the Site Tuner artifact only. Code sits on the local branch `design/4r-b`, which is never pushed. | Kosei: push to the website only after the design is approved in Claude. |
+| 2026-11-01 | The Work page has no footer. Nav Contact links to About#contact, which is the Info page until /about lands in Phase 9. | Kosei's choice; matches the full-screen reference. |
+| 2026-11-01 | Portrait slide crops come from the existing covers via focal points: optional `stagePosition` frontmatter, falling back to `coverPosition`, and live-adjustable in the tuner. | Kosei's choice; no portrait covers exist yet. |
+| 2026-11-01 | Slide sublines are the v1 categories without brackets. Side quests read "/Side quest · <category>". NBA Lab shows TODO(kosei). | Kosei's choice; never invent copy. |
+| 2026-11-01 | Slides are full height like the reference, `--slide-w: min(80svh, 62vw)` (78vw on phones). The §8.4 inactive scale .92, skew 4° and glide .09 are CSS tokens. | The reference is full-bleed; tokens let the tuner change the feel live. |
+| 2026-11-01 | Side quests get the same placeholder case page as the projects (`/work/brim-cc`, `/work/honne-festa`). | Every slide must be a link. |
+| 2026-11-01 | The crosshair replaces the dot cursor on every page. The native cursor stays hidden wherever the custom one runs. | §8.3 says "hidden only inside the stage", but that would show two cursors elsewhere. |
+| 2026-11-01 | Hero, WorkIndex, SideQuests, hero.ts, work.ts and shelf.ts are no longer imported, but are kept. check-home.mjs is superseded by check-stage.mjs. | No deletions without approval. |
+| 2026-11-01 | New JA strings: `stage.hint`, `stage.announce`, `stage.slide`, `stage.views`. | TODO(kosei): review the wording. |

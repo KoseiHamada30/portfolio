@@ -1,9 +1,8 @@
 ---
-// Home page body, shared by / and /ja/.
+// Home page body, shared by / and /ja/: the Work stage (DESIGN.md §8). The previous hero, grid
+// and side-quest shelf components are kept in src/components but no longer used here.
 import type { Locale } from '../lib/i18n';
-import Hero from './Hero.astro';
-import WorkIndex from './WorkIndex.astro';
-import SideQuests from './SideQuests.astro';
+import Stage from './Stage.astro';
 
 interface Props {
   locale: Locale;
@@ -12,6 +11,4 @@ interface Props {
 const { locale } = Astro.props;
 ---
 
-<Hero locale={locale} />
-<WorkIndex locale={locale} />
-<SideQuests locale={locale} />
+<Stage locale={locale} />

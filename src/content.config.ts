@@ -27,6 +27,8 @@ const projects = defineCollection({
       coverAlt: localized.optional(),
       /** CSS object-position for tight crops (4:5 on phones), e.g. 'left center'. */
       coverPosition: z.string().optional(),
+      /** object-position for the tall stage-slider crop (DESIGN.md §8); falls back to coverPosition. */
+      stagePosition: z.string().optional(),
       coverVideo: z.string().optional(),
       summary: localized.optional(),
       draft: z.boolean().default(false),
@@ -48,6 +50,8 @@ const sidequests = defineCollection({
       accent: hex,
       cover: image().optional(),
       coverAlt: localized.optional(),
+      /** object-position for the tall stage-slider crop (DESIGN.md §8). */
+      stagePosition: z.string().optional(),
       summary: localized.optional(),
       draft: z.boolean().default(false),
     }),

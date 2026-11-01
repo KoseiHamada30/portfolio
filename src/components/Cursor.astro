@@ -1,6 +1,7 @@
 ---
-// Contextual cursor (DESIGN.md §5.4). Pointer-fine + full motion only; driven by src/lib/cursor.ts.
-// Any element with data-cursor="view|play|drag|copy" turns the dot into a labelled 72px pill.
+// Contextual cursor (DESIGN.md §5.4, §8.3). Pointer-fine + full motion only; driven by src/lib/cursor.ts.
+// A thin 15px crosshair; any element with data-cursor="view|play|drag|copy|prev|next" turns it into
+// a labelled 72px pill.
 import { t, type Locale } from '../lib/i18n';
 
 interface Props {
@@ -13,6 +14,8 @@ const labels = {
   play: t(locale, 'cursor.play'),
   drag: t(locale, 'cursor.drag'),
   copy: t(locale, 'cursor.copy'),
+  prev: t(locale, 'cursor.prev'),
+  next: t(locale, 'cursor.next'),
 };
 ---
 
@@ -43,7 +46,6 @@ const labels = {
     opacity: 1;
   }
 
-  .cursor__dot,
   .cursor__pill {
     position: absolute;
     top: 0;
@@ -52,13 +54,36 @@ const labels = {
     background: #fff;
   }
 
+  /* 15px crosshair with 1px strokes */
   .cursor__dot {
-    width: 8px;
-    height: 8px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 15px;
+    height: 15px;
     translate: -50% -50%;
     transition:
       transform var(--dur-base) var(--ease-out),
       opacity var(--dur-fast) var(--ease-out);
+  }
+
+  .cursor__dot::before,
+  .cursor__dot::after {
+    content: '';
+    position: absolute;
+    background: #fff;
+  }
+
+  .cursor__dot::before {
+    left: 7px;
+    width: 1px;
+    height: 15px;
+  }
+
+  .cursor__dot::after {
+    top: 7px;
+    width: 15px;
+    height: 1px;
   }
 
   .cursor__pill {
@@ -92,7 +117,7 @@ const labels = {
   }
 
   .cursor:global(.is-pressed) .cursor__dot {
-    transform: scale(0.6);
+    transform: scale(0.7) rotate(45deg);
   }
 
   /* Hide the native cursor only while the custom one is active; text fields keep theirs. */

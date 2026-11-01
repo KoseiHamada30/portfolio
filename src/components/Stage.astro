@@ -1,0 +1,503 @@
+---
+// Work stage (DESIGN.md §8): a dark full-height slider of projects, then side quests, plus an
+// "Index" text-list view. Without JS, and on touch, the track is a native scroll-snap list of
+// links; with a fine pointer src/lib/stage.ts turns it into the looping GSAP slider.
+import { Image } from 'astro:assets';
+import { t, url, pick, type Locale } from '../lib/i18n';
+import { getStageItems, unbracket } from '../lib/content';
+import CoverPlaceholder from './CoverPlaceholder.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const items = await getStageItems();
+const total = items.length;
+const num = (i: number) => String(i + 1).padStart(2, '0');
+const fill = (text: string, values: Record<string, string | number>) =>
+  text.replace(/\{(\w+)\}/g, (_, k) => String(values[k] ?? ''));
+const subline = (item: (typeof items)[number]) => {
+  const category = item.category ? unbracket(pick(locale, item.category)) : '';
+  if (item.sideQuest) return [t(locale, 'stage.sideQuest'), category].filter(Boolean).join(' · ');
+  return category;
+};
+---
+
+<section
+  class="stage"
+  aria-roledescription="carousel"
+  aria-labelledby="stage-title"
+  aria-describedby="stage-hint"
+  data-stage
+  data-view="stage"
+>
+  <h1 class="visually-hidden" id="stage-title">{t(locale, 'stage.label')}</h1>
+  <p class="visually-hidden" id="stage-hint">{t(locale, 'stage.hint')}</p>
+
+  <ol class="stage__track" data-stage-track>
+    {
+      items.map((item, i) => (
+        <li
+          class:list={['stage__slide', { 'is-active': i === 0 }]}
+          aria-roledescription="slide"
+          aria-label={fill(t(locale, 'stage.slide'), { n: i + 1, total })}
+          data-project={item.accentKey}
+          data-stage-slide
+          data-title={item.title}
+        >
+          <a class="stage__link" href={url(locale, `work/${item.id}`)} data-stage-link data-cursor="view">
+            <span class="stage__media">
+              {item.cover ? (
+                <Image
+                  src={item.cover}
+                  alt={item.coverAlt ? pick(locale, item.coverAlt) : ''}
+                  widths={[480, 720, 960, 1280]}
+                  sizes="(pointer: fine) 50vw, 80vw"
+                  loading={i < 3 || i === total - 1 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  style={`object-position: var(--stage-focus, ${item.position})`}
+                />
+              ) : (
+                <CoverPlaceholder locale={locale} title={item.title} accent={item.accent} />
+              )}
+            </span>
+            <span class="stage__caption">
+              <span class="stage__title">
+                <span class="stage__title-inner" data-stage-title>
+                  {item.title}
+                  <sup class="stage__count">({num(i)})</sup>
+                </span>
+              </span>
+              <span class="stage__sub">
+                <span class="stage__sub-inner" data-stage-sub>
+                  {subline(item) ? `/${subline(item)}` : <span class="stage__todo">{t(locale, 'placeholder.text')}</span>}
+                </span>
+              </span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="stage-index" data-stage-index hidden>
+    <ol class="stage-index__list">
+      {
+        items.map((item, i) => (
+          <li class="stage-index__row" data-project={item.accentKey}>
+            <a class="stage-index__link" href={url(locale, `work/${item.id}`)} data-index-link={item.id} data-cursor="view">
+              <span class="stage-index__num">({num(i)})</span>
+              <span class="stage-index__title">{item.title}</span>
+              <span class="stage-index__cat">
+                {subline(item) || <span class="stage__todo">{t(locale, 'placeholder.text')}</span>}
+              </span>
+              <span class="stage-index__year">{item.year ?? '—'}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="stage-index__preview" aria-hidden="true" data-index-preview>
+      {
+        items.map((item) =>
+          item.cover ? (
+            <Image
+              src={item.cover}
+              alt=""
+              widths={[480]}
+              sizes="22vw"
+              loading="lazy"
+              data-preview-id={item.id}
+              style={`object-position: var(--stage-focus, ${item.position})`}
+            />
+          ) : (
+            <span class="stage-index__empty" data-preview-id={item.id} style={`--ph-accent: ${item.accent}`}>
+              {item.title}
+            </span>
+          ),
+        )
+      }
+    </div>
+  </div>
+
+  <div class="stage__views" role="group" aria-label={t(locale, 'stage.views')} data-stage-views>
+    <button type="button" class="stage__view-btn" data-view-option="index" aria-pressed="false">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.5" fill="none" />
+      </svg>
+      <span class="visually-hidden">{t(locale, 'stage.viewIndex')}</span>
+    </button>
+    <button type="button" class="stage__view-btn" data-view-option="stage" aria-pressed="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <rect x="6.5" y="3" width="11" height="18" fill="currentColor" />
+        <rect x="2" y="5" width="2.5" height="14" fill="currentColor" opacity="0.5" />
+        <rect x="19.5" y="5" width="2.5" height="14" fill="currentColor" opacity="0.5" />
+      </svg>
+      <span class="visually-hidden">{t(locale, 'stage.viewStage')}</span>
+    </button>
+  </div>
+
+  <p class="visually-hidden" aria-live="polite" aria-atomic="true" data-stage-live data-template={t(locale, 'stage.announce')}></p>
+</section>
+
+<style is:global>
+  .stage {
+    position: relative;
+    height: 100svh;
+    overflow: hidden;
+    background: var(--stage);
+    color: var(--stage-ink);
+  }
+
+  /* --------------------------------------------- track: native scroll-snap */
+
+  .stage__track {
+    display: flex;
+    gap: var(--slide-gap);
+    height: 100%;
+    margin: 0;
+    padding: 0 calc((100% - var(--slide-w)) / 2);
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .stage__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stage__slide {
+    position: relative;
+    flex: 0 0 var(--slide-w);
+    height: 100%;
+    scroll-snap-align: center;
+  }
+
+  /* --------------------------------------------- track: GSAP slider */
+
+  .stage.is-virtual .stage__track {
+    position: relative;
+    display: block;
+    padding: 0;
+    overflow: hidden;
+    /* native snap would scroll the track under the transforms */
+    scroll-snap-type: none;
+    touch-action: pan-y;
+    user-select: none;
+  }
+
+  .stage.is-virtual .stage__slide {
+    position: absolute;
+    inset: 0 auto 0 50%;
+    width: var(--slide-w);
+    margin-left: calc(var(--slide-w) / -2);
+    will-change: transform;
+  }
+
+  .stage.is-dragging .stage__link {
+    pointer-events: none;
+  }
+
+  /* ------------------------------------------------------------- slide */
+
+  .stage__link {
+    position: relative;
+    display: block;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+    -webkit-user-drag: none;
+  }
+
+  .stage__link:focus-visible {
+    outline: 2px solid var(--stage-ink);
+    outline-offset: -6px;
+  }
+
+  .stage__media {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    background: color-mix(in oklab, var(--stage) 80%, #000);
+    /* DESIGN.md §8.1: inactive slides are monochrome and dimmed */
+    filter: grayscale(1) brightness(var(--stage-dim-brightness)) contrast(1.05);
+    transition: filter 500ms var(--ease-out);
+  }
+
+  .stage__slide.is-active .stage__media {
+    filter: none;
+  }
+
+  .stage__slide:not(.is-active) .stage__link:hover .stage__media {
+    filter: grayscale(0) brightness(0.8);
+  }
+
+  .stage__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  /* legibility for the light title over bright covers */
+  .stage__media::after {
+    content: '';
+    position: absolute;
+    inset: 55% 0 0;
+    background: linear-gradient(transparent, rgb(0 0 0 / 0.45));
+    pointer-events: none;
+  }
+
+  /* ----------------------------------------------------------- caption */
+
+  .stage__caption {
+    position: absolute;
+    inset: auto 0 var(--space-6);
+    display: grid;
+    justify-items: center;
+    gap: var(--space-1);
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .stage__title,
+  .stage__sub {
+    display: block;
+    /* masks for the roll; padding keeps descenders and the superscript inside */
+    overflow: hidden;
+    padding: 0.08em 0.6em 0.04em;
+  }
+
+  .stage__title-inner,
+  .stage__sub-inner {
+    display: inline-block;
+  }
+
+  .stage__title-inner {
+    font-family: var(--font-grotesk);
+    font-size: var(--fs-slide);
+    font-weight: 700;
+    line-height: 0.82;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
+  }
+
+  .stage__count {
+    margin-inline-start: 0.12em;
+    font-family: var(--font-mono);
+    font-size: max(0.75rem, 0.16em);
+    font-weight: 400;
+    letter-spacing: 0;
+    vertical-align: top;
+    position: relative;
+    top: 0.2em;
+  }
+
+  .stage__sub-inner {
+    font-size: var(--fs-body);
+    font-weight: 500;
+  }
+
+  .stage__todo {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    opacity: 0.7;
+  }
+
+  /* The slider only shows the active slide's caption (stage.ts rolls them in and out). */
+  .stage.is-virtual .stage__slide:not(.is-active) .stage__caption {
+    visibility: hidden;
+  }
+
+  /* -------------------------------------------------------- view toggle */
+
+  .stage__views {
+    position: absolute;
+    right: var(--page-margin);
+    bottom: var(--space-5);
+    z-index: 5;
+    display: none;
+    gap: var(--space-2);
+  }
+
+  .js .stage__views {
+    display: flex;
+  }
+
+  .stage__view-btn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--stage-ink);
+    opacity: 0.45;
+    cursor: pointer;
+    transition: opacity var(--dur-fast) var(--ease-out);
+  }
+
+  .stage__view-btn:hover,
+  .stage__view-btn[aria-pressed='true'] {
+    opacity: 1;
+  }
+
+  .stage__view-btn:focus-visible {
+    outline: 2px solid var(--stage-ink);
+    outline-offset: 2px;
+  }
+
+  /* -------------------------------------------------------------- index */
+
+  .stage-index {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: grid;
+    align-content: center;
+    padding: calc(var(--space-10)) var(--page-margin) var(--space-9);
+    overflow-y: auto;
+    background: var(--stage);
+  }
+
+  .stage-index[hidden] {
+    display: none;
+  }
+
+  .stage-index__list {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid color-mix(in oklab, var(--stage-ink) 18%, transparent);
+  }
+
+  .stage-index__link {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 18rem) 4rem;
+    align-items: baseline;
+    gap: var(--space-5);
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid color-mix(in oklab, var(--stage-ink) 18%, transparent);
+    color: inherit;
+    text-decoration: none;
+    transition: opacity var(--dur-fast) var(--ease-out);
+  }
+
+  .stage-index__list:hover .stage-index__link:not(:hover) {
+    opacity: 0.4;
+  }
+
+  .stage-index__link:focus-visible {
+    outline: 2px solid var(--stage-ink);
+    outline-offset: 4px;
+  }
+
+  .stage-index__num,
+  .stage-index__year {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+  }
+
+  .stage-index__year {
+    text-align: end;
+  }
+
+  .stage-index__title {
+    font-family: var(--font-grotesk);
+    font-size: var(--fs-h1);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+  }
+
+  .stage-index__cat {
+    font-size: var(--fs-small);
+    color: color-mix(in oklab, var(--stage-ink) 70%, transparent);
+  }
+
+  /* follows the pointer (stage.ts) */
+  .stage-index__preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 6;
+    width: clamp(180px, 18vw, 300px);
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+
+  .stage-index__preview.is-on {
+    opacity: 1;
+  }
+
+  .stage-index__preview > * {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    filter: grayscale(1);
+  }
+
+  /* monochrome first, then colour blooms in (DESIGN.md §8, Index view) */
+  .stage-index__preview > .is-shown {
+    opacity: 1;
+    filter: grayscale(0);
+    transition: filter 700ms var(--ease-out) 120ms;
+  }
+
+  .stage-index__empty {
+    display: grid;
+    place-items: center;
+    background: color-mix(in oklab, var(--ph-accent) 35%, var(--stage));
+    font-family: var(--font-grotesk);
+    font-weight: 700;
+  }
+
+  @media (max-width: 760px) {
+    .stage-index__link {
+      grid-template-columns: 3rem minmax(0, 1fr) 3rem;
+      grid-template-areas: 'num title year' '. cat cat';
+      gap: var(--space-1) var(--space-3);
+    }
+
+    .stage-index__num { grid-area: num; }
+    .stage-index__title { grid-area: title; }
+    .stage-index__cat { grid-area: cat; }
+    .stage-index__year { grid-area: year; }
+  }
+
+  @media (max-width: 760px) {
+    /* clear the view toggle */
+    .stage__caption {
+      bottom: calc(var(--space-5) + 48px);
+    }
+  }
+
+  @media (pointer: coarse) {
+    .stage-index__preview {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stage__media,
+    .stage-index__preview,
+    .stage-index__preview > .is-shown {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>

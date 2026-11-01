@@ -34,7 +34,7 @@ function recordSplash() {
         img: document.querySelector('[data-comp-img].is-active')?.dataset.compImg,
         roll: strip ? new DOMMatrix(getComputedStyle(strip).transform).f : 0,
         sheetTop: sheet && getComputedStyle(sheet).display !== 'none' ? Math.round(sheet.getBoundingClientRect().top) : null,
-        work: document.querySelectorAll('.work-item').length,
+        work: document.querySelectorAll('[data-stage-slide]').length,
       });
       const done = !html.classList.contains('splash-on') && !(sheet?.classList.contains('is-active'));
       if ((done && samples.length > 5) || performance.now() - t0 > 12000) resolve(samples);
@@ -69,7 +69,7 @@ function recordSplash() {
   const fill = (reached?.t ?? 0) - (firstMove?.t ?? 0);
 
   check('Splash shown on first visit', samples[0].on);
-  check('Page content is already in the DOM underneath', samples[0].work > 0, `${samples[0].work} work items`);
+  check('Page content is already in the DOM underneath', samples[0].work > 0, `${samples[0].work} stage slides`);
   check('Counter only ever goes up and ends at 100', counts.every((c, i) => i === 0 || c >= counts[i - 1]) && counts.at(-1) === 100, `${counts[0]} → ${counts.at(-1)}`);
   check('Counter fill time within ~1.2–2.4s', fill >= 1100 && fill <= 2700, `${fill}ms`);
   check('Centre image cycles while loading', imgs.size >= 2, [...imgs].join(', '));
@@ -87,7 +87,7 @@ function recordSplash() {
     overflow: getComputedStyle(document.documentElement).overflow,
     lenis: document.documentElement.classList.contains('lenis') && !document.documentElement.classList.contains('lenis-stopped'),
     sheet: getComputedStyle(document.querySelector('[data-splash-sheet]')).display,
-    title: getComputedStyle(document.querySelector('[data-hero-title]')).opacity,
+    title: getComputedStyle(document.querySelector('.stage__slide.is-active .stage__link')).opacity,
     lcp: Math.round(window.__lcp),
   }));
   check('Afterwards: scrolling unlocked, Lenis running, sheet gone', after.overflow !== 'hidden' && after.lenis && after.sheet === 'none');
@@ -170,7 +170,7 @@ function recordSplash() {
   const np = await nctx.newPage();
   await np.goto(`${BASE}/`);
   const nojs = await np.evaluate(() => getComputedStyle(document.querySelector('[data-splash]')).display);
-  check('No JS: splash never shows, page is visible', nojs === 'none' && (await np.locator('.work-item').count()) > 0);
+  check('No JS: splash never shows, page is visible', nojs === 'none' && (await np.locator('[data-stage-slide]').count()) > 0);
   await nctx.close();
 }
 

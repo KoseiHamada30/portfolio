@@ -2,7 +2,7 @@
 // persisted across navigations and hover targets are found by event delegation.
 import { gsap, media } from './motion';
 
-type Label = 'view' | 'play' | 'drag' | 'copy';
+type Label = 'view' | 'play' | 'drag' | 'copy' | 'prev' | 'next';
 
 let started = false;
 
@@ -22,6 +22,7 @@ export function startCursor(): void {
     let xTo: gsap.QuickToFunc | null = null;
     let yTo: gsap.QuickToFunc | null = null;
     let last = { x: -100, y: -100 };
+    let forced: Label | null = null; // e.g. 'drag' while the stage is being dragged
 
     const bind = () => {
       root = document.querySelector<HTMLElement>('[data-cursor-root]');
@@ -40,7 +41,7 @@ export function startCursor(): void {
 
     const setTarget = (target: Element | null) => {
       if (!root || !label) return;
-      const kind = target?.closest<HTMLElement>('[data-cursor]')?.dataset.cursor as Label | undefined;
+      const kind = forced ?? (target?.closest<HTMLElement>('[data-cursor]')?.dataset.cursor as Label | undefined);
       const text = kind ? labels[kind] : undefined;
       if (text) label.textContent = text;
       root.classList.toggle('is-label', Boolean(text));
@@ -66,6 +67,12 @@ export function startCursor(): void {
     // Leaving the window (or entering an iframe like a Figma embed) hides the dot.
     document.documentElement.addEventListener('pointerleave', () => root?.classList.remove('is-visible'), { signal });
     window.addEventListener('blur', () => root?.classList.remove('is-visible'), { signal });
+    // The stage changes labels under a still pointer (active slide moved) and forces 'drag'.
+    document.addEventListener('cursor:refresh', () => setTarget(document.elementFromPoint(last.x, last.y)), { signal });
+    document.addEventListener('cursor:drag', (event) => {
+      forced = (event as CustomEvent<boolean>).detail ? 'drag' : null;
+      setTarget(document.elementFromPoint(last.x, last.y));
+    }, { signal });
     // A new locale renders a new persisted element; rebind after each navigation.
     document.addEventListener('astro:page-load', () => {
       bind();
