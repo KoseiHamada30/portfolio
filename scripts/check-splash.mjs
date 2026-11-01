@@ -86,24 +86,30 @@ function recordSplash() {
     lenis: document.documentElement.classList.contains('lenis') && !document.documentElement.classList.contains('lenis-stopped'),
     sheet: getComputedStyle(document.querySelector('[data-splash-sheet]')).display,
     title: getComputedStyle(document.querySelector('[data-hero-title]')).opacity,
-    stored: sessionStorage.getItem('splash-seen'),
     lcp: Math.round(window.__lcp),
   }));
   check('Afterwards: scrolling unlocked, Lenis running, sheet gone', after.overflow !== 'hidden' && after.lenis && after.sheet === 'none');
   check('Page animations played after the reveal', after.title === '1');
-  check('Marked as seen for this session', after.stored === '1');
   console.log(`  (LCP in dev: ${after.lcp}ms)`);
 
-  // Same session: reload and in-site navigation skip it
-  await page.reload();
-  check('Reload in the same session: no splash', !(await page.evaluate(() => document.documentElement.classList.contains('splash-on'))));
-  await page.waitForFunction(() => window.__motion?.setups() >= 1);
+  // Refresh plays it again; in-site navigation back to Work doesn't
+  await page.reload({ waitUntil: 'commit' });
+  await page.waitForSelector('[data-splash]', { state: 'attached' });
+  check('Refresh plays the splash again', await page.evaluate(() => document.documentElement.classList.contains('splash-on')));
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => window.__motion?.setups() >= 1, null, { timeout: 15000 });
   await page.click('[data-nav-item="info"]');
   await page.waitForURL(/\/info\/$/);
   await page.click('[data-nav-item="work"]');
   await page.waitForURL(/\/portfolio\/$/);
   await page.waitForTimeout(500);
   check('Navigating back to Work: no splash', !(await page.evaluate(() => document.documentElement.classList.contains('splash-on'))));
+  await page.goto(`${BASE}/info/`);
+  await page.waitForFunction(() => window.__motion?.setups() >= 1);
+  await page.click('[data-nav-item="work"]');
+  await page.waitForURL(/\/portfolio\/$/);
+  await page.waitForTimeout(500);
+  check('Landing on /info, then clicking Work: no splash', !(await page.evaluate(() => document.documentElement.classList.contains('splash-on'))));
   await ctx.close();
 }
 

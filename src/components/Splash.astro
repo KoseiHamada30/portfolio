@@ -1,8 +1,9 @@
 ---
 // First-visit splash (DESIGN.md §8.4–8.5). An overlay above the page: the real page is already in
 // the DOM underneath, so nothing waits on the splash to render. Behaviour: src/lib/splash.ts.
-// Shown once per session; skipped for reduced motion and when JS is off (it needs html.splash-on,
-// which only the inline script below can set).
+// Plays on every full load / refresh of the home page (not on in-site navigation back to it);
+// skipped for reduced motion and when JS is off (it needs html.splash-on, which only the inline
+// script below can set).
 import { t, type Locale } from '../lib/i18n';
 import SplashComposition, { type SplashCover } from './SplashComposition.astro';
 
@@ -15,12 +16,16 @@ const { locale, covers } = Astro.props;
 ---
 
 <script is:inline>
-  // Decide before first paint, so returning visitors never see a flash of the splash.
-  try {
-    if (!sessionStorage.getItem('splash-seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // Decided before first paint. Only a real load or refresh of this page parses this script while
+  // readyState is 'loading'; when ClientRouter swaps the home page in (from /info, a case study…)
+  // it re-runs this script with readyState 'complete', so in-site navigation never plays it.
+  // window.__splashBooted lets the test suites opt out.
+  if (document.readyState === 'loading' && !window.__splashBooted) {
+    window.__splashBooted = true;
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
       document.documentElement.classList.add('splash-on');
     }
-  } catch {}
+  }
 </script>
 
 <div class="splash" aria-hidden="true" data-splash>

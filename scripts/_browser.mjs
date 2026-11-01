@@ -1,6 +1,7 @@
 // Shared Playwright launcher for the check scripts.
-// By default every page starts with the splash marked as seen, so suites that aren't about the
-// splash don't sit through it. Pass { splash: true } to get first-visit behaviour.
+// By default every page starts with the splash suppressed (window.__splashBooted, an opt-out flag
+// read by the splash's inline script), so suites that aren't about the splash don't sit
+// through it. Pass { splash: true } to get the real behaviour.
 import { chromium } from 'playwright';
 
 export async function launch({ splash = false } = {}) {
@@ -11,9 +12,7 @@ export async function launch({ splash = false } = {}) {
   browser.newContext = async (options) => {
     const context = await newContext(options);
     await context.addInitScript(() => {
-      try {
-        sessionStorage.setItem('splash-seen', '1');
-      } catch {}
+      window.__splashBooted = true;
     });
     return context;
   };

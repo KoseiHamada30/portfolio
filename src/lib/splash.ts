@@ -3,7 +3,7 @@
 //   while the centre image cycles every 140ms → hold → letter roll (the beat observed on the
 //   reference) → image scales up as the paper sheet rises → page inits run under the sheet →
 //   sheet slides off upward.
-// Once per session; any key or click skips. Runs as a beforePage() hook, so page animations
+// Plays on every full load / refresh of the home page; any key or click skips. Runs as a beforePage() hook, so page animations
 // start only when the sheet is about to reveal them.
 import { gsap } from './motion';
 import { beforePage, onPage } from './lifecycle';
@@ -65,12 +65,6 @@ async function runSplash(): Promise<void> {
   if (!root || !sheet || !compEl) {
     html.classList.remove('splash-on');
     return;
-  }
-
-  try {
-    sessionStorage.setItem('splash-seen', '1');
-  } catch {
-    // can't persist — it will show again next load, which is acceptable
   }
 
   const lenis = getLenis();

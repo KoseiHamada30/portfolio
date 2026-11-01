@@ -297,7 +297,7 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
   without skew, and About→Work becomes a normal "Go to Work →" link.
 - Touch: native horizontal swipe with scroll-snap (no custom cursor); tap the active slide to open.
 - No JS: the slider renders as a horizontal scroll-snap list of links; the splash is skipped.
-- The splash shows once per session (sessionStorage); later visits go straight to the slider. "Skip" on any key/click.
+- ~~The splash shows once per session (sessionStorage); later visits go straight to the slider.~~ **[Changed 2026-11-01 (Kosei): the splash plays on every full load or refresh of the home page; in-site navigation back to Work never plays it.]** "Skip" on any key/click.
 
 ### 8.6 Notes from observing the reference (2026-11-01)
 Frames captured from the live site (`references/photoyoshi-splash-frames/`, local only):
