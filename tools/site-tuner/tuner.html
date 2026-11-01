@@ -1,0 +1,547 @@
+<meta charset="utf-8">
+<title>Site Tuner</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: the real site in a scaled frame on the left, a tall control rail on the right; stacks on phones. */
+  :root {
+    --chrome: #e9e7e2;
+    --panel: #f6f5f2;
+    --ink: #161616;
+    --muted: #6b6862;
+    --line: #d6d2ca;
+    --accent: #232323;
+    --on-accent: #f6f5f2;
+    --changed: #b4531f;
+    --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --chrome: #1b1b1a; --panel: #242423; --ink: #edebe4; --muted: #a29e96; --line: #3a3936;
+      --accent: #edebe4; --on-accent: #1b1b1a; --changed: #f0915a; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --chrome: #1b1b1a; --panel: #242423; --ink: #edebe4; --muted: #a29e96; --line: #3a3936;
+    --accent: #edebe4; --on-accent: #1b1b1a; --changed: #f0915a; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--chrome); color: var(--ink); font-family: var(--font-body); font-size: 14px; line-height: 1.45; }
+  .app {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 20px;
+    padding-block: 20px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    max-width: 1800px;
+    margin-inline: auto;
+  }
+  @media (max-width: 960px) { .app { grid-template-columns: minmax(0, 1fr); } }
+
+  header.top { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; }
+  header.top h1 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 28px; letter-spacing: -0.03em; }
+  header.top p { margin: 0; color: var(--muted); max-width: 70ch; }
+
+  /* ------------------------------------------------------------- preview */
+  .stage-col { display: grid; gap: 12px; align-content: start; min-width: 0; }
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--panel); }
+  .seg button, .btn {
+    font: 500 12px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase;
+    border: 0; border-radius: 999px; padding: 9px 14px; background: transparent; color: var(--ink); cursor: pointer; min-height: 34px;
+  }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+  .btn { border: 1px solid var(--line); background: var(--panel); }
+  .btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  .btn[aria-pressed="true"] { background: var(--changed); border-color: var(--changed); color: #fff; }
+  .btn:focus-visible, .seg button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--changed); outline-offset: 2px; }
+  .page-select { font: 500 12px var(--font-mono); min-height: 34px; border-radius: 999px; padding: 0 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); width: auto; max-width: 100%; }
+  label.check { display: inline-flex; align-items: center; gap: 6px; font: 500 12px var(--font-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .status { margin-left: auto; font: 12px var(--font-mono); color: var(--muted); }
+
+  .viewport {
+    position: relative; width: 100%; overflow: hidden; border-radius: 10px; background: #fff;
+    box-shadow: 0 1px 2px rgb(0 0 0 / .08), 0 14px 40px -18px rgb(0 0 0 / .35);
+    margin-inline: auto;
+  }
+  .viewport iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; background: #fff; }
+  .edit-note { display: none; font: 12px var(--font-mono); color: var(--changed); }
+  .editing .edit-note { display: block; }
+  .editing .viewport { box-shadow: 0 0 0 3px var(--changed); }
+
+  /* ------------------------------------------------------------ controls */
+  .rail { display: grid; gap: 12px; align-content: start; min-width: 0; }
+  details.group { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  details.group > summary {
+    list-style: none; cursor: pointer; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    font: 700 13px var(--font-display); letter-spacing: -0.01em;
+  }
+  details.group > summary::-webkit-details-marker { display: none; }
+  details.group > summary::after { content: '+'; font: 14px var(--font-mono); color: var(--muted); }
+  details.group[open] > summary::after { content: '–'; }
+  details.group > summary .count { margin-left: auto; font: 11px var(--font-mono); color: var(--changed); }
+  .fields { display: grid; gap: 12px; padding: 0 14px 14px; }
+  .group-note { margin: 0; font-size: 11px; color: var(--muted); }
+  .sub { margin: 6px 0 -4px; font: 600 11px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .field { display: grid; gap: 4px; min-width: 0; }
+  .field-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .field label { font: 500 12px var(--font-body); }
+  .field .val { font: 12px var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .field.changed label::after { content: ' •'; color: var(--changed); }
+  .field .hint { font-size: 11px; color: var(--muted); }
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+  select, textarea {
+    width: 100%; font: 13px var(--font-body); color: var(--ink); background: var(--chrome); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+  }
+  .color-row { display: grid; grid-template-columns: 44px 1fr; gap: 8px; }
+  input[type="color"] { width: 44px; height: 32px; border: 1px solid var(--line); border-radius: 6px; background: var(--chrome); padding: 2px; }
+  .color-row input[type="text"] { font: 12px var(--font-mono); color: var(--ink); background: var(--chrome); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; min-width: 0; }
+
+  .export { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 10px; }
+  .export h2 { margin: 0; font: 700 13px var(--font-display); }
+  .export p { margin: 0; color: var(--muted); font-size: 12px; }
+  .export textarea { font: 11px/1.5 var(--font-mono); min-height: 160px; resize: vertical; }
+  .export .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toast { font: 12px var(--font-mono); color: var(--changed); min-height: 1em; }
+</style>
+
+<div class="app" id="app">
+  <header class="top">
+    <h1>Site Tuner</h1>
+    <p>This is the real built site, now with the Phase 4R-b Work stage on Home. Change colours, type, spacing and motion on the right, or turn on Edit text and type straight onto the page. When you're done, copy the changes and paste them into the chat.</p>
+  </header>
+
+  <section class="stage-col" aria-label="Preview">
+    <div class="toolbar">
+      <select class="page-select" id="page" aria-label="Page"></select>
+      <div class="seg" role="group" aria-label="Screen size" id="devices"></div>
+      <button type="button" class="btn" id="reload" title="Reload the page (plays the splash on Home)">Reload</button>
+      <button type="button" class="btn" id="edit" aria-pressed="false">Edit text</button>
+      <label class="check"><input type="checkbox" id="splash" checked> Splash</label>
+      <span class="status" id="status" aria-live="polite">Loading…</span>
+    </div>
+    <p class="edit-note">Text editing is on. Click any text on the page and type. Links are paused until you turn it off.</p>
+    <div class="viewport" id="viewport">
+      <iframe id="frame" title="Portfolio preview"></iframe>
+    </div>
+  </section>
+
+  <aside class="rail" aria-label="Settings">
+    <div id="groups"></div>
+    <div class="export">
+      <h2>Send changes to Claude</h2>
+      <p>An orange dot marks each change. Copy this text and paste it into the chat to apply it to the real site.</p>
+      <textarea id="out" readonly aria-label="Changes to copy"></textarea>
+      <div class="actions">
+        <button type="button" class="btn primary" id="copy">Copy changes</button>
+        <button type="button" class="btn" id="reset">Reset everything</button>
+      </div>
+      <div class="toast" id="toast" aria-live="polite"></div>
+    </div>
+  </aside>
+</div>
+
+<script>
+// ---------------------------------------------------------------- pages
+const PAGES = [
+  ['index.html', 'Home (Work)'], ['info.html', 'Info'],
+  ['work-circula.html', 'Work · Circula'], ['work-reverie.html', 'Work · Reverie'],
+  ['work-nextscore.html', 'Work · NextScore'], ['work-nba-research-lab.html', 'Work · NBA Research Lab'],
+  ['work-brim-cc.html', 'Work · Brim CC'], ['work-honne-festa.html', 'Work · Honne Festa'],
+  ['ja-index.html', 'JA · Home'], ['ja-info.html', 'JA · Info'],
+  ['ja-work-circula.html', 'JA · Circula'], ['ja-work-reverie.html', 'JA · Reverie'],
+  ['ja-work-nextscore.html', 'JA · NextScore'], ['ja-work-nba-research-lab.html', 'JA · NBA Research Lab'],
+  ['ja-work-brim-cc.html', 'JA · Brim CC'], ['ja-work-honne-festa.html', 'JA · Honne Festa'],
+];
+const DEVICES = [['Desktop', 1440, 900], ['Laptop', 1280, 800], ['Tablet', 768, 1024], ['Phone', 390, 844]];
+
+// ---------------------------------------------------------------- settings
+// Every default is the live value from src/styles/tokens.css.
+const fluid = (min, vw, max) => ({ min, vw, max }); // rem, vw, rem (or px with px:true)
+const EASES = [
+  ['cubic-bezier(0.23, 1, 0.32, 1)', 'Out (site default)'],
+  ['cubic-bezier(0.16, 1, 0.3, 1)', 'Out expo'],
+  ['cubic-bezier(0.65, 0, 0.35, 1)', 'In-out'],
+  ['cubic-bezier(0.34, 1.56, 0.64, 1)', 'Out back (overshoot)'],
+  ['cubic-bezier(0.25, 0.1, 0.25, 1)', 'Ease'],
+  ['linear', 'Linear'],
+];
+const FONTS = {
+  display: [
+    ["'Instrument Serif', 'Shippori Mincho', serif", 'Instrument Serif (site)'],
+    ["'Inter Tight Variable', 'Inter Variable', sans-serif", 'Inter Tight'],
+    ["'Fraunces', serif", 'Fraunces *'],
+    ["'Playfair Display', serif", 'Playfair Display *'],
+    ["'DM Serif Display', serif", 'DM Serif Display *'],
+    ["'Newsreader', serif", 'Newsreader *'],
+    ["'Space Grotesk', sans-serif", 'Space Grotesk *'],
+    ["'Bricolage Grotesque', sans-serif", 'Bricolage Grotesque *'],
+  ],
+  body: [
+    ["'Inter Variable', 'Zen Kaku Gothic New', system-ui, sans-serif", 'Inter (site)'],
+    ["'Inter Tight Variable', 'Zen Kaku Gothic New', sans-serif", 'Inter Tight'],
+    ["'Geist Mono', 'Zen Kaku Gothic New', monospace", 'Geist Mono'],
+    ["'DM Sans', 'Zen Kaku Gothic New', sans-serif", 'DM Sans *'],
+    ["'Manrope', 'Zen Kaku Gothic New', sans-serif", 'Manrope *'],
+    ["'IBM Plex Sans', 'Zen Kaku Gothic New', sans-serif", 'IBM Plex Sans *'],
+  ],
+  grotesk: [
+    ["'Inter Tight Variable', 'Inter Variable', system-ui, sans-serif", 'Inter Tight (site)'],
+    ["'Inter Variable', system-ui, sans-serif", 'Inter'],
+    ["'Space Grotesk', sans-serif", 'Space Grotesk *'],
+    ["'Bricolage Grotesque', sans-serif", 'Bricolage Grotesque *'],
+    ["'Archivo', sans-serif", 'Archivo *'],
+  ],
+  mono: [
+    ["'Geist Mono', 'Zen Kaku Gothic New', ui-monospace, monospace", 'Geist Mono (site)'],
+    ["'JetBrains Mono', monospace", 'JetBrains Mono *'],
+    ["'IBM Plex Mono', monospace", 'IBM Plex Mono *'],
+    ["'Space Mono', monospace", 'Space Mono *'],
+  ],
+};
+const GOOGLE = {
+  Fraunces: 'Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900',
+  'Playfair Display': 'Playfair+Display:ital,wght@0,400..900;1,400..900',
+  'DM Serif Display': 'DM+Serif+Display:ital@0;1',
+  Newsreader: 'Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800',
+  'Space Grotesk': 'Space+Grotesk:wght@300..700',
+  'Bricolage Grotesque': 'Bricolage+Grotesque:opsz,wght@12..96,200..800',
+  'DM Sans': 'DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000',
+  Manrope: 'Manrope:wght@200..800',
+  'IBM Plex Sans': 'IBM+Plex+Sans:ital,wght@0,300..700;1,300..700',
+  Archivo: 'Archivo:wght@300..900',
+  'JetBrains Mono': 'JetBrains+Mono:wght@300..700',
+  'IBM Plex Mono': 'IBM+Plex+Mono:wght@400;500',
+  'Space Mono': 'Space+Mono:wght@400;700',
+};
+
+const SCHEMA = [
+  { group: 'Colours', fields: [
+    { sub: 'Ink (text)' },
+    { key: '--ink-900', label: 'Ink 900 · main text', type: 'color', def: '#0e0e0e' },
+    { key: '--ink-700', label: 'Ink 700', type: 'color', def: '#2b2b2b' },
+    { key: '--ink-500', label: 'Ink 500 · secondary text', type: 'color', def: '#696969' },
+    { key: '--ink-300', label: 'Ink 300 · decorative', type: 'color', def: '#a6a6a6' },
+    { sub: 'Paper (backgrounds)' },
+    { key: '--paper-0', label: 'Paper 0', type: 'color', def: '#ffffff' },
+    { key: '--paper-100', label: 'Paper 100 · page', type: 'color', def: '#f6f5f2' },
+    { key: '--paper-200', label: 'Paper 200 · cards, splash', type: 'color', def: '#eceae5' },
+    { key: '--line', label: 'Lines', type: 'color', def: '#dedbd5' },
+    { sub: 'Stage & sheet' },
+    { key: '--stage', label: 'Dark stage', type: 'color', def: '#232323' },
+    { key: '--stage-ink', label: 'Text on stage', type: 'color', def: '#edebe4' },
+    { key: '--sheet', label: 'Splash sheet', type: 'color', def: '#f6f5f2' },
+  ]},
+  { group: 'Work stage', open: true, note: 'The slider on Home. Changes apply live; motion feel updates on the next wheel or drag.', fields: [
+    { key: '--slide-w', label: 'Slide width', min: 30, max: 80, step: 1, unit: 'vw', def: 50, css: (v) => `min(${r(v * 1.6)}svh, ${v}vw)`, hint: 'Desktop. Phones stay at 78vw.' },
+    { key: '--slide-gap', label: 'Gap between slides', min: 0, max: 60, step: 1, unit: 'px', def: 16 },
+    { key: '--stage-dim-brightness', label: 'Neighbour brightness', min: 0.15, max: 1, step: 0.05, unit: '', def: 0.55 },
+    { key: '--stage-scale', label: 'Neighbour size', min: 0.7, max: 1, step: 0.01, unit: '', def: 0.92 },
+    { key: '--fs-slide', label: 'Slide title size', type: 'fluid', base: fluid(3, 6.5, 6.5), def: 100 },
+    { key: '--stage-lerp', label: 'Glide (lower = smoother, slower)', min: 0.03, max: 0.3, step: 0.01, unit: '', def: 0.09 },
+    { key: '--stage-skew', label: 'Skew while moving', min: 0, max: 10, step: 0.5, unit: '°', def: 4, css: (v) => String(v) },
+    { sub: 'Cover crop (horizontal focus)' },
+    { key: 'focus-circula', label: 'Circula', min: 0, max: 100, step: 1, unit: '%', def: 0, project: 'circula', prop: '--stage-focus', css: (v) => `${v}% 50%` },
+    { key: 'focus-reverie', label: 'Reverie', min: 0, max: 100, step: 1, unit: '%', def: 50, project: 'reverie', prop: '--stage-focus', css: (v) => `${v}% 50%` },
+    { key: 'focus-nextscore', label: 'NextScore', min: 0, max: 100, step: 1, unit: '%', def: 50, project: 'nextscore', prop: '--stage-focus', css: (v) => `${v}% 50%` },
+    { key: 'focus-honne-festa', label: 'Honne Festa', min: 0, max: 100, step: 1, unit: '%', def: 50, project: 'honne-festa', prop: '--stage-focus', css: (v) => `${v}% 50%` },
+  ]},
+  { group: 'Project accents', fields: [
+    { key: 'circula', label: 'Circula', type: 'color', def: '#f39237', project: 'circula', prop: '--accent' },
+    { key: 'reverie', label: 'Reverie · night', type: 'color', def: '#1e3a8a', project: 'reverie', prop: '--accent' },
+    { key: 'reverie-2', label: 'Reverie · morning', type: 'color', def: '#f07a3c', project: 'reverie', prop: '--accent-2' },
+    { key: 'nextscore', label: 'NextScore · glow', type: 'color', def: '#24543c', project: 'nextscore', prop: '--accent' },
+    { key: 'nextscore-2', label: 'NextScore · UI green', type: 'color', def: '#1bc257', project: 'nextscore', prop: '--accent-2' },
+    { key: 'nba-lab', label: 'NBA Lab · blue', type: 'color', def: '#1d4ed8', project: 'nba-lab', prop: '--accent' },
+    { key: 'nba-lab-2', label: 'NBA Lab · yellow', type: 'color', def: '#efe300', project: 'nba-lab', prop: '--accent-2' },
+    { key: 'brim-cc', label: 'Brim CC', type: 'color', def: '#8c1b1c', project: 'brim-cc', prop: '--accent' },
+    { key: 'honne-festa', label: 'Honne Festa', type: 'color', def: '#670000', project: 'honne-festa', prop: '--accent' },
+    { key: 'honne-festa-2', label: 'Honne Festa · second', type: 'color', def: '#c3b99d', project: 'honne-festa', prop: '--accent-2' },
+  ]},
+  { group: 'Fonts', note: '* loads from Google Fonts for the preview only. If you pick one, I\'ll add it to the site properly.', fields: [
+    { key: '--font-display', label: 'Display (serif headings)', type: 'select', options: FONTS.display, def: FONTS.display[0][0] },
+    { key: '--font-body', label: 'Body text', type: 'select', options: FONTS.body, def: FONTS.body[0][0] },
+    { key: '--font-grotesk', label: 'Wordmark (KOSEI©)', type: 'select', options: FONTS.grotesk, def: FONTS.grotesk[0][0] },
+    { key: '--font-mono', label: 'Labels (mono)', type: 'select', options: FONTS.mono, def: FONTS.mono[0][0] },
+  ]},
+  { group: 'Type sizes', note: 'Fluid sizes scale between phone and desktop. The slider changes the whole range; the value shows the desktop size.', fields: [
+    { key: '--fs-hero', label: 'Hero', type: 'fluid', base: fluid(4.5, 14, 13), def: 100 },
+    { key: '--fs-display', label: 'Display', type: 'fluid', base: fluid(2.75, 6.5, 6), def: 100 },
+    { key: '--fs-h1', label: 'Heading 1', type: 'fluid', base: fluid(2, 4, 3.5), def: 100 },
+    { key: '--fs-h2', label: 'Heading 2', type: 'fluid', base: fluid(1.5, 2.6, 2.25), def: 100 },
+    { key: '--fs-h3', label: 'Heading 3', min: 14, max: 32, step: 1, unit: 'px', def: 20, css: (v) => `${v / 16}rem` },
+    { key: '--fs-body-lg', label: 'Body large', min: 14, max: 26, step: 1, unit: 'px', def: 18, css: (v) => `${v / 16}rem` },
+    { key: '--fs-body', label: 'Body', min: 12, max: 22, step: 1, unit: 'px', def: 16, css: (v) => `${v / 16}rem` },
+    { key: '--fs-small', label: 'Small', min: 10, max: 18, step: 1, unit: 'px', def: 14, css: (v) => `${v / 16}rem` },
+    { key: '--fs-label', label: 'Label', min: 9, max: 16, step: 1, unit: 'px', def: 12, css: (v) => `${v / 16}rem` },
+  ]},
+  { group: 'Line height & spacing of letters', fields: [
+    { key: '--lh-tight', label: 'Line height · hero', min: 0.75, max: 1.3, step: 0.01, unit: '', def: 0.95 },
+    { key: '--lh-head', label: 'Line height · headings', min: 0.85, max: 1.5, step: 0.01, unit: '', def: 1.1 },
+    { key: '--lh-body', label: 'Line height · body', min: 1.2, max: 2.1, step: 0.05, unit: '', def: 1.6 },
+    { key: '--lh-body-ja', label: 'Line height · Japanese body', min: 1.4, max: 2.4, step: 0.05, unit: '', def: 1.9 },
+    { key: '--tracking-hero', label: 'Letter spacing · hero', min: -0.1, max: 0.05, step: 0.005, unit: 'em', def: -0.04 },
+    { key: '--tracking-head', label: 'Letter spacing · headings', min: -0.08, max: 0.05, step: 0.005, unit: 'em', def: -0.02 },
+    { key: '--tracking-label', label: 'Letter spacing · labels', min: 0, max: 0.2, step: 0.01, unit: 'em', def: 0.08 },
+  ]},
+  { group: 'Layout & spacing', fields: [
+    { key: 'space-scale', label: 'Spacing scale (all space-1 … space-11)', min: 50, max: 150, step: 5, unit: '%', def: 100 },
+    { key: '--section-gap', label: 'Gap between sections', type: 'fluid', px: true, base: fluid(96, 14, 192), def: 100 },
+    { key: '--page-margin', label: 'Page side margin', type: 'fluid', px: true, base: fluid(16, 4, 64), def: 100 },
+    { key: '--gutter', label: 'Grid gutter', type: 'fluid', px: true, base: fluid(16, 2, 32), def: 100 },
+    { key: '--max-width', label: 'Max content width', min: 960, max: 1920, step: 20, unit: 'px', def: 1440 },
+    { key: '--text-width', label: 'Max text line length', min: 40, max: 90, step: 1, unit: 'ch', def: 68 },
+    { key: '--radius-sm', label: 'Corner radius · small', min: 0, max: 16, step: 1, unit: 'px', def: 6 },
+    { key: '--radius-md', label: 'Corner radius · medium', min: 0, max: 32, step: 1, unit: 'px', def: 12 },
+    { key: '--radius-lg', label: 'Corner radius · large', min: 0, max: 48, step: 1, unit: 'px', def: 20 },
+  ]},
+  { group: 'Motion (CSS)', note: 'These change hovers, buttons and page transitions. Scroll reveals and the splash run on GSAP; tune the splash in the Splash Tuner.', fields: [
+    { key: '--dur-fast', label: 'Fast (hovers)', min: 0, max: 600, step: 10, unit: 'ms', def: 180 },
+    { key: '--dur-base', label: 'Base', min: 0, max: 1000, step: 10, unit: 'ms', def: 280 },
+    { key: '--dur-slow', label: 'Slow', min: 0, max: 1500, step: 10, unit: 'ms', def: 500 },
+    { key: '--dur-page', label: 'Page transition', min: 0, max: 2000, step: 50, unit: 'ms', def: 1000 },
+    { key: '--ease-out', label: 'Main easing', type: 'select', options: EASES, def: EASES[0][0] },
+    { key: '--ease-in-out', label: 'In-out easing', type: 'select', options: EASES, def: EASES[2][0] },
+  ]},
+];
+
+const FIELDS = SCHEMA.flatMap((g) => g.fields).filter((f) => f.key);
+const DEFAULTS = Object.fromEntries(FIELDS.map((f) => [f.key, f.def]));
+const STORE_KEY = 'site-tuner-v1';
+let S = { ...DEFAULTS };
+let edits = {}; // "page|old" → { page, lang, old, now }
+let pageNow = PAGES[0][0];
+let device = 0;
+let editing = false;
+let splashOn = true;
+try {
+  const saved = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+  Object.assign(S, saved.S || {});
+  edits = saved.edits || {};
+  if (PAGES.some(([p]) => p === saved.page)) pageNow = saved.page;
+  if (DEVICES[saved.device]) device = saved.device;
+} catch {}
+
+const $ = (id) => document.getElementById(id);
+const changed = (f) => String(S[f.key]) !== String(f.def);
+const r = (n) => Math.round(n * 100) / 100;
+const fluidCss = (f, pct) => {
+  const k = pct / 100, b = f.base, u = f.px ? 'px' : 'rem';
+  return `clamp(${r(b.min * k)}${u}, ${r(b.vw * k)}vw, ${r(b.max * k)}${u})`;
+};
+const fontName = (stack) => stack.match(/'([^']+)'/)?.[1];
+function show(f, v) {
+  if (f.type === 'color') return v;
+  if (f.type === 'select') return (f.options.find(([o]) => o === v) || [, v])[1].replace(' *', '');
+  if (f.type === 'fluid') return `${v}% · ${Math.round(f.base.max * (f.px ? 1 : 16) * v / 100)}px`;
+  return `${Number(v)}${f.unit ? (f.unit === '%' || f.unit === '°' ? f.unit : ' ' + f.unit) : ''}`;
+}
+function cssValue(f, v) {
+  if (f.type === 'fluid') return fluidCss(f, v);
+  if (f.css) return f.css(v);
+  if (f.unit === 'ms') return `${v}ms`;
+  if (f.unit === 'em' || f.unit === 'px' || f.unit === 'ch') return `${v}${f.unit}`;
+  return String(v);
+}
+
+// The override stylesheet: only changed values, so the site's own CSS stays in charge otherwise.
+function buildCss(all = false) {
+  const root = [];
+  const projects = {};
+  for (const f of FIELDS) {
+    if (!all && !changed(f)) continue;
+    if (f.key === 'space-scale') {
+      [4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192].forEach((px, i) => root.push(`--space-${i + 1}: ${r(px * S[f.key] / 100)}px;`));
+    } else if (f.project) {
+      (projects[f.project] ||= []).push(`${f.prop}: ${f.css ? f.css(S[f.key]) : S[f.key]};`);
+    } else {
+      root.push(`${f.key}: ${cssValue(f, S[f.key])};`);
+    }
+  }
+  let css = root.length ? `:root {\n  ${root.join('\n  ')}\n}\n` : '';
+  for (const [p, decls] of Object.entries(projects)) css += `[data-project='${p}'] {\n  ${decls.join('\n  ')}\n}\n`;
+  // the site's JA rules use these families directly, so keep them following the choices
+  if (changed(FIELDS.find((f) => f.key === '--font-body'))) css += `:root:lang(ja) body { font-family: var(--font-body); }\n`;
+  return css;
+}
+function fontsHref() {
+  const fams = FIELDS.filter((f) => f.key.startsWith('--font-')).map((f) => fontName(S[f.key])).filter((n) => GOOGLE[n]);
+  return fams.length ? `https://fonts.googleapis.com/css2?${[...new Set(fams)].map((n) => `family=${GOOGLE[n]}`).join('&')}&display=swap` : '';
+}
+
+// ---------------------------------------------------------------- controls
+function buildControls() {
+  const root = $('groups');
+  root.innerHTML = '';
+  SCHEMA.forEach((g, gi) => {
+    const d = document.createElement('details');
+    d.className = 'group';
+    d.open = !!g.open;
+    d.innerHTML = `<summary>${g.group}<span class="count" id="count-${gi}"></span></summary><div class="fields">${g.note ? `<p class="group-note">${g.note}</p>` : ''}</div>`;
+    const wrap = d.querySelector('.fields');
+    for (const f of g.fields) {
+      if (f.sub) { wrap.insertAdjacentHTML('beforeend', `<p class="sub">${f.sub}</p>`); continue; }
+      const id = `f-${f.key.replace(/[^a-z0-9-]/gi, '')}`;
+      const field = document.createElement('div');
+      field.className = 'field';
+      field.dataset.key = f.key;
+      let input;
+      if (f.type === 'select') input = `<select id="${id}">${f.options.map(([v, l]) => `<option value="${v.replace(/"/g, '&quot;')}">${l}</option>`).join('')}</select>`;
+      else if (f.type === 'color') input = `<div class="color-row"><input type="color" id="${id}" aria-label="${f.label}"><input type="text" id="${id}-hex" aria-label="${f.label} hex" spellcheck="false"></div>`;
+      else if (f.type === 'fluid') input = `<input type="range" id="${id}" min="50" max="160" step="1">`;
+      else input = `<input type="range" id="${id}" min="${f.min}" max="${f.max}" step="${f.step}">`;
+      field.innerHTML = `<div class="field-head"><label for="${id}">${f.label}</label><span class="val" id="${id}-val"></span></div>${input}${f.hint ? `<span class="hint">${f.hint}</span>` : ''}`;
+      wrap.appendChild(field);
+      const el = field.querySelector(`#${id}`);
+      el.value = S[f.key];
+      if (f.type === 'color') {
+        const hex = field.querySelector(`#${id}-hex`);
+        hex.value = S[f.key];
+        el.addEventListener('input', () => { S[f.key] = el.value; hex.value = el.value; update(); });
+        hex.addEventListener('change', () => {
+          const v = hex.value.trim();
+          if (/^#[0-9a-f]{6}$/i.test(v)) { S[f.key] = v.toLowerCase(); el.value = S[f.key]; update(); } else hex.value = S[f.key];
+        });
+      } else {
+        el.addEventListener('input', () => { S[f.key] = f.type === 'select' ? el.value : Number(el.value); update(); });
+      }
+      field.addEventListener('dblclick', (e) => {
+        if (e.target.closest('label, .val')) { S[f.key] = f.def; buildControls(); update(); }
+      });
+    }
+    root.appendChild(d);
+  });
+}
+
+function update() {
+  SCHEMA.forEach((g, gi) => {
+    const n = g.fields.filter((f) => f.key && changed(f)).length;
+    $(`count-${gi}`).textContent = n ? `${n} changed` : '';
+  });
+  for (const f of FIELDS) {
+    const id = `f-${f.key.replace(/[^a-z0-9-]/gi, '')}`;
+    $(`${id}-val`).textContent = f.type === 'color' ? '' : show(f, S[f.key]);
+    document.querySelector(`.field[data-key="${f.key}"]`).classList.toggle('changed', changed(f));
+  }
+  push();
+  save();
+  writeExport();
+}
+
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ S, edits, page: pageNow, device })); } catch {}
+}
+
+function writeExport() {
+  const lines = ['Site Tuner changes: please apply these to the site.'];
+  const ch = FIELDS.filter(changed);
+  if (ch.length) {
+    lines.push('', 'Design tokens (src/styles/tokens.css):');
+    for (const f of ch) {
+      const target = f.project ? `[data-project='${f.project}'] ${f.prop}` : f.key === 'space-scale' ? '--space-1…11' : f.key;
+      lines.push(`- ${f.label} (${target}): ${show(f, f.def)} → ${show(f, S[f.key])}`);
+    }
+    const fonts = fontsHref();
+    if (fonts) lines.push('', `New fonts to install: ${FIELDS.filter((f) => f.key.startsWith('--font-')).map((f) => fontName(S[f.key])).filter((n) => GOOGLE[n]).join(', ')}`);
+    lines.push('', 'CSS overrides used in the preview:', buildCss());
+  }
+  const list = Object.values(edits);
+  if (list.length) {
+    lines.push('', 'Text changes (find the old text in src/i18n or src/content):');
+    for (const e of list) lines.push(`- [${e.lang.toUpperCase()} · ${e.page}]`, `  old: ${e.old}`, `  new: ${e.now}`);
+  }
+  if (!ch.length && !list.length) lines.push('(nothing changed yet)');
+  $('out').value = lines.join('\n');
+}
+
+// ---------------------------------------------------------------- frame
+const frame = $('frame');
+const post = (msg) => { try { frame.contentWindow.postMessage({ tuner: true, ...msg }, '*'); } catch {} };
+const push = () => post({ type: 'css', css: buildCss(), fonts: fontsHref() });
+
+function fit() {
+  const [, w, h] = DEVICES[device];
+  const vp = $('viewport');
+  const avail = vp.parentElement.clientWidth;
+  const scale = Math.min(1, avail / w);
+  frame.style.width = `${w}px`;
+  frame.style.height = `${h}px`;
+  frame.style.transform = `scale(${scale})`;
+  vp.style.width = `${w * scale}px`;
+  vp.style.height = `${h * scale}px`;
+  $('status').textContent = `${w}×${h}${scale < 1 ? ` at ${Math.round(scale * 100)}%` : ''}`;
+}
+
+function load(page) {
+  pageNow = page;
+  $('page').value = page;
+  post({ type: 'splash', on: splashOn });
+  try { sessionStorage.setItem('tuner-splash', splashOn ? '1' : '0'); } catch {}
+  frame.src = `site/${page}`;
+  save();
+}
+
+window.addEventListener('message', (e) => {
+  const d = e.data;
+  if (!d || !d.tuner || e.source !== frame.contentWindow) return;
+  if (d.type === 'ready' || d.type === 'page') {
+    if (PAGES.some(([p]) => p === d.page)) { pageNow = d.page; $('page').value = d.page; save(); }
+    post({ type: 'splash', on: splashOn });
+    push();
+    post({ type: 'edit', on: editing });
+  }
+  if (d.type === 'edit') {
+    const k = `${d.page}|${d.old}`;
+    if (d.now === d.old) delete edits[k];
+    else edits[k] = { page: d.page, lang: d.lang || 'en', old: d.old, now: d.now };
+    save();
+    writeExport();
+  }
+});
+
+// ---------------------------------------------------------------- toolbar
+$('page').innerHTML = PAGES.map(([p, l]) => `<option value="${p}">${l}</option>`).join('');
+$('page').onchange = () => load($('page').value);
+$('devices').innerHTML = DEVICES.map(([n], i) => `<button type="button" data-i="${i}" aria-pressed="${i === device}">${n}</button>`).join('');
+$('devices').onclick = (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  device = Number(b.dataset.i);
+  $('devices').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+  fit();
+  save();
+};
+$('reload').onclick = () => load(pageNow);
+$('splash').onchange = () => { splashOn = $('splash').checked; post({ type: 'splash', on: splashOn }); };
+$('edit').onclick = () => {
+  editing = !editing;
+  $('edit').setAttribute('aria-pressed', editing);
+  $('app').classList.toggle('editing', editing);
+  post({ type: 'edit', on: editing });
+};
+$('reset').onclick = () => {
+  if (!confirm('Reset all settings and text edits?')) return;
+  S = { ...DEFAULTS }; edits = {};
+  buildControls(); update(); load(pageNow);
+  toast('Back to the live site values');
+};
+$('copy').onclick = async () => {
+  const text = $('out').value;
+  try { await navigator.clipboard.writeText(text); toast('Copied. Paste it into the chat.'); }
+  catch { $('out').focus(); $('out').select(); toast('Selected. Press Cmd/Ctrl+C to copy.'); }
+};
+let toastTimer;
+function toast(msg) { $('toast').textContent = msg; clearTimeout(toastTimer); toastTimer = setTimeout(() => ($('toast').textContent = ''), 2600); }
+
+new ResizeObserver(fit).observe($('viewport').parentElement);
+buildControls();
+update();
+fit();
+load(pageNow);
+</script>
