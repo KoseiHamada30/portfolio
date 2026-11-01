@@ -1,9 +1,12 @@
 // Content model — CLAUDE.md "Content model (frontmatter)".
+// Fields we don't have real content for yet are optional; components show a TODO label
+// instead of inventing anything (CLAUDE.md "Ask, don't assume").
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const localized = z.object({ en: z.string(), ja: z.string() });
+const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/projects' }),
@@ -12,17 +15,20 @@ const projects = defineCollection({
       title: z.string(),
       order: z.number(),
       tier: z.literal('spotlight'),
-      subtitle: localized,
-      category: localized,
-      year: z.number(),
-      role: localized,
-      team: localized.optional(),
-      duration: localized,
-      tools: z.array(z.string()),
-      accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
-      cover: image(),
+      subtitle: localized.optional(),
+      category: localized.optional(),
+      year: z.number().optional(),
+      role: localized.optional(),
+      team: z.array(z.string()).optional(),
+      duration: localized.optional(),
+      tools: z.array(z.string()).default([]),
+      accent: hex,
+      cover: image().optional(),
+      coverAlt: localized.optional(),
+      /** CSS object-position for tight crops (4:5 on phones), e.g. 'left center'. */
+      coverPosition: z.string().optional(),
       coverVideo: z.string().optional(),
-      summary: localized,
+      summary: localized.optional(),
       draft: z.boolean().default(false),
     }),
 });
@@ -34,13 +40,15 @@ const sidequests = defineCollection({
       title: z.string(),
       order: z.number(),
       tier: z.literal('sidequest'),
-      subtitle: localized,
-      category: localized,
-      year: z.number(),
-      role: localized,
-      accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
-      cover: image(),
-      summary: localized,
+      subtitle: localized.optional(),
+      category: localized.optional(),
+      tag: localized,
+      year: z.number().optional(),
+      role: localized.optional(),
+      accent: hex,
+      cover: image().optional(),
+      coverAlt: localized.optional(),
+      summary: localized.optional(),
       draft: z.boolean().default(false),
     }),
 });

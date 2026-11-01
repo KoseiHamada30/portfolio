@@ -1,0 +1,48 @@
+---
+// One spotlight project (DESIGN.md §6 ProjectCard + ProjectRow). The same markup renders as a
+// card in grid view and as a hairline row in list view; WorkIndex switches with GSAP Flip.
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import { t, url, pick, type Locale } from '../lib/i18n';
+import CoverPlaceholder from './CoverPlaceholder.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  index: number;
+  locale: Locale;
+}
+
+const { project, index, locale } = Astro.props;
+const { title, subtitle, category, year, cover, coverAlt, coverPosition, accent } = project.data;
+const slug = project.id;
+const number = `(${String(index + 1).padStart(2, '0')})`;
+const todo = t(locale, 'placeholder.text');
+---
+
+<li class="work-item" data-flip-id={slug}>
+  <a class="work-card" href={url(locale, `work/${slug}`)} data-cursor="view" data-preview={slug}>
+    <div class="work-card__cover" transition:name={`cover-${slug}`} data-reveal="image">
+      {
+        cover ? (
+          <Image
+            src={cover}
+            alt={coverAlt ? pick(locale, coverAlt) : ''}
+            widths={[480, 800, 1200, 1600]}
+            sizes="(min-width: 1024px) 45vw, 92vw"
+            loading={index < 2 ? 'eager' : 'lazy'}
+            style={coverPosition ? `object-position: ${coverPosition}` : undefined}
+          />
+        ) : (
+          <CoverPlaceholder locale={locale} title={title} accent={accent} />
+        )
+      }
+    </div>
+    <span class="label work-card__index">{number}</span>
+    <h3 class="work-card__title">
+      <span class="work-card__name">{title}</span>
+      <span class="work-card__subtitle">{subtitle ? ` — ${pick(locale, subtitle)}` : ` — ${todo}`}</span>
+    </h3>
+    <span class="label work-card__category">{category ? pick(locale, category) : todo}</span>
+    <span class="label work-card__year">{year ?? todo}</span>
+  </a>
+</li>

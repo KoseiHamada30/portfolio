@@ -1,0 +1,17 @@
+---
+// Home page body, shared by / and /ja/.
+import type { Locale } from '../lib/i18n';
+import Hero from './Hero.astro';
+import WorkIndex from './WorkIndex.astro';
+import SideQuests from './SideQuests.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<Hero locale={locale} />
+<WorkIndex locale={locale} />
+<SideQuests locale={locale} />

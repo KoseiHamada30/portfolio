@@ -1,0 +1,274 @@
+---
+// Spotlight work index (DESIGN.md §5.3): editorial grid by default, dense list on toggle
+// (GSAP Flip). In list mode a cursor-following preview shows the hovered project's cover.
+// Behaviour: src/lib/work.ts.
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import { t, type Locale } from '../lib/i18n';
+import ProjectCard from './ProjectCard.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="work-section" id="work" aria-labelledby="work-title">
+  <header class="section-head">
+    <p class="label">(01)</p>
+    <h2 class="section-title" id="work-title" data-reveal="lines">{t(locale, 'home.spotlight')}</h2>
+    <div class="view-toggle" role="group" aria-label={t(locale, 'home.viewAs')} data-view-toggle>
+      <button type="button" class="view-toggle__btn" data-view-option="grid" aria-pressed="true">{t(locale, 'home.grid')}</button>
+      <button type="button" class="view-toggle__btn" data-view-option="list" aria-pressed="false">{t(locale, 'home.list')}</button>
+    </div>
+  </header>
+
+  <ol class="work" data-work data-view="grid">
+    {projects.map((project, index) => <ProjectCard project={project} index={index} locale={locale} />)}
+  </ol>
+
+  <div class="work-preview" aria-hidden="true" data-work-preview>
+    {
+      projects.map(({ id, data }) =>
+        data.cover ? (
+          <Image src={data.cover} alt="" widths={[480]} sizes="320px" loading="lazy" data-preview-id={id} />
+        ) : (
+          <span class="work-preview__empty" data-preview-id={id} style={`--ph-accent: ${data.accent}`}>
+            {t(locale, 'placeholder.cover')}
+          </span>
+        ),
+      )
+    }
+  </div>
+</section>
+
+<style is:global>
+  .work-section {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding: var(--section-gap) var(--page-margin) 0;
+  }
+
+  /* ---------------------------------------------------------- view toggle */
+
+  .view-toggle {
+    display: inline-flex;
+    padding: var(--space-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+  }
+
+  .view-toggle__btn {
+    min-height: 36px;
+    padding: 0 var(--space-4);
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  .view-toggle__btn[aria-pressed='true'] {
+    background: var(--ink-900);
+    color: var(--paper-100);
+  }
+
+  /* ----------------------------------------------------------------- grid */
+
+  .work {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .work[data-view='grid'] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8) var(--gutter);
+  }
+
+  .work-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'cover cover'
+      'title year'
+      'category category';
+    gap: var(--space-2) var(--space-4);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .work-card__cover {
+    grid-area: cover;
+    aspect-ratio: 16 / 10;
+    margin-block-end: var(--space-3);
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--paper-200);
+  }
+
+  .work-card__cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+
+  .work-card:hover .work-card__cover img {
+    transform: scale(1.03);
+  }
+
+  .work-card__index {
+    display: none;
+  }
+
+  .work-card__title {
+    grid-area: title;
+    font-family: var(--font-body);
+    font-size: var(--fs-body-lg);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  .work-card__name {
+    font-weight: 500;
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+    transition: background-size var(--dur-base) var(--ease-out);
+  }
+
+  .work-card:is(:hover, :focus-visible) .work-card__name {
+    background-size: 100% 1px;
+  }
+
+  .work-card__subtitle {
+    color: var(--ink-500);
+  }
+
+  .work-card__category {
+    grid-area: category;
+  }
+
+  .work-card__year {
+    grid-area: year;
+    align-self: center;
+  }
+
+  /* ----------------------------------------------------------------- list */
+
+  .work[data-view='list'] {
+    display: grid;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .work[data-view='list'] .work-item {
+    border-top: 1px solid var(--line);
+  }
+
+  .work[data-view='list'] .work-card {
+    grid-template-columns: 4rem minmax(0, 1fr) minmax(10rem, auto) minmax(4rem, auto);
+    grid-template-areas: 'index title category year';
+    align-items: baseline;
+    padding-block: var(--space-5);
+  }
+
+  .work[data-view='list'] .work-card__cover {
+    display: none;
+  }
+
+  .work[data-view='list'] .work-card__index {
+    display: block;
+    grid-area: index;
+  }
+
+  .work[data-view='list'] .work-card__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    line-height: var(--lh-head);
+  }
+
+  .work[data-view='list'] .work-card__name {
+    font-weight: 400;
+  }
+
+  .work[data-view='list'] .work-card__year {
+    justify-self: end;
+  }
+
+  /* -------------------------------------------------------------- preview */
+
+  .work-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 700;
+    width: 320px;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lift);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .work-preview > * {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+  }
+
+  .work-preview > .is-active {
+    opacity: 1;
+  }
+
+  .work-preview__empty {
+    --ph-accent: var(--ink-900);
+    display: grid;
+    place-items: center;
+    padding: var(--space-4);
+    background: color-mix(in oklab, var(--ph-accent) 14%, var(--paper-200));
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 1023px) {
+    .work[data-view='grid'] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .section-head {
+      grid-template-columns: auto 1fr;
+    }
+
+    .view-toggle {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+
+    .work-card__cover {
+      aspect-ratio: 4 / 5;
+    }
+
+    .work[data-view='list'] .work-card {
+      grid-template-columns: 3rem minmax(0, 1fr) auto;
+      grid-template-areas:
+        'index title year'
+        'index category category';
+    }
+  }
+</style>

@@ -79,6 +79,37 @@
   box-shadow: 0 0 0 2px var(--ink-900), 0 0 0 4px var(--paper-100);
 }
 
+/* Section header: (0n) label + serif title (+ optional controls) */
+.section-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: end;
+  gap: var(--space-4);
+  margin-block-end: var(--space-7);
+}
+
+.section-head > .label {
+  align-self: start;
+  padding-block-start: 0.6em;
+}
+
+.section-title {
+  font-size: var(--fs-display);
+  font-style: italic;
+  line-height: var(--lh-tight);
+}
+
+:lang(ja) .section-title {
+  font-style: normal;
+}
+
+@media (max-width: 640px) {
+  :lang(ja) .section-title {
+    font-size: var(--fs-h1);
+  }
+}
+
+
 @media (prefers-reduced-motion: reduce) {
   .link-bullet__label {
     transition: none;

@@ -1,0 +1,121 @@
+---
+// Smaller card for honourable mentions (DESIGN.md §6): square cover, tag chip.
+// No detail page yet — TODO: link once the images-only side-quest pages exist (AUDIT.md §7.3).
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import { t, pick, type Locale } from '../lib/i18n';
+import CoverPlaceholder from './CoverPlaceholder.astro';
+
+interface Props {
+  quest: CollectionEntry<'sidequests'>;
+  locale: Locale;
+}
+
+const { quest, locale } = Astro.props;
+const { title, subtitle, category, tag, year, cover, coverAlt, accent } = quest.data;
+---
+
+<li class="quest" style={`--accent: ${accent}`}>
+  <article class="quest__card">
+    <div class="quest__cover">
+      {
+        cover ? (
+          <Image
+            src={cover}
+            alt={coverAlt ? pick(locale, coverAlt) : ''}
+            widths={[400, 640, 900]}
+            sizes="(min-width: 1024px) 30vw, 75vw"
+            loading="lazy"
+            draggable="false"
+          />
+        ) : (
+          <CoverPlaceholder locale={locale} title={title} accent={accent} />
+        )
+      }
+      <span class="quest__tag">{pick(locale, tag)}</span>
+    </div>
+    <h3 class="quest__title">{title}</h3>
+    <p class="quest__subtitle">{subtitle ? pick(locale, subtitle) : t(locale, 'placeholder.text')}</p>
+    <p class="label quest__meta">
+      {category && <span>{pick(locale, category)}</span>}
+      {year && <span>{year}</span>}
+    </p>
+  </article>
+</li>
+
+<style>
+  .quest {
+    flex: none;
+    width: clamp(260px, 30vw, 420px);
+    scroll-snap-align: start;
+  }
+
+  /* Phones: wide cards that peek past the edge, so the shelf reads as scrollable */
+  @media (max-width: 640px) {
+    .quest {
+      width: 72vw;
+    }
+  }
+
+  .quest__card {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .quest__cover {
+    position: relative;
+    aspect-ratio: 1;
+    margin-block-end: var(--space-2);
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--paper-200);
+    user-select: none;
+  }
+
+  .quest__cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  .quest__tag {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--paper-100);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .quest__tag::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-inline-end: var(--space-2);
+    border-radius: 50%;
+    background: var(--accent);
+    vertical-align: 0.1em;
+  }
+
+  .quest__title {
+    font-family: var(--font-body);
+    font-size: var(--fs-body-lg);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  .quest__subtitle {
+    color: var(--ink-500);
+  }
+
+  .quest__meta {
+    display: flex;
+    gap: var(--space-3);
+  }
+</style>

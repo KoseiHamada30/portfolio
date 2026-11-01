@@ -1,0 +1,74 @@
+---
+// Temporary case-study page: title + cover, so project cards link somewhere and the
+// shared-element cover transition (transition:name="cover-{slug}") already works.
+// Replaced by CaseStudyLayout in the case-study phase.
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import { t, url, pick, type Locale } from '../lib/i18n';
+import CoverPlaceholder from './CoverPlaceholder.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  locale: Locale;
+}
+
+const { project, locale } = Astro.props;
+const { title, subtitle, category, cover, coverAlt, accent } = project.data;
+---
+
+<article class="case container">
+  <p class="label">{category ? pick(locale, category) : t(locale, 'placeholder.text')}</p>
+  <h1 class="case__title">{title}</h1>
+  {subtitle && <p class="case__subtitle">{pick(locale, subtitle)}</p>}
+  <div class="case__cover" transition:name={`cover-${project.id}`}>
+    {
+      cover ? (
+        <Image src={cover} alt={coverAlt ? pick(locale, coverAlt) : ''} widths={[800, 1200, 1600, 2400]} sizes="92vw" loading="eager" />
+      ) : (
+        <CoverPlaceholder locale={locale} title={title} accent={accent} />
+      )
+    }
+  </div>
+  <p class="case__soon">{t(locale, 'work.placeholder')}</p>
+  <a class="case__back" href={`${url(locale)}#work`}>{t(locale, 'back-to-work')}</a>
+</article>
+
+<style>
+  .case {
+    display: grid;
+    gap: var(--space-4);
+    padding-block: calc(var(--space-10) + 24px) var(--section-gap);
+  }
+
+  .case__title {
+    font-size: var(--fs-display);
+    line-height: var(--lh-tight);
+  }
+
+  .case__subtitle {
+    font-size: var(--fs-body-lg);
+    color: var(--ink-500);
+  }
+
+  .case__cover {
+    aspect-ratio: 16 / 9;
+    margin-block: var(--space-6);
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--paper-200);
+  }
+
+  .case__cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .case__back {
+    justify-self: start;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+</style>

@@ -1,0 +1,44 @@
+---
+// Stand-in for a missing cover image. Shows a TODO label; never a made-up image.
+import { t, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  accent?: string;
+}
+
+const { locale, title, accent } = Astro.props;
+---
+
+<div class="cover-placeholder" style={accent ? `--ph-accent: ${accent}` : undefined}>
+  <span class="cover-placeholder__title">{title}</span>
+  <span class="label cover-placeholder__todo">{t(locale, 'placeholder.cover')}</span>
+</div>
+
+<style>
+  .cover-placeholder {
+    --ph-accent: var(--ink-900);
+    position: relative;
+    display: grid;
+    place-content: center;
+    gap: var(--space-2);
+    width: 100%;
+    height: 100%;
+    padding: var(--space-5);
+    text-align: center;
+    background:
+      repeating-linear-gradient(135deg, transparent 0 14px, color-mix(in oklab, var(--ph-accent) 7%, transparent) 14px 15px),
+      color-mix(in oklab, var(--ph-accent) 10%, var(--paper-200));
+  }
+
+  .cover-placeholder__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    line-height: var(--lh-head);
+  }
+
+  .cover-placeholder__todo {
+    color: var(--ink-700);
+  }
+</style>

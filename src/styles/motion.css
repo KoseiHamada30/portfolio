@@ -63,9 +63,10 @@ html.lenis body {
   opacity: 0;
 }
 
-[data-reveal~='lines'] {
-  /* SplitText line masks: keep descenders inside the mask */
-  padding-block-end: 0.06em;
+/* SplitText line masks: room for descenders and italic tails (the Q in "Side Quests") */
+.split-line-mask {
+  padding: 0 0.12em 0.16em 0;
+  margin: 0 -0.12em -0.16em 0;
 }
 
 [data-reveal~='image'],

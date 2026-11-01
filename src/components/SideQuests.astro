@@ -1,0 +1,72 @@
+---
+// Side Quests shelf (DESIGN.md §5.11): horizontal, draggable on pointer-fine devices
+// (GSAP Draggable + Inertia via src/lib/shelf.ts); native scroll, touch and keyboard always work.
+import { getCollection } from 'astro:content';
+import { t, type Locale } from '../lib/i18n';
+import SideQuestCard from './SideQuestCard.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const quests = (await getCollection('sidequests', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="quests" aria-labelledby="quests-title">
+  <header class="section-head quests__head">
+    <p class="label">(02)</p>
+    <h2 class="section-title" id="quests-title" data-reveal="lines">{t(locale, 'home.sideQuests')}</h2>
+  </header>
+
+  <div class="shelf" tabindex="0" role="region" aria-label={t(locale, 'home.shelfLabel')} data-shelf data-cursor="drag">
+    <ul class="shelf__track" data-reveal="fade">
+      {quests.map((quest) => <SideQuestCard quest={quest} locale={locale} />)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .quests {
+    padding-block: var(--section-gap);
+  }
+
+  .quests__head {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--page-margin);
+  }
+
+  /* Full-bleed scroller; content starts aligned with the page margin */
+  .shelf {
+    --shelf-pad: max(var(--page-margin), calc((100vw - var(--max-width)) / 2 + var(--page-margin)));
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--shelf-pad);
+    scrollbar-width: none;
+    cursor: grab;
+  }
+
+  .shelf::-webkit-scrollbar {
+    display: none;
+  }
+
+  .shelf:global(.is-dragging) {
+    scroll-snap-type: none;
+    cursor: grabbing;
+  }
+
+  .shelf:focus-visible {
+    box-shadow: inset var(--focus-ring);
+  }
+
+  .shelf__track {
+    display: flex;
+    gap: var(--gutter);
+    width: max-content;
+    margin: 0;
+    padding: var(--space-2) var(--shelf-pad);
+    list-style: none;
+  }
+</style>

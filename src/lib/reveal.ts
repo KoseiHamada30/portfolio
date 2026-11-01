@@ -50,6 +50,7 @@ function linesReveal(el: HTMLElement) {
   SplitText.create(el, {
     type: 'lines',
     mask: 'lines',
+    linesClass: 'split-line', // masks get .split-line-mask (motion.css)
     autoSplit: true, // re-splits on resize / font load; the returned tween is reverted with it
     onSplit(self) {
       gsap.set(el, { opacity: 1 });
