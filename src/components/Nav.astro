@@ -1,0 +1,213 @@
+---
+// Global nav (DESIGN.md §5.7, §6). Persisted across same-locale navigations so the pill
+// indicator can slide from Work¹ to Info². Behaviour lives in src/lib/nav.ts.
+import { t, url, otherLocale, pathWithoutLocale, type Locale } from '../lib/i18n';
+import LinkBullet from './LinkBullet.astro';
+
+interface Props {
+  locale: Locale;
+  /** False on pages with no translation (/lab, /styleguide): hides the language toggle. */
+  alternate?: boolean;
+}
+
+const { locale, alternate = true } = Astro.props;
+const path = pathWithoutLocale(Astro.url.pathname);
+const alt = otherLocale(locale);
+const section = path.startsWith('info') ? 'info' : path === '' || path.startsWith('work') ? 'work' : null;
+---
+
+<header class="nav" data-nav transition:persist={`nav-${locale}`}>
+  <div class="nav__inner">
+    <a class="nav__brand" href={url(locale)} aria-label={t(locale, 'nav.home')}>
+      <span class="nav__name">{t(locale, 'site.name')}</span>
+      <span class="nav__role">{t(locale, 'site.role')}</span>
+    </a>
+
+    <nav class="nav__pill" aria-label={t(locale, 'nav.primary')} data-nav-pill>
+      <span class="nav__indicator" aria-hidden="true" data-nav-indicator></span>
+      <a
+        class="nav__item"
+        href={url(locale)}
+        data-nav-item="work"
+        aria-current={section === 'work' ? 'page' : undefined}
+      >
+        {t(locale, 'nav.work')}<sup>1</sup>
+      </a>
+      <a
+        class="nav__item"
+        href={url(locale, 'info')}
+        data-nav-item="info"
+        aria-current={section === 'info' ? 'page' : undefined}
+      >
+        {t(locale, 'nav.info')}<sup>2</sup>
+      </a>
+    </nav>
+
+    <div class="nav__end">
+      <a
+        class="nav__lang"
+        href={url(alt, path)}
+        hreflang={alt}
+        lang={alt}
+        aria-label={t(locale, 'nav.langLabel')}
+        data-lang-toggle
+        hidden={!alternate}
+      >
+        <span aria-hidden="true">{t(locale, 'nav.lang')}</span>
+      </a>
+      <LinkBullet class="nav__contact" href="#contact">{t(locale, 'contact')}</LinkBullet>
+    </div>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 800;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  /* Blurred paper backdrop after 40px — fades in via opacity only */
+  .nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: color-mix(in oklab, var(--paper-100) 78%, transparent);
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+
+  .nav:global(.is-scrolled)::before {
+    opacity: 1;
+  }
+
+  .nav:global(.is-hidden) {
+    transform: translateY(-100%);
+  }
+
+  /* Never hide while something inside has keyboard focus */
+  .nav:global(.is-hidden):focus-within {
+    transform: none;
+  }
+
+  .nav__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: var(--space-4);
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding: var(--space-3) var(--page-margin);
+  }
+
+  .nav__brand {
+    display: grid;
+    justify-self: start;
+    line-height: 1.25;
+    text-decoration: none;
+  }
+
+  .nav__name {
+    font-weight: 500;
+  }
+
+  .nav__role {
+    color: var(--ink-500);
+    font-size: var(--fs-small);
+  }
+
+  .nav__pill {
+    position: relative;
+    display: flex;
+    padding: var(--space-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    background: color-mix(in oklab, var(--paper-0) 60%, transparent);
+  }
+
+  /* Spans the whole pill; clip-path reveals only the hovered/active item */
+  .nav__indicator {
+    position: absolute;
+    inset: var(--space-1);
+    border-radius: var(--radius-pill);
+    background: var(--ink-900);
+    clip-path: inset(0 100% 0 0 round var(--radius-pill));
+    transition: clip-path var(--dur-base) var(--ease-out);
+  }
+
+  .nav__item {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .nav__item sup {
+    font-size: 0.65em;
+    margin-inline-start: 0.1em;
+  }
+
+  .nav__item:global(.is-lit) {
+    color: var(--paper-100);
+  }
+
+  .nav__end {
+    display: flex;
+    align-items: center;
+    justify-self: end;
+    gap: var(--space-5);
+  }
+
+  .nav__lang {
+    display: inline-grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-decoration: none;
+  }
+
+  .nav__lang[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .nav__inner {
+      grid-template-columns: auto 1fr auto;
+      gap: var(--space-3);
+    }
+
+    .nav__role,
+    .nav__end :global(.nav__contact) {
+      display: none;
+    }
+
+    .nav__pill {
+      justify-self: center;
+    }
+
+    .nav__item {
+      padding: 0 var(--space-3);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav,
+    .nav::before,
+    .nav__indicator {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>

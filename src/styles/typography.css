@@ -37,7 +37,9 @@ em,
 }
 
 /* Japanese: more leading, no letter-spacing, no italics, Mincho for emphasis. */
-:lang(ja) {
+/* Set on the root and inherited — a bare :lang(ja) would match every element and
+   override component fonts (e.g. the Instrument Serif footer marquee). */
+:root:lang(ja) body {
   font-family: var(--font-body-ja);
   line-height: var(--lh-body-ja);
   line-break: strict;

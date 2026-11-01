@@ -1,0 +1,86 @@
+/* Shared interactive primitives: LinkBullet, Button (DESIGN.md §4.3, §6). */
+
+/* LinkBullet — `• Label`, underline grows from the left */
+.link-bullet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 44px;
+  color: inherit;
+  text-decoration: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.link-bullet__label {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+  transition: background-size var(--dur-base) var(--ease-out);
+  padding-block-end: 1px;
+}
+
+.link-bullet:hover .link-bullet__label,
+.link-bullet:focus-visible .link-bullet__label,
+.link-bullet[aria-current='page'] .link-bullet__label {
+  background-size: 100% 1px;
+}
+
+/* Button — pill, magnetic via data-magnetic */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  min-height: 44px;
+  padding: 0 var(--space-6);
+  border: 1px solid var(--ink-900);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.button--outline {
+  background: transparent;
+  color: var(--ink-900);
+}
+
+.button--outline:hover {
+  background: var(--ink-900);
+  color: var(--paper-100);
+}
+
+.button--solid {
+  background: var(--surface-inverse);
+  color: var(--on-inverse);
+}
+
+.button--solid:hover {
+  background: var(--ink-700);
+}
+
+/* Inside inverted surfaces (footer) */
+.on-inverse .button--outline {
+  border-color: var(--on-inverse);
+  color: var(--on-inverse);
+}
+
+.on-inverse .button--outline:hover {
+  background: var(--on-inverse);
+  color: var(--ink-900);
+}
+
+.on-inverse :focus-visible {
+  box-shadow: 0 0 0 2px var(--ink-900), 0 0 0 4px var(--paper-100);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-bullet__label {
+    transition: none;
+  }
+}

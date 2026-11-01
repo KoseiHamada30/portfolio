@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import JaFonts from '../../components/JaFonts.astro';
+import PhasePlaceholder from '../../components/PhasePlaceholder.astro';
+import { t } from '../../lib/i18n';
+---
+
+<JaFonts />
+<BaseLayout locale="ja" title={t('ja', 'nav.info')}>
+  <PhasePlaceholder locale="ja" message="info.placeholder" />
+</BaseLayout>

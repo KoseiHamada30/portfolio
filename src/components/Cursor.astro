@@ -1,0 +1,107 @@
+---
+// Contextual cursor (DESIGN.md §5.4). Pointer-fine + full motion only; driven by src/lib/cursor.ts.
+// Any element with data-cursor="view|play|drag|copy" turns the dot into a labelled 72px pill.
+import { t, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const labels = {
+  view: t(locale, 'cursor.view'),
+  play: t(locale, 'cursor.play'),
+  drag: t(locale, 'cursor.drag'),
+  copy: t(locale, 'cursor.copy'),
+};
+---
+
+<div class="cursor" aria-hidden="true" data-cursor-root data-labels={JSON.stringify(labels)} transition:persist={`cursor-${locale}`}>
+  <span class="cursor__dot"></span>
+  <span class="cursor__pill"><span class="cursor__label" data-cursor-label></span></span>
+</div>
+
+<style>
+  .cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    pointer-events: none;
+    /* white + difference = ink on paper, paper on ink */
+    mix-blend-mode: difference;
+    opacity: 0;
+    transition: opacity var(--dur-fast) var(--ease-out);
+    display: none;
+  }
+
+  :global(html.has-cursor) .cursor {
+    display: block;
+  }
+
+  .cursor:global(.is-visible) {
+    opacity: 1;
+  }
+
+  .cursor__dot,
+  .cursor__pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: var(--radius-pill);
+    background: #fff;
+  }
+
+  .cursor__dot {
+    width: 8px;
+    height: 8px;
+    translate: -50% -50%;
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      opacity var(--dur-fast) var(--ease-out);
+  }
+
+  .cursor__pill {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    translate: -50% -50%;
+    transform: scale(0.11); /* 8px → 72px */
+    opacity: 0;
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      opacity var(--dur-fast) var(--ease-out);
+  }
+
+  .cursor__label {
+    color: #000;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .cursor:global(.is-label) .cursor__pill {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .cursor:global(.is-label) .cursor__dot {
+    opacity: 0;
+  }
+
+  .cursor:global(.is-pressed) .cursor__dot {
+    transform: scale(0.6);
+  }
+
+  /* Hide the native cursor only while the custom one is active; text fields keep theirs. */
+  :global(html.has-cursor),
+  :global(html.has-cursor :is(a, button, [data-cursor], label, summary)) {
+    cursor: none;
+  }
+
+  :global(html.has-cursor :is(input, textarea, select, [contenteditable='true'])) {
+    cursor: auto;
+  }
+</style>

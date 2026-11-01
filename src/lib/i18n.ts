@@ -1,5 +1,6 @@
 // UI strings + locale-aware URLs. Every visible string comes from src/i18n/*.json
 // or from { en, ja } content fields (CLAUDE.md "i18n").
+// en.json / ja.json hold the v1 strings verbatim (original keys) plus dotted UI keys.
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import en from '../i18n/en.json';
 import ja from '../i18n/ja.json';
@@ -8,7 +9,7 @@ export const locales = ['en', 'ja'] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = 'en';
 
-type Key = keyof typeof en;
+export type Key = keyof typeof en;
 
 // Compile-time check that ja.json has every key en.json has.
 const dictionaries: Record<Locale, Record<Key, string>> = { en, ja };
@@ -28,6 +29,15 @@ export function url(locale: Locale, path = ''): string {
 
 export function otherLocale(locale: Locale): Locale {
   return locale === 'en' ? 'ja' : 'en';
+}
+
+/** '/portfolio/ja/work/circula/' → 'work/circula' (no base, no locale prefix, no slashes). */
+export function pathWithoutLocale(pathname: string): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  let path = pathname.startsWith(base) ? pathname.slice(base.length) : pathname;
+  path = path.replace(/^\/+|\/+$/g, '');
+  const [first, ...rest] = path.split('/');
+  return isLocale(first) && first !== defaultLocale ? rest.join('/') : path;
 }
 
 /** Localised field from content frontmatter. */

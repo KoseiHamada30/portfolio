@@ -4,11 +4,13 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { url } from '../lib/i18n';
+import Button from '../components/Button.astro';
+import LinkBullet from '../components/LinkBullet.astro';
 import circula from '../assets/lab/circula_frontpic.png';
 import nextscore from '../assets/lab/nextscore_1.png';
 ---
 
-<BaseLayout locale="en" path="lab" title="Motion lab" noindex>
+<BaseLayout locale="en" title="Motion lab" noindex alternate={false}>
   <div class="container lab">
     <header class="lab-header">
       <p class="label">(Lab) Motion system — DESIGN.md §4</p>
@@ -37,14 +39,14 @@ import nextscore from '../assets/lab/nextscore_1.png';
 
     <section class="lab-section">
       <p class="label">data-reveal="image"</p>
-      <figure class="lab-media" data-reveal="image">
+      <figure class="lab-media" data-reveal="image" data-cursor="view">
         <Image src={circula} alt="Circula app screens on a phone" widths={[640, 1024, 1440]} sizes="(min-width: 1024px) 70vw, 100vw" />
       </figure>
     </section>
 
     <section class="lab-section">
       <p class="label">data-reveal="parallax" (desktop ≥ 1024px only)</p>
-      <div class="lab-media lab-media--wide" data-reveal="parallax">
+      <div class="lab-media lab-media--wide" data-reveal="parallax" data-cursor="drag">
         <Image src={nextscore} alt="NextScore app screens" widths={[640, 1024, 1440, 1920]} sizes="100vw" />
       </div>
     </section>
@@ -68,10 +70,15 @@ import nextscore from '../assets/lab/nextscore_1.png';
     </section>
 
     <section class="lab-section">
-      <p class="label">data-magnetic (pointer-fine + full motion only)</p>
+      <p class="label">Button (magnetic) · LinkBullet · data-cursor labels (pointer-fine + full motion only)</p>
       <div class="lab-buttons">
-        <a class="pill" href="#lab-marquee" data-magnetic>• Contact</a>
-        <button class="pill pill--inverse" type="button" data-magnetic>• View resume</button>
+        <Button href="#lab-marquee" bullet>Contact</Button>
+        <Button variant="solid" bullet cursor="play">Play (cursor: play)</Button>
+        <Button bullet cursor="copy" magnetic={false}>Copy (cursor: copy, not magnetic)</Button>
+      </div>
+      <div class="lab-buttons">
+        <LinkBullet href={url('en', 'styleguide')}>Internal link</LinkBullet>
+        <LinkBullet href="https://docs.astro.build" external>External link</LinkBullet>
       </div>
     </section>
 
@@ -171,22 +178,6 @@ import nextscore from '../assets/lab/nextscore_1.png';
     gap: var(--space-5);
   }
 
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding: 0 var(--space-6);
-    border: 1px solid var(--ink-900);
-    border-radius: var(--radius-pill);
-    background: transparent;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .pill--inverse {
-    background: var(--surface-inverse);
-    color: var(--on-inverse);
-  }
 
   .lab-marquee {
     background: var(--surface-inverse);

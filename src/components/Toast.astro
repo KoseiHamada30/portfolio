@@ -1,0 +1,44 @@
+---
+// Small inverse pill, bottom centre (DESIGN.md §6). Shown with showToast() from src/lib/toast.ts.
+---
+
+<div class="toast" role="status" aria-live="polite" aria-atomic="true" data-toast transition:persist="toast"></div>
+
+<style>
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: max(var(--space-6), env(safe-area-inset-bottom));
+    z-index: 900;
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-pill);
+    background: var(--surface-inverse);
+    color: var(--on-inverse);
+    font-size: var(--fs-small);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, 12px);
+    /* exit faster than enter */
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+
+  .toast:global(.is-visible) {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    transition-duration: var(--dur-base);
+  }
+
+  .toast:empty {
+    visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toast,
+    .toast:global(.is-visible) {
+      transform: translate(-50%, 0);
+    }
+  }
+</style>

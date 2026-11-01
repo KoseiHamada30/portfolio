@@ -1,0 +1,29 @@
+---
+// `• Label` text link — v1 signature (DESIGN.md §6). Underline grows from the left on hover/focus.
+import type { HTMLAttributes } from 'astro/types';
+import { t, type Locale } from '../lib/i18n';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  /** Opens in a new tab and announces it to screen readers. */
+  external?: boolean;
+  locale?: Locale;
+  /** Contextual cursor label: view | play | drag | copy. */
+  cursor?: 'view' | 'play' | 'drag' | 'copy';
+}
+
+const { href, external = false, locale = 'en', cursor, class: className, ...rest } = Astro.props;
+---
+
+<a
+  class:list={['link-bullet', className]}
+  href={href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+  data-cursor={cursor}
+  {...rest}
+>
+  <span class="link-bullet__dot" aria-hidden="true">•</span>
+  <span class="link-bullet__label"><slot /></span>
+  {external && <span class="visually-hidden">{t(locale, 'footer.newTab')}</span>}
+</a>

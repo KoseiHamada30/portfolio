@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "check:motion": "node scripts/check-motion.mjs"
+    "check:motion": "node scripts/check-motion.mjs",
+    "check:components": "node scripts/check-components.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.5",

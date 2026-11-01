@@ -1,0 +1,63 @@
+---
+// Pill button / link (DESIGN.md §6). Magnetic on pointer-fine devices (src/lib/magnetic.ts).
+import type { HTMLAttributes } from 'astro/types';
+import { t, type Locale } from '../lib/i18n';
+
+type Common = {
+  variant?: 'solid' | 'outline';
+  magnetic?: boolean;
+  /** Prefix the label with the v1 `•` bullet. */
+  bullet?: boolean;
+  cursor?: 'view' | 'play' | 'drag' | 'copy';
+  locale?: Locale;
+};
+
+type Props = Common &
+  (
+    | (HTMLAttributes<'a'> & { href: string; external?: boolean })
+    | (HTMLAttributes<'button'> & { href?: undefined; external?: undefined })
+  );
+
+const {
+  variant = 'outline',
+  magnetic = true,
+  bullet = false,
+  cursor,
+  locale = 'en',
+  href,
+  external = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const classes = ['button', `button--${variant}`, className];
+---
+
+{
+  href ? (
+    <a
+      class:list={classes}
+      href={href}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
+      data-magnetic={magnetic ? '' : undefined}
+      data-cursor={cursor}
+      {...(rest as HTMLAttributes<'a'>)}
+    >
+      {bullet && <span aria-hidden="true">•</span>}
+      <slot />
+      {external && <span class="visually-hidden">{t(locale, 'footer.newTab')}</span>}
+    </a>
+  ) : (
+    <button
+      class:list={classes}
+      type="button"
+      data-magnetic={magnetic ? '' : undefined}
+      data-cursor={cursor}
+      {...(rest as HTMLAttributes<'button'>)}
+    >
+      {bullet && <span aria-hidden="true">•</span>}
+      <slot />
+    </button>
+  )
+}

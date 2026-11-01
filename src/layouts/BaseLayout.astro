@@ -1,6 +1,10 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import { t, url, otherLocale, type Locale } from '../lib/i18n';
+import { t, url, otherLocale, pathWithoutLocale, type Locale } from '../lib/i18n';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Toast from '../components/Toast.astro';
+import Cursor from '../components/Cursor.astro';
 
 import '@fontsource-variable/inter';
 import '@fontsource/instrument-serif/400.css';
@@ -12,27 +16,28 @@ import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/typography.css';
 import '../styles/motion.css';
+import '../styles/components.css';
 
 interface Props {
   locale: Locale;
-  /** Path without locale prefix, used for the language switch, e.g. 'work/circula'. */
-  path?: string;
   title?: string;
   description?: string;
   /** Sets the per-project accent via [data-project]. */
   project?: string;
   /** Internal pages (/lab, /styleguide) stay out of search results. */
   noindex?: boolean;
+  /** False when the page has no other-language version: no hreflang link, no language toggle. */
+  alternate?: boolean;
 }
 
-const { locale, path = '', title, description, project, noindex = false } = Astro.props;
+const { locale, title, description, project, noindex = false, alternate = true } = Astro.props;
+const path = pathWithoutLocale(Astro.url.pathname);
 const siteName = t(locale, 'site.name');
-const pageTitle = title
-  ? `${title} — ${siteName}`
-  : `${siteName} — ${t(locale, 'site.role')}`;
+const pageTitle = title ? `${title} — ${siteName}` : `${siteName} — ${t(locale, 'site.role')}`;
 const metaDescription = description ?? t(locale, 'site.description');
 const alt = otherLocale(locale);
 const canonical = new URL(url(locale, path), Astro.site);
+const altHref = url(alt, path);
 ---
 
 <!doctype html>
@@ -44,22 +49,47 @@ const canonical = new URL(url(locale, path), Astro.site);
     <meta name="description" content={metaDescription} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang={alt} href={new URL(url(alt, path), Astro.site)} />
+    {alternate && <link rel="alternate" hreflang={alt} href={new URL(altHref, Astro.site)} />}
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`} />
     <script is:inline>document.documentElement.classList.add('js');</script>
+    {
+      locale === 'en' && alternate && (
+        <script is:inline define:vars={{ altHref }}>
+          // Returning visitors who chose Japanese land on the Japanese page (DESIGN.md §5.8).
+          // Checked once per session, so in-site navigation is never redirected.
+          try {
+            if (!sessionStorage.getItem('locale-checked')) {
+              sessionStorage.setItem('locale-checked', '1');
+              if (localStorage.getItem('locale') === 'ja') location.replace(altHref);
+            }
+          } catch {}
+        </script>
+      )
+    }
     <ClientRouter />
   </head>
   <body data-project={project}>
     <a class="skip-link" href="#main">{t(locale, 'a11y.skip')}</a>
+    <Nav locale={locale} alternate={alternate} />
     <main id="main">
       <slot />
     </main>
+    <Footer locale={locale} />
+    <Toast />
+    <Cursor locale={locale} />
     <script>
       import { startLifecycle } from '../lib/lifecycle';
+      import { startNav } from '../lib/nav';
+      import { startCursor } from '../lib/cursor';
+      import { startLangToggle } from '../lib/lang';
       import '../lib/reveal';
       import '../lib/magnetic';
       import '../lib/marquee';
+      import '../lib/footer';
       startLifecycle();
+      startNav();
+      startCursor();
+      startLangToggle();
     </script>
   </body>
 </html>
