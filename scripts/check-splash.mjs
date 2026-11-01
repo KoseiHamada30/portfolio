@@ -76,6 +76,8 @@ function recordSplash() {
   check('Settles on the first project (circula)', samples.filter((s) => s.count === 100).at(-1)?.img === 'circula');
   check('Letter roll plays after 100', rolled);
   check('Sheet rises to cover the screen', covered);
+  const handoff = samples.find((s) => !s.on);
+  check('Splash is removed only while the sheet covers the screen', handoff?.sheetTop !== null && handoff?.sheetTop <= 1, `sheet top ${handoff?.sheetTop}px`);
   const total = samples.at(-1).t;
   check('Whole sequence finishes', !samples.at(-1).on, `${(total / 1000).toFixed(1)}s`);
 

@@ -110,7 +110,8 @@ async function runSplash(): Promise<void> {
   sheet.classList.add('is-active');
   const exit = gsap.timeline();
   exit.to(comp.media, { scale: 1.25, duration: 0.6, ease: 'power3.inOut' }, 0);
-  exit.fromTo(sheet, { yPercent: 100 }, { yPercent: 0, duration: 0.8, ease: 'expo.inOut' }, 0);
+  // y: 0 drops the CSS translateY(100%), which GSAP would otherwise read in and add to yPercent
+  exit.fromTo(sheet, { y: 0, yPercent: 100 }, { yPercent: 0, duration: 0.8, ease: 'expo.inOut' }, 0);
   await play(exit);
 
   finish();
