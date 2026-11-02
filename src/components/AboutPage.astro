@@ -10,7 +10,7 @@ import { site } from '../lib/site';
 import { getSplashCovers } from '../lib/content';
 import SplashComposition from './SplashComposition.astro';
 import LinkBullet from './LinkBullet.astro';
-import portrait from '../assets/about/portrait.jpg';
+import portrait from '../assets/about/portrait-stairs.jpg'; // Kosei 2026-11-03 (was portrait.jpg)
 import newYork from '../assets/about/new-york.jpg';
 import hongKong from '../assets/about/hong-kong.jpg';
 import cafe from '../assets/about/cafe.jpg';
@@ -197,6 +197,7 @@ const tx = (value: string) => (value.includes('-') && !value.includes(' ') ? t(l
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: 50% 0%; /* tall photo: crop from the bottom, so the head never touches the top edge */
   }
 
   /* -------------------------------------------------------- content */
