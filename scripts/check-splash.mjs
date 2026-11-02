@@ -81,7 +81,7 @@ function recordSplash() {
   check('Counter only ever goes up and ends at 100', counts.every((c, i) => i === 0 || c >= counts[i - 1]) && counts.at(-1) === 100, `${counts[0]} → ${counts.at(-1)}`);
   check('Counter fill time within ~0.9–1.8s', fill >= 800 && fill <= 2100, `${fill}ms`);
   check('Centre image cycles while loading', imgs.size >= 2, [...imgs].join(', '));
-  check('Settles on the first project (circula)', samples.filter((s) => s.count === 100).at(-1)?.img === 'circula');
+  check('Settles on the first project (nba-research-lab)', samples.filter((s) => s.count === 100).at(-1)?.img === 'nba-research-lab');
   check('Letter roll plays after 100', rolled);
   check('Home slides up over the splash', sliding);
   const lastOn = samples.filter((s) => s.on).at(-1);

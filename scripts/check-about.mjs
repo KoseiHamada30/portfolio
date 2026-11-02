@@ -50,7 +50,7 @@ const scrollEnd = (page, fraction) =>
     cta: document.querySelector('[data-comp-cta]')?.textContent.trim(),
     overflow: document.documentElement.scrollWidth - innerWidth,
   }));
-  check('Name label and the v1 greeting as the statement', info.name === 'Kosei Hamada' && info.lead.startsWith("Hello, I'm Kosei"), info.lead);
+  check('Name label and the v1 greeting as the statement', info.name === 'K.H.' && info.lead.startsWith("Hello, I'm Kosei"), info.lead);
   check('EMAIL / LINKEDIN / RESUME rows', info.contact.join('|') === 'Email|LinkedIn|Resume' && info.links[0] === 'mailto:koseidama35@gmail.com' && info.links[1].includes('linkedin') && info.links[2].includes('drive.google'));
   check('Sections from v1: About me, Experience, Education, Skills, Tools, Who I am', info.headings.join('|') === 'About Me|Experience|Education|Skills|Tools|"Who I am"', info.headings.join(' | '));
   check('Experience adds the Cipher internship (dates TODO)', info.experience[0] === 'NBA Research Lab' && info.experience.length === 3, info.experience.join(', '));
