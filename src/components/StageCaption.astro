@@ -1,0 +1,28 @@
+---
+// Stage slide title: "Circula⁽⁰¹⁾" over "/App design" (DESIGN.md §8.2). Each line sits in a mask
+// so stage.ts can roll it. Used inside each slide (native mode) and in the centred title stack.
+import { t, type Locale } from '../lib/i18n';
+
+interface Props {
+  title: string;
+  count: string;
+  subline: string;
+  locale: Locale;
+}
+
+const { title, count, subline, locale } = Astro.props;
+---
+
+<span class="stage__caption">
+  <span class="stage__title">
+    <span class="stage__title-inner" data-stage-title>
+      {title}
+      <sup class="stage__count">({count})</sup>
+    </span>
+  </span>
+  <span class="stage__sub">
+    <span class="stage__sub-inner" data-stage-sub>
+      {subline ? `/${subline}` : <span class="stage__todo">{t(locale, 'placeholder.text')}</span>}
+    </span>
+  </span>
+</span>

@@ -6,6 +6,7 @@ import { Image } from 'astro:assets';
 import { t, url, pick, type Locale } from '../lib/i18n';
 import { getStageItems, unbracket } from '../lib/content';
 import CoverPlaceholder from './CoverPlaceholder.astro';
+import Caption from './StageCaption.astro';
 
 interface Props {
   locale: Locale;
@@ -17,7 +18,8 @@ const total = items.length;
 const num = (i: number) => String(i + 1).padStart(2, '0');
 const fill = (text: string, values: Record<string, string | number>) =>
   text.replace(/\{(\w+)\}/g, (_, k) => String(values[k] ?? ''));
-const subline = (item: (typeof items)[number]) => {
+type Item = (typeof items)[number];
+const subline = (item: Item) => {
   const category = item.category ? unbracket(pick(locale, item.category)) : '';
   if (item.sideQuest) return [t(locale, 'stage.sideQuest'), category].filter(Boolean).join(' · ');
   return category;
@@ -46,7 +48,7 @@ const subline = (item: (typeof items)[number]) => {
           data-stage-slide
           data-title={item.title}
         >
-          <a class="stage__link" href={url(locale, `work/${item.id}`)} data-stage-link data-cursor="view">
+          <a class="stage__link" href={url(locale, `work/${item.id}`)} data-stage-link>
             <span class="stage__media">
               {item.cover ? (
                 <Image
@@ -62,31 +64,27 @@ const subline = (item: (typeof items)[number]) => {
                 <CoverPlaceholder locale={locale} title={item.title} accent={item.accent} />
               )}
             </span>
-            <span class="stage__caption">
-              <span class="stage__title">
-                <span class="stage__title-inner" data-stage-title>
-                  {item.title}
-                  <sup class="stage__count">({num(i)})</sup>
-                </span>
-              </span>
-              <span class="stage__sub">
-                <span class="stage__sub-inner" data-stage-sub>
-                  {subline(item) ? `/${subline(item)}` : <span class="stage__todo">{t(locale, 'placeholder.text')}</span>}
-                </span>
-              </span>
-            </span>
+            <Caption title={item.title} count={num(i)} subline={subline(item)} locale={locale} />
           </a>
         </li>
       ))
     }
   </ol>
 
+  <!-- Slider mode: one centred title that follows the hovered (else the centred) slide -->
+  <div class="stage__titles" aria-hidden="true" data-stage-titles>
+    {items.map((item, i) => <Caption title={item.title} count={num(i)} subline={subline(item)} locale={locale} />)}
+  </div>
+
+  <!-- Fixed "+" at the centre of the stage (DESIGN.md §8.3) -->
+  <span class="stage__scope" aria-hidden="true" data-stage-scope><i></i><i></i><i></i><i></i></span>
+
   <div class="stage-index" data-stage-index hidden>
     <ol class="stage-index__list">
       {
         items.map((item, i) => (
           <li class="stage-index__row" data-project={item.accentKey}>
-            <a class="stage-index__link" href={url(locale, `work/${item.id}`)} data-index-link={item.id} data-cursor="view">
+            <a class="stage-index__link" href={url(locale, `work/${item.id}`)} data-index-link={item.id}>
               <span class="stage-index__num">({num(i)})</span>
               <span class="stage-index__title">{item.title}</span>
               <span class="stage-index__cat">
@@ -228,12 +226,36 @@ const subline = (item: (typeof items)[number]) => {
     transition: filter 500ms var(--ease-out);
   }
 
-  .stage__slide.is-active .stage__media {
+  /* Native mode (touch, no JS): the centred slide is in colour */
+  .stage:not(.is-virtual) .stage__slide.is-active .stage__media {
     filter: none;
   }
 
-  .stage__slide:not(.is-active) .stage__link:hover .stage__media {
-    filter: grayscale(0) brightness(0.8);
+  /* Slider mode: colour follows the pointer — the hovered slide (else the centred one) fades
+     into colour over ~1s while the rest go grey (stage.ts sets .is-lit). */
+  .stage.is-virtual .stage__media {
+    transition: filter 1s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .stage.is-virtual .stage__slide.is-lit .stage__media {
+    filter: none;
+  }
+
+  /* Lens: a full-colour copy of the cover revealed in a wobbly blob around the pointer,
+     sized by pointer speed (stage.ts writes the clip-path each frame). */
+  .stage__lens {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    clip-path: circle(0);
+    pointer-events: none;
+  }
+
+  .stage__lens img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .stage__media img {
@@ -309,9 +331,89 @@ const subline = (item: (typeof items)[number]) => {
     opacity: 0.7;
   }
 
-  /* The slider only shows the active slide's caption (stage.ts rolls them in and out). */
-  .stage.is-virtual .stage__slide:not(.is-active) .stage__caption {
-    visibility: hidden;
+  /* Slider mode swaps the per-slide captions for one centred stack (stage.ts rolls them). */
+  .stage.is-virtual .stage__slide .stage__caption {
+    display: none;
+  }
+
+  .stage__titles {
+    display: none;
+  }
+
+  .stage.is-virtual .stage__titles {
+    position: absolute;
+    inset: auto 0 var(--space-6);
+    z-index: 3;
+    display: block;
+    pointer-events: none;
+  }
+
+  .stage__titles .stage__caption {
+    position: absolute;
+    inset: auto 0 0;
+  }
+
+  /* --------------------------------------------------- centre crosshair */
+
+  /* 1px strokes, each 40% of the box, leaving an open centre. Collapses (and turns) while
+     loading and in the Index view. */
+  .stage__scope {
+    --scope: 0.8333vw;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 3;
+    width: max(10px, var(--scope));
+    height: max(10px, var(--scope));
+    translate: -50% -50%;
+    pointer-events: none;
+    transition: transform 0.5s;
+  }
+
+  .stage__scope i {
+    position: absolute;
+    background: var(--stage-ink);
+    transition:
+      width 0.5s,
+      height 0.5s;
+  }
+
+  .stage__scope i:nth-child(odd) {
+    left: calc(50% - 0.5px);
+    width: 1px;
+    height: 40%;
+  }
+
+  .stage__scope i:nth-child(even) {
+    top: calc(50% - 0.5px);
+    width: 40%;
+    height: 1px;
+  }
+
+  .stage__scope i:nth-child(1) { top: 0; }
+  .stage__scope i:nth-child(2) { right: 0; }
+  .stage__scope i:nth-child(3) { bottom: 0; }
+  .stage__scope i:nth-child(4) { left: 0; }
+
+  .stage[data-view='index'] .stage__scope,
+  .stage.is-entering .stage__scope {
+    transform: rotate(180deg);
+  }
+
+  .stage[data-view='index'] .stage__scope i:nth-child(odd),
+  .stage.is-entering .stage__scope i:nth-child(odd) {
+    height: 0;
+  }
+
+  .stage[data-view='index'] .stage__scope i:nth-child(even),
+  .stage.is-entering .stage__scope i:nth-child(even) {
+    width: 0;
+  }
+
+  @media (max-width: 760px) {
+    .stage__scope {
+      --scope: 2.4876vw;
+    }
   }
 
   /* -------------------------------------------------------- view toggle */
@@ -495,6 +597,9 @@ const subline = (item: (typeof items)[number]) => {
 
   @media (prefers-reduced-motion: reduce) {
     .stage__media,
+    .stage.is-virtual .stage__media,
+    .stage__scope,
+    .stage__scope i,
     .stage-index__preview,
     .stage-index__preview > .is-shown {
       transition-duration: 0.01ms;

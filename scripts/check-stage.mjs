@@ -28,7 +28,8 @@ const state = (page) =>
       title: slides[active]?.dataset.title,
       centred: box ? Math.abs(box.left + box.width / 2 - innerWidth / 2) : null,
       live: document.querySelector('[data-stage-live]').textContent,
-      cursors: slides.map((s) => s.querySelector('[data-stage-link]').dataset.cursor),
+      lit: slides.find((s) => s.classList.contains('is-lit'))?.dataset.title,
+      shown: [...document.querySelectorAll('[data-stage-titles] [data-stage-title]')].find((t) => Math.abs(t.getBoundingClientRect().top - t.parentElement.getBoundingClientRect().top) < 15)?.firstChild.textContent.trim(),
       view: document.querySelector('[data-stage]').dataset.view,
     };
   });
@@ -68,7 +69,14 @@ const settle = (page) => page.waitForTimeout(1700);
 
   let s = await state(page);
   check('Starts on Circula, centred', s.title === 'Circula' && s.centred < 2);
-  check('Neighbours carry Prev / Next cursor labels', s.cursors[0] === 'view' && s.cursors[1] === 'next' && s.cursors[5] === 'prev', s.cursors.join(' '));
+  const scope = await page.evaluate(() => {
+    const el = document.querySelector('[data-stage-scope]');
+    const r = el.getBoundingClientRect();
+    const lines = [...el.children].map((l) => l.getBoundingClientRect());
+    return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, size: r.width, thin: lines.every((l) => Math.min(l.width, l.height) === 1), gap: lines[0].bottom < lines[2].top };
+  });
+  check('Fixed "+" at the centre: 12px, 1px strokes, open middle', Math.abs(scope.cx - 720) < 1 && Math.abs(scope.cy - 450) < 1 && Math.round(scope.size) === 12 && scope.thin && scope.gap, JSON.stringify(scope));
+  check('System cursor (hand over slides), no custom cursor', (await page.evaluate(() => !document.querySelector('[data-cursor-root]') && getComputedStyle(document.querySelector('[data-stage-link]')).cursor === 'pointer')));
 
   // wheel
   await page.mouse.move(720, 450);
@@ -96,8 +104,11 @@ const settle = (page) => page.waitForTimeout(1700);
   const nextBox = await page.locator('[data-stage-slide]').nth(1).boundingBox();
   await page.mouse.move(Math.min(1430, nextBox.x + 60), 450, { steps: 4 });
   await page.waitForTimeout(250);
-  const cursorText = await page.locator('[data-cursor-label]').textContent();
-  check('Cursor says "Next" over the right neighbour', cursorText === 'Next', cursorText);
+  await page.waitForTimeout(1200);
+  const hov = await state(page);
+  const hovFilter = await page.evaluate(() => [...document.querySelectorAll('.stage__media')].map((m) => getComputedStyle(m).filter));
+  check('Hovering a neighbour: it turns colour, the centre goes grey', hov.lit === 'Reverie' && hovFilter[(hov.active + 1) % 6] === 'none' && hovFilter[hov.active].includes('grayscale(1)'), `${hov.lit}: ${hovFilter.join(' | ')}`);
+  check('The centred title follows the hovered slide', hov.shown === 'Reverie', hov.shown);
   await page.mouse.down();
   await page.mouse.up();
   await settle(page);
@@ -108,13 +119,22 @@ const settle = (page) => page.waitForTimeout(1700);
   await page.mouse.move(900, 450);
   await page.mouse.down();
   for (let x = 900; x >= 500; x -= 40) await page.mouse.move(x, 450);
-  const dragLabel = await page.locator('[data-cursor-label]').textContent();
   await page.mouse.up();
   await settle(page);
   s = await state(page);
-  check('Cursor says "Drag" while dragging', dragLabel === 'Drag', dragLabel);
   check('Dragging left moves forward and snaps', ['NextScore', 'NBA Research Lab'].includes(s.title) && s.centred < 2, s.title);
   check('A drag does not open the project', page.url().endsWith('/portfolio/'));
+
+  // lens: moving the pointer reveals a colour blob that trails it, gone again at rest
+  await page.mouse.move(1200, 450);
+  for (let i = 0; i < 8; i++) {
+    await page.mouse.move(1200 - i * 50, 450 + i * 15);
+    await page.waitForTimeout(16);
+  }
+  const moving = await page.evaluate(() => [...document.querySelectorAll('.stage__lens')].some((l) => l.style.clipPath.startsWith('polygon')));
+  await page.waitForTimeout(1500);
+  const resting = await page.evaluate(() => [...document.querySelectorAll('.stage__lens')].every((l) => l.style.clipPath === 'circle(0px)'));
+  check('Colour lens trails the moving pointer and closes at rest', moving && resting);
 
   // tab focus
   await page.keyboard.press('ArrowLeft');

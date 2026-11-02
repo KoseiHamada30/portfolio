@@ -157,37 +157,22 @@ const watch = (page) => {
 
 // ---------------------------------------------------------------- Cursor
 {
+  // The reference keeps the system cursor (a hand over links); the only "+" is the fixed one
+  // at the centre of the Work stage (check-stage.mjs).
   console.log('\nCursor');
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   watch(page);
-  await page.goto(`${BASE}/lab/`);
-  await ready(page);
-  check('Custom cursor on (pointer-fine, full motion)', await page.evaluate(() => document.documentElement.classList.contains('has-cursor')));
-  const target = page.locator('[data-reveal="image"]');
-  await target.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(1300);
-  const box = await target.boundingBox();
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 6 });
-  await page.waitForTimeout(400);
-  const state = await page.locator('[data-cursor-root]').evaluate((el) => ({ label: el.classList.contains('is-label'), text: el.querySelector('[data-cursor-label]').textContent, visible: el.classList.contains('is-visible') }));
-  check('Hovering data-cursor="view" shows the "View" pill', state.visible && state.label && state.text === 'View', state.text);
-  await page.mouse.move(5, 5, { steps: 4 });
-  await page.waitForTimeout(300);
-  check('Pill collapses back to the crosshair elsewhere', !(await page.locator('[data-cursor-root]').evaluate((el) => el.classList.contains('is-label'))));
-  await page.close();
-
-  for (const [name, options] of [
-    ['touch phone', { viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true }],
-    ['reduced motion', { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' }],
-  ]) {
-    const ctx = await browser.newContext(options);
-    const p = await ctx.newPage();
-    await p.goto(`${BASE}/lab/`);
-    await ready(p);
-    const on = await p.evaluate(() => document.documentElement.classList.contains('has-cursor'));
-    check(`No custom cursor on ${name}`, !on);
-    await ctx.close();
+  for (const path of ['/', '/lab/', '/info/']) {
+    await page.goto(`${BASE}${path}`);
+    await ready(page);
+    const c = await page.evaluate(() => ({
+      custom: !!document.querySelector('[data-cursor-root]') || document.documentElement.classList.contains('has-cursor'),
+      html: getComputedStyle(document.documentElement).cursor,
+      link: getComputedStyle(document.querySelector('[data-nav-item="work"]')).cursor,
+    }));
+    check(`Native cursor on ${path} (pointer on links)`, !c.custom && c.html === 'auto' && c.link === 'pointer', `${c.html} / ${c.link}`);
   }
+  await page.close();
 }
 
 // ------------------------------------------------- Reduced motion + mobile

@@ -260,8 +260,8 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
 --sheet:     var(--paper-100);  /* the sliding page sheet */
 ```
 - Inactive slide image: `filter: grayscale(1) brightness(.55) contrast(1.05)`
-- Hovered inactive slide: `grayscale(0) brightness(.8)`, 500ms `--ease-out`
-- Active slide: full colour, no filter.
+- Hovered slide: full colour, ~1s power2.out (§8.3); the others are monochrome.
+- Touch / no JS: the centred slide is in full colour.
 
 ### 8.2 Typography change
 - Wordmark + slide titles: heavy grotesk, tight. **Decided: "Inter Tight" 700–800** (self-hosted via Fontsource),
@@ -274,11 +274,19 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
 - Japanese label row: Zen Kaku Gothic New 400, 11–12px. **Decided wording: 「プロダクトデザイナー［•］ハマダコウセイ」.**
 
 ### 8.3 Cursor (pointer-fine only)
-- Default: 15px thin crosshair "+" (1px strokes, currentColor, `mix-blend-mode: difference`), follows with lerp .18.
-- Static decorative "+" marks at 1/6 and 5/6 of the viewport width on the splash and the About ending.
-- Over the active slide: the crosshair expands to a label pill "View" (or "Drag" while dragging).
-- Over inactive slides: label "Prev" / "Next" depending on side.
-- Native cursor hidden only inside the slider stage; keyboard focus ring always visible.
+> **[Changed 2026-11-02 (Kosei): match the reference exactly.]** The earlier spec (a following crosshair with
+> View/Prev/Next/Drag pills) is replaced by the following.
+- **No custom cursor.** The system cursor stays: a hand over slides and links, the default arrow elsewhere.
+- **Fixed "+" at the centre of the stage:** a 12px box (0.8333vw; 2.4876vw on phones), 1px strokes each 40% of
+  the box, with an open centre, in `--stage-ink`. It collapses and turns 180° (0.5s) while the slides enter and
+  in the Index view.
+- **Hover:** the slide under the pointer fades into colour over ~1s (power2.out); every other slide, including
+  the centred one, is monochrome. The centred title rolls to the hovered slide. With no hover, the centred slide
+  is lit.
+- **Lens:** a full-colour blob with a wobbling edge trails the pointer (ease 0.1). Its radius grows with pointer
+  speed (up to ~40px) and closes at rest.
+- Static decorative "+" marks at 1/6 and 5/6 stay on the splash and the About ending.
+- Keyboard focus ring always visible.
 
 ### 8.4 Motion recipes (replace §5.1, 5.2, 5.3, 5.10, 5.12)
 | Moment | Recipe |

@@ -1,7 +1,9 @@
 // Work stage behaviour (DESIGN.md §8.3–8.5). Markup: src/components/Stage.astro.
 //   Fine pointer: a looping slider. Wheel, drag (with inertia), arrow keys and clicks on the
 //   neighbours set a target index; the position eases toward it, movement adds a small skew,
-//   and it snaps to the nearest slide after 150ms idle.
+//   and it snaps to the nearest slide after 150ms idle. Colour and the centred title follow
+//   the hovered slide, and a colour lens trails the pointer. The pointer itself stays native;
+//   a fixed "+" marks the centre (as in the reference).
 //   Touch / no JS: the track stays a native scroll-snap list; this only tracks the active slide.
 // Tuning lives in CSS custom properties (tokens.css) so the Site Tuner can change them live.
 import { gsap, ease, media } from './motion';
@@ -33,21 +35,17 @@ function writeStore(key: string, value: string) {
 interface Slide {
   el: HTMLElement;
   link: HTMLAnchorElement;
-  title: HTMLElement | null;
-  sub: HTMLElement | null;
 }
 
 function collect(root: HTMLElement): Slide[] {
   return [...root.querySelectorAll<HTMLElement>('[data-stage-slide]')].map((el) => ({
     el,
     link: el.querySelector<HTMLAnchorElement>('[data-stage-link]')!,
-    title: el.querySelector<HTMLElement>('[data-stage-title]'),
-    sub: el.querySelector<HTMLElement>('[data-stage-sub]'),
   }));
 }
 
-/** Shared by both modes: classes, live region, cursor labels, remembered position. */
-function makeActivator(root: HTMLElement, slides: Slide[], roll: boolean) {
+/** Shared by both modes: active class, live region, remembered position. */
+function makeActivator(root: HTMLElement, slides: Slide[]) {
   const live = root.querySelector<HTMLElement>('[data-stage-live]');
   const template = live?.dataset.template ?? '';
   const n = slides.length;
@@ -55,14 +53,8 @@ function makeActivator(root: HTMLElement, slides: Slide[], roll: boolean) {
 
   return (index: number, announce = true) => {
     if (index === active) return;
-    const previous = active;
     active = index;
-    slides.forEach((slide, i) => {
-      const isActive = i === index;
-      slide.el.classList.toggle('is-active', isActive);
-      const d = loopDelta(i - index, n);
-      slide.link.dataset.cursor = isActive ? 'view' : d < 0 ? 'prev' : 'next';
-    });
+    slides.forEach((slide, i) => slide.el.classList.toggle('is-active', i === index));
     writeStore(STORE_INDEX, String(index));
     if (announce && live) {
       live.textContent = template
@@ -70,17 +62,49 @@ function makeActivator(root: HTMLElement, slides: Slide[], roll: boolean) {
         .replace('{total}', String(n))
         .replace('{title}', slides[index].el.dataset.title ?? '');
     }
-    document.dispatchEvent(new CustomEvent('cursor:refresh'));
-
-    if (!roll) return;
-    // Titles roll: the old one slides up and out, the new one rises in.
-    const incoming = [slides[index].title, slides[index].sub].filter(Boolean);
-    gsap.fromTo(incoming, { yPercent: 105 }, { yPercent: 0, duration: 0.7, ease: ease.outExpo, stagger: 0.05, overwrite: true });
-    if (previous >= 0) {
-      const outgoing = [slides[previous].title, slides[previous].sub].filter(Boolean);
-      gsap.to(outgoing, { yPercent: -105, duration: 0.45, ease: ease.out, overwrite: true });
-    }
   };
+}
+
+/** Slider mode's single centred title: rolls to whichever slide is shown (hovered, else centred). */
+function makeTitles(root: HTMLElement, roll: boolean) {
+  const captions = [...root.querySelectorAll<HTMLElement>('[data-stage-titles] .stage__caption')].map((el) => [
+    el.querySelector<HTMLElement>('[data-stage-title]')!,
+    el.querySelector<HTMLElement>('[data-stage-sub]')!,
+  ]);
+  let shown = -1;
+  gsap.set(captions.flat(), { yPercent: 105 });
+
+  return (index: number) => {
+    if (index === shown) return;
+    const previous = shown;
+    shown = index;
+    if (!roll) {
+      captions.forEach((lines, i) => gsap.set(lines, { yPercent: i === index ? 0 : 105 }));
+      return;
+    }
+    gsap.fromTo(captions[index], { yPercent: 105 }, { yPercent: 0, duration: 0.7, ease: ease.outExpo, stagger: 0.04, overwrite: true });
+    if (previous >= 0) gsap.to(captions[previous], { yPercent: -105, duration: 0.45, ease: ease.out, overwrite: true });
+  };
+}
+
+/** Full-colour copy of each cover, revealed through the pointer lens. */
+function addLenses(slides: Slide[]): HTMLElement[] {
+  return slides.map((slide) => {
+    const lens = document.createElement('span');
+    lens.className = 'stage__lens';
+    lens.setAttribute('aria-hidden', 'true');
+    const media = slide.el.querySelector('.stage__media');
+    media?.childNodes.forEach((node) => {
+      const copy = node.cloneNode(true) as HTMLElement;
+      if (copy instanceof HTMLImageElement) {
+        copy.alt = '';
+        copy.loading = 'eager';
+      }
+      lens.append(copy);
+    });
+    media?.after(lens);
+    return lens;
+  });
 }
 
 // -------------------------------------------------------------- slider
@@ -99,6 +123,7 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
   let maxSkew = 4;
   let inactiveScale = 0.92;
   let step = 0;
+  let box = { left: 0, top: 0, w: 0, h: 0, slideW: 0 }; // measured on resize, not per frame
   const readTuning = () => {
     const css = getComputedStyle(root);
     const num = (name: string, fallback: number) => {
@@ -109,6 +134,8 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
     maxSkew = reduced ? 0 : num('--stage-skew', 4);
     inactiveScale = num('--stage-scale', 0.92);
     step = slides[0].el.offsetWidth + (parseFloat(getComputedStyle(track).columnGap) || 0);
+    const rect = track.getBoundingClientRect();
+    box = { left: rect.left, top: rect.top, w: track.clientWidth, h: track.clientHeight, slideW: slides[0].el.offsetWidth };
   };
   readTuning();
 
@@ -119,12 +146,33 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
   let dragging = false;
   let didDrag = false;
 
-  const activate = makeActivator(root, slides, !reduced);
+  const activate = makeActivator(root, slides);
   activate(wrap(Math.round(current), n), false);
-  // Captions start hidden below their masks except the active one
-  slides.forEach((slide, i) => {
-    if (i !== wrap(Math.round(current), n)) gsap.set([slide.title, slide.sub].filter(Boolean), { yPercent: 105 });
-  });
+  const showTitle = makeTitles(root, !reduced);
+  const lenses = reduced ? [] : addLenses(slides);
+
+  // Pointer: which slide is hovered (colour + title follow it), and the eased lens position.
+  let pointer: { x: number; y: number } | null = null;
+  let lens = { x: 0, y: 0, pow: 0, lastX: 0, lastY: 0 };
+  let lit = -1;
+  const geometry = (i: number) => {
+    // analytic slide box (no layout reads in the frame loop); skew is ignored
+    const d = loopDelta(i - current, n);
+    const scale = 1 - (1 - inactiveScale) * Math.min(1, Math.abs(d));
+    const w = box.slideW * scale;
+    const h = box.h * scale;
+    const left = box.w / 2 + d * step - w / 2;
+    const top = (box.h - h) / 2;
+    return { d, scale, left, top, w, h };
+  };
+  const slideAt = (x: number, y: number) => {
+    for (let i = 0; i < n; i++) {
+      const g = geometry(i);
+      if (Math.abs(g.d) > 1.6) continue;
+      if (x - box.left >= g.left && x - box.left <= g.left + g.w && y - box.top >= g.top && y - box.top <= g.top + g.h) return i;
+    }
+    return -1;
+  };
 
   const inStageView = () => root.dataset.view === 'stage';
   const nudge = (to: number) => {
@@ -153,10 +201,65 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
       // the slide that wraps from one side to the other must not be seen crossing
       slides[i].el.style.visibility = Math.abs(d) > n / 2 - 0.6 ? 'hidden' : '';
     }
-    activate(wrap(Math.round(current), n));
+    const centred = wrap(Math.round(current), n);
+    activate(centred);
+
+    // Colour and title follow the hovered slide; over a gap the last one stays lit.
+    if (pointer && !dragging && inStageView()) {
+      const hit = slideAt(pointer.x, pointer.y);
+      if (hit >= 0) lit = hit;
+    } else lit = -1;
+    const shown = lit >= 0 ? lit : centred;
+    slides.forEach((slide, i) => slide.el.classList.toggle('is-lit', i === shown));
+    showTitle(shown);
+
+    if (lenses.length) drawLens(deltaMs);
     // focus() on an off-centre link can scroll even an overflow:hidden track
     if (track.scrollLeft) track.scrollLeft = 0;
   };
+
+  // The lens trails the pointer (ease .1) and grows with its speed, with a slowly wobbling edge.
+  const POINTS = 24;
+  let time = 0;
+  const drawLens = (deltaMs: number) => {
+    const f = Math.min(deltaMs, 100) / (1000 / 60);
+    const target = pointer ?? { x: lens.x, y: lens.y };
+    lens.x += (target.x - lens.x) * (1 - Math.pow(0.9, f));
+    lens.y += (target.y - lens.y) * (1 - Math.pow(0.9, f));
+    const speed = Math.hypot(target.x - lens.lastX, target.y - lens.lastY) / Math.max(f, 0.001);
+    lens.lastX = target.x;
+    lens.lastY = target.y;
+    lens.pow += (Math.min(speed / 40, 1) - lens.pow) * (1 - Math.pow(0.9, f));
+    time += 0.03 * f;
+    const radius = pointer && inStageView() ? lens.pow * 40 : 0;
+
+    for (let i = 0; i < n; i++) {
+      const el = lenses[i];
+      const g = geometry(i);
+      if (radius < 0.5 || Math.abs(g.d) > 1.6) {
+        if (el.style.clipPath !== 'circle(0px)') el.style.clipPath = 'circle(0px)';
+        continue;
+      }
+      // pointer in the slide's own (unscaled) coordinates
+      const cx = (lens.x - box.left - g.left) / g.scale;
+      const cy = (lens.y - box.top - g.top) / g.scale;
+      const r = radius / g.scale;
+      let path = '';
+      for (let p = 0; p < POINTS; p++) {
+        const a = (p / POINTS) * Math.PI * 2;
+        const wobble = 1 + 0.12 * Math.sin(3 * a + time) + 0.07 * Math.sin(5 * a - time * 1.3);
+        path += `${p ? ',' : ''}${(cx + Math.cos(a) * r * wobble).toFixed(1)}px ${(cy + Math.sin(a) * r * wobble).toFixed(1)}px`;
+      }
+      el.style.clipPath = `polygon(${path})`;
+    }
+  };
+
+  root.addEventListener('pointermove', (event) => {
+    if (event.pointerType !== 'mouse') return;
+    if (!pointer) lens = { x: event.clientX, y: event.clientY, pow: 0, lastX: event.clientX, lastY: event.clientY };
+    pointer = { x: event.clientX, y: event.clientY };
+  }, { signal });
+  root.addEventListener('pointerleave', () => (pointer = null), { signal });
   gsap.ticker.add(render);
 
   // ----------------------------------------------------------- wheel
@@ -198,7 +301,6 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
         // captured only once it's a drag, so a plain click still reaches the slide link
         track.setPointerCapture(event.pointerId);
         root.classList.add('is-dragging');
-        document.dispatchEvent(new CustomEvent('cursor:drag', { detail: true }));
       }
       if (!didDrag) return;
       samples.push({ x: event.clientX, t: event.timeStamp });
@@ -218,7 +320,6 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
     // Inertia: carry on in the throw direction (at most two slides), then snap.
     nudge(Math.round(target - gsap.utils.clamp(-2, 2, (velocity * 220) / step)));
     root.classList.remove('is-dragging');
-    document.dispatchEvent(new CustomEvent('cursor:drag', { detail: false }));
   };
   track.addEventListener('pointerup', endDrag, { signal });
   track.addEventListener('pointercancel', endDrag, { signal });
@@ -277,10 +378,11 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
     controller.abort();
     gsap.ticker.remove(render);
     root.classList.remove('is-virtual', 'is-dragging');
+    lenses.forEach((el) => el.remove());
     slides.forEach((slide) => {
       slide.el.style.transform = '';
       slide.el.style.visibility = '';
-      gsap.set([slide.title, slide.sub].filter(Boolean), { clearProps: 'transform' });
+      slide.el.classList.remove('is-lit');
     });
   };
 }
@@ -292,7 +394,7 @@ function nativeSlider(root: HTMLElement): () => void {
   const slides = collect(root);
   const controller = new AbortController();
   const { signal } = controller;
-  const activate = makeActivator(root, slides, false);
+  const activate = makeActivator(root, slides);
 
   const nearest = () => {
     const centre = track.scrollLeft + track.clientWidth / 2;
@@ -419,9 +521,13 @@ function setupViews(root: HTMLElement, signal: AbortSignal) {
 // ------------------------------------------------------------ rise-in
 
 function riseIn(root: HTMLElement) {
-  const links = [...root.querySelectorAll<HTMLElement>('.stage__slide .stage__link')];
+  const links = [...root.querySelectorAll<HTMLElement>('.stage__slide .stage__link, [data-stage-titles]')];
   gsap.set(links, { y: 90, opacity: 0 });
-  const play = () => gsap.to(links, { y: 0, opacity: 1, duration: 1, ease: ease.outExpo, stagger: 0.06, clearProps: 'transform,opacity' });
+  root.classList.add('is-entering'); // crosshair collapsed until the slides arrive
+  const play = () => {
+    root.classList.remove('is-entering');
+    gsap.to(links, { y: 0, opacity: 1, duration: 1, ease: ease.outExpo, stagger: 0.06, clearProps: 'transform,opacity' });
+  };
   // After the splash, wait until its sheet starts sliding away (splash.ts dispatches this).
   if (document.querySelector('[data-splash-sheet].is-active')) {
     document.addEventListener('splash:reveal', play, { once: true });
