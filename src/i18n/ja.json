@@ -303,6 +303,8 @@
   "case.next": "次のプロジェクト",
   "case.insight": "インサイト",
   "case.decision": "デザインの方針",
+  "case.goal": "ゴール",
+  "case.fix": "修正",
   "case.chartAxis": "平均スコア（1～5）",
   "case.chartMean": "平均（n={n}）",
   "case.outOf": "（5点満点）",

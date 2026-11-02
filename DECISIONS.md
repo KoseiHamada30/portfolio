@@ -90,3 +90,4 @@ Design and build decisions not covered by DESIGN.md. Newest first.
 | 2026-11-02 | "Slider fades to 0.4" done as brightness(.4), not opacity | Opacity would show the incoming paper page through the slider; brightness keeps it opaque and dark |
 | 2026-11-02 | Work ↔ About fades out then in (not a crossfade) | A 50% blend of the stage and the About layout looked like a double exposure |
 | 2026-11-02 | Reduced motion forces a 150ms crossfade over Astro's `animation: none !important` | Brief asks for 150ms; Astro would otherwise make every page change instant |
+| 2026-11-03 | NBA Research Lab case study brought into the source (MDX + assets) from the page Kosei published to the tuner | Without it, the next tuner rebuild would put the placeholder back. Same text and images; Callout gains Goal/Fix labels; JA shows English until translated |

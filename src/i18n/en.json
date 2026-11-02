@@ -303,6 +303,8 @@
   "case.next": "Next project",
   "case.insight": "Insight",
   "case.decision": "Decision",
+  "case.goal": "Goal",
+  "case.fix": "Fix",
   "case.chartAxis": "Mean score (1–5)",
   "case.chartMean": "Mean (n={n})",
   "case.outOf": "out of 5",

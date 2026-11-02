@@ -211,6 +211,41 @@ const scrollTo = async (page, selector) => {
   await page.close();
 }
 
+// ------------------------------------------------------- NBA Research Lab (Phase 7)
+{
+  console.log('\nNBA Research Lab');
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  watch(page);
+  await page.goto(`${BASE}/work/nba-research-lab/`);
+  await ready(page);
+  const nba = await page.evaluate(() => ({
+    hero: document.querySelector('.case-hero__title').textContent,
+    label: document.querySelector('.case-hero__label').textContent.replace(/\s+/g, ' ').trim(),
+    sub: document.querySelector('.case-hero__subtitle').textContent,
+    sections: [...document.querySelectorAll('[data-case-section]')].map((s) => s.dataset.title),
+    callouts: [...document.querySelectorAll('.callout__label')].map((l) => l.textContent),
+    images: document.querySelectorAll('.case-prose img').length,
+    rows: document.querySelectorAll('.media-row').length,
+    next: document.querySelector('.next__title').textContent,
+  }));
+  check('Hero: title, category below it, subtitle', nba.hero === 'NBA Research Lab' && nba.label.includes('Cipher Sports Technology Group') && nba.sub === 'Over or under, answered in one place', `${nba.label} / ${nba.sub}`);
+  check('Seven sections in order', nba.sections.join('|') === 'Challenge|Ideation|Solution|Interaction Details|Share Image|Shipping It|Learnings', nba.sections.join(', '));
+  check('Goal, Decision and Fix callouts', nba.callouts.join('|') === 'Goal|Decision|Fix', nba.callouts.join(', '));
+  check('Eight images (two side-by-side pairs of sketches); next project is Circula', nba.images === 8 && nba.rows === 2 && nba.next === 'Circula', `${nba.images} images, ${nba.rows} rows, next ${nba.next}`);
+
+  // every image and the video actually load
+  const imgs = await page.$$('.case-hero__cover img, .case-prose img');
+  for (const img of imgs) await img.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(1500);
+  const broken = await page.evaluate(() => [...document.querySelectorAll('.case-hero__cover img, .case-prose img')].filter((i) => !i.complete || i.naturalWidth === 0).map((i) => i.alt.slice(0, 30)));
+  check('All images load', broken.length === 0, broken.join(' | '));
+  await scrollTo(page, 'video');
+  await page.waitForTimeout(1200);
+  const video = await page.evaluate(() => { const v = document.querySelector('video'); return { playing: !v.paused, ready: v.readyState, phone: !!v.closest('.media--frame-phone') }; });
+  check('The scroll video plays when centred, in a phone frame', video.playing && video.ready >= 2 && video.phone, JSON.stringify(video));
+  await page.close();
+}
+
 await browser.close();
 check('No page or console errors', errors.length === 0, errors.slice(0, 4).join(' | '));
 if (external.length) console.log(`  (third-party responses ignored: ${[...new Set(external.map((e) => e.replace(/\?.*/, '')))].join(', ')})`);

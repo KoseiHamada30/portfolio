@@ -3,7 +3,7 @@
 import { t, localeOf } from '../../lib/i18n';
 
 interface Props {
-  kind?: 'insight' | 'decision';
+  kind?: 'insight' | 'decision' | 'goal' | 'fix';
 }
 
 const locale = localeOf(Astro.currentLocale);
@@ -11,7 +11,7 @@ const { kind = 'insight' } = Astro.props;
 ---
 
 <aside class="callout" data-reveal="fade">
-  <p class="callout__label">{t(locale, kind === 'decision' ? 'case.decision' : 'case.insight')}</p>
+  <p class="callout__label">{t(locale, `case.${kind}`)}</p>
   <div class="callout__body"><slot /></div>
 </aside>
 
