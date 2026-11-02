@@ -9,10 +9,158 @@ role: { en: 'UX/UI designer', ja: 'UX/UI designer' }
 team: ['Alex Zhang — Background researcher', 'Shun Fukui — UI designer', 'Elaine Shi — Background researcher / Visual designer']
 duration: { en: '3 days', ja: '3日間' }
 accent: '#1E3A8A'
+caseStudy: true
+hero: ../../assets/projects/reverie/hero.png
+heroAlt: { en: 'Reverie App', ja: 'Reverieアプリ' }
 cover: ../../assets/projects/reverie/cover.png
 coverAlt:
   en: 'Reverie morning screen, "Good Morning Alex", on a phone against an orange sunrise'
   ja: 'オレンジ色の朝焼けを背景に、「Good Morning Alex」と表示されたReverieの朝の画面'
 ---
 
-{/* Case study body comes in the case-study phase. Strings above are from v1. */}
+import T from '../../components/case/T.astro';
+import Section from '../../components/case/Section.astro';
+import MetaGrid from '../../components/case/MetaGrid.astro';
+import Media from '../../components/case/Media.astro';
+import Callout from '../../components/case/Callout.astro';
+import AccentShift from '../../components/case/AccentShift.astro';
+import morning from '../../assets/projects/reverie/morning.png';
+import morningRoutineMockup from '../../assets/projects/reverie/morning-routine-mockup.png';
+import nightRoutineMockup from '../../assets/projects/reverie/night-routine-mockup.png';
+import roadmapEn from '../../assets/projects/reverie/roadmap-en.png';
+import brainstormingJa from '../../assets/projects/reverie/brainstorming-ja.png';
+import featuresEn from '../../assets/projects/reverie/features-en.png';
+import featuresJa from '../../assets/projects/reverie/features-ja.png';
+import morningMockup from '../../assets/projects/reverie/morning-mockup.png';
+import nightMockup from '../../assets/projects/reverie/night-mockup.png';
+import moodboard from '../../assets/projects/reverie/moodboard.png';
+import emotionalScale from '../../assets/projects/reverie/emotional-scale.png';
+import clock from '../../assets/projects/reverie/clock.png';
+
+{/* Migrated from v1 social-media-campaign.html (Phase 6). Strings are the v1 i18n keys; images that
+    v1 swapped by language keep doing so. JA alt texts are new — TODO(kosei): review.
+    The accent starts on the morning orange and turns night blue at the bedtime routine (AccentShift). */}
+
+<div class="case-intro">
+  <p class="lead"><T k="reverie-hero-desc" /></p>
+  <MetaGrid items={[
+    { label: 'reverie-meta-type', value: 'UX design' },
+    { label: 'reverie-meta-duration', value: 'reverie-meta-duration-value' },
+    { label: 'reverie-meta-role', value: 'UX/UI designer' },
+    { label: 'reverie-meta-team', value: 'Alex Zhang - Background researcher\nShun Fukui - UI designer\nElaine Shi - Background researcher / Visual designer' },
+  ]} />
+  <Media src={morning} alt={{ en: 'Reverie App Design', ja: 'Reverieのアプリデザイン' }} />
+</div>
+
+<Section num="01" title="challenge" id="challenge">
+  <h3><T k="reverie-challenge-title" /></h3>
+  <p><T k="reverie-challenge-desc-2a" /><b><T k="reverie-challenge-desc-1" /></b><T k="reverie-challenge-desc-2b" /></p>
+  <Media src={morningRoutineMockup} alt={{ en: 'Reverie morning routine mockup', ja: 'Reverieの朝のルーティンのモックアップ' }} />
+  <Media src={nightRoutineMockup} alt={{ en: 'Reverie night routine mockup', ja: 'Reverieの夜のルーティンのモックアップ' }} />
+</Section>
+
+<Section num="02" title="discovery" id="discovery">
+  <h3><T k="reverie-discovery-title" /></h3>
+  <p><T k="reverie-discovery-desc-1" /></p>
+  <Callout kind="decision">
+    <p><T k="reverie-discovery-desc-2" /><b><T k="reverie-discovery-desc-3" /></b><T k="reverie-discovery-desc-4" /></p>
+  </Callout>
+  <Media src={{ en: roadmapEn, ja: brainstormingJa }} size="narrow" alt={{ en: 'Reverie Brainstorming', ja: 'Reverieのブレインストーミング' }} />
+</Section>
+
+<Section num="03" title="research" id="research">
+  <h3><T k="reverie-research-title" /></h3>
+  <h4><T k="reverie-research-survey-title" /></h4>
+  <ul>
+    <li><b><T k="reverie-research-survey-1" /></b>: <T k="reverie-research-survey-1-desc" /></li>
+    <li><b><T k="reverie-research-survey-2" /></b>: <T k="reverie-research-survey-2-desc" /></li>
+  </ul>
+  <Callout kind="insight"><p><T k="reverie-research-survey-conclusion" /></p></Callout>
+  <h4><T k="reverie-research-sleep-title" /></h4>
+  <ul>
+    <li><b><T k="reverie-research-sleep-1" /></b>: <T k="reverie-research-sleep-1-desc" /></li>
+    <li><b><T k="reverie-research-sleep-2" /></b>: <T k="reverie-research-sleep-2-desc" /></li>
+  </ul>
+  <Callout kind="insight"><p><T k="reverie-research-sleep-conclusion" /></p></Callout>
+</Section>
+
+<Section num="04" title="What is this app?" id="what-is">
+  <h3><T k="reverie-whatis-title" /></h3>
+  <Media src={{ en: featuresEn, ja: featuresJa }} size="narrow" alt={{ en: 'Reverie Main Features', ja: 'Reverieの主な機能' }} />
+  <div class="media-row">
+    <Media src={morningMockup} alt={{ en: 'Reverie morning mockup', ja: 'Reverieの朝の画面のモックアップ' }} />
+    <Media src={nightMockup} alt={{ en: 'Reverie night mockup', ja: 'Reverieの夜の画面のモックアップ' }} />
+  </div>
+</Section>
+
+<Section num="05" title="visual-design" id="visual-design">
+  <h3><T k="reverie-design-title" /></h3>
+  <p><T k="reverie-design-desc" /></p>
+  <h4><T k="reverie-design-1-title" /></h4>
+  <p><T k="reverie-design-1-desc" /></p>
+  <h4><T k="reverie-design-2-title" /></h4>
+  <p><T k="reverie-design-2-desc" /></p>
+  <h4><T k="reverie-design-3-title" /></h4>
+  <p><T k="reverie-design-3-desc" /></p>
+  <Media src={moodboard} alt={{ en: 'Reverie visual concept moodboard', ja: 'Reverieのビジュアルコンセプトのムードボード' }} />
+  <Media video="media/reverie/prototype-process.mp4" alt={{ en: 'Reverie prototype process', ja: 'Reverieのプロトタイプ制作過程' }} />
+</Section>
+
+<Section num="06" title="ux-experience" id="ux">
+  <h3><T k="reverie-ux-title" /></h3>
+  <AccentShift from="#F07A3C" to="#1E3A8A" bg="#ECEEF4" />
+  <h4><T k="reverie-ux-flow1-title" /></h4>
+  <p><T k="reverie-ux-flow1-desc" /></p>
+  <p class="muted"><T k="reverie-ux-flow1-note" /></p>
+  <Media
+    embed="https://embed.figma.com/proto/JDdvUpEsZ6wBHNlH6ZajVW/REVERIE--NEW-?node-id=5306-5836&p=f&viewport=2398%2C-2183%2C0.16&scaling=scale-down&content-scaling=fixed&starting-point-node-id=5306%3A5836&show-proto-sidebar=1&page-id=0%3A1&embed-host=share"
+    title={{ en: 'Reverie prototype — bedtime routine', ja: 'Reverieのプロトタイプ — 寝る前のルーティン' }}
+  />
+  <h4><T k="reverie-ux-flow2-title" /></h4>
+  <p><T k="reverie-ux-flow2-desc" /></p>
+  <p class="muted"><T k="reverie-ux-flow2-note" /></p>
+  <Media
+    embed="https://embed.figma.com/proto/JDdvUpEsZ6wBHNlH6ZajVW/REVERIE--NEW-?node-id=5306-4224&p=f&viewport=2398%2C-2183%2C0.16&scaling=scale-down&content-scaling=fixed&starting-point-node-id=5306%3A4192&page-id=0%3A1&show-proto-sidebar=1&embed-host=share"
+    title={{ en: 'Reverie prototype — post-wake routine', ja: 'Reverieのプロトタイプ — 起床後のルーティン' }}
+  />
+</Section>
+
+<Section num="07" title="reverie-lovable-section" id="vibe-coding">
+  <h3><T k="reverie-lovable-title" /></h3>
+  <p><T k="reverie-lovable-desc" /></p>
+  <h4><T k="reverie-lovable-outcome-title" /></h4>
+  <p class="muted"><T k="reverie-lovable-morning-label" /></p>
+  <div class="media-row">
+    <Media video="media/reverie/morning-routine.mp4" frame="phone" alt={{ en: 'Morning routine screen recording', ja: '朝のルーティンの画面録画' }} />
+    <Media video="media/reverie/morning-dashboard.mp4" frame="phone" alt={{ en: 'Morning dashboard screen recording', ja: '朝のダッシュボードの画面録画' }} />
+  </div>
+  <p class="muted"><T k="reverie-lovable-night-label" /></p>
+  <Media video="media/reverie/night-routine.mp4" frame="phone" alt={{ en: 'Night routine screen recording', ja: '夜のルーティンの画面録画' }} />
+  <h4><T k="reverie-lovable-changes-title" /></h4>
+  <p><T k="reverie-lovable-changes-desc" /></p>
+  <h4><T k="reverie-lovable-change1-title" /></h4>
+  <p><T k="reverie-lovable-change1-desc" /></p>
+  <Media src={emotionalScale} size="medium" alt={{ en: 'Emotional scale design adjustment', ja: '感情スケールのデザイン調整' }} />
+  <h4><T k="reverie-lovable-change2-title" /></h4>
+  <p><T k="reverie-lovable-change2-desc" /></p>
+  <Media src={clock} size="medium" alt={{ en: 'Clock functionality mockup versus final implementation', ja: '時計機能のモックアップと最終的な実装の比較' }} />
+  <h4><T k="reverie-lovable-change3-title" /></h4>
+  <p><T k="reverie-lovable-change3-desc" /></p>
+</Section>
+
+<Section num="08" title="review" id="review">
+  <h3><T k="reverie-review-title" /></h3>
+  <p><T k="reverie-review-desc" /></p>
+  <h4><T k="reverie-review-like-title" /></h4>
+  <ul>
+    <li><T k="reverie-review-like-1" /></li>
+    <li><T k="reverie-review-like-2" /></li>
+    <li><T k="reverie-review-like-3" /></li>
+  </ul>
+  <h4><T k="reverie-review-next-title" /></h4>
+  <ul>
+    <li><T k="reverie-review-next-1" /></li>
+    <li><T k="reverie-review-next-2" /></li>
+    <li><T k="reverie-review-next-3" /></li>
+  </ul>
+</Section>

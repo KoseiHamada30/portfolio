@@ -1,0 +1,20 @@
+---
+// Marks where a case study's accent (and page tint) changes as you scroll past it, e.g. Reverie's
+// morning orange → night blue at the night-routine section. The page starts on `from`; case.ts tweens
+// to `to` (and the background to `bg`) while this marker crosses the middle of the viewport.
+interface Props {
+  from: string;
+  to: string;
+  bg?: string;
+}
+
+const { from, to, bg } = Astro.props;
+---
+
+<div class="accent-shift" aria-hidden="true" data-accent-shift data-from={from} data-to={to} data-bg={bg}></div>
+
+<style>
+  .accent-shift {
+    height: 0;
+  }
+</style>

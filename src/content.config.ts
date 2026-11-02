@@ -33,6 +33,8 @@ const projects = defineCollection({
       summary: localized.optional(),
       /** Case-study hero image (defaults to the cover), e.g. v1's project hero. */
       hero: image().optional(),
+      /** Japanese version of the hero, when v1 swapped it by language. */
+      heroJa: image().optional(),
       heroAlt: localized.optional(),
       /** True once the MDX body is a real case study (CaseStudyLayout); otherwise the placeholder page. */
       caseStudy: z.boolean().default(false),

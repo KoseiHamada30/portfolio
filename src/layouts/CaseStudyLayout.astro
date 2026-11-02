@@ -14,7 +14,8 @@ interface Props {
 }
 
 const { entry, locale } = Astro.props;
-const { title, subtitle, category, cover, coverAlt, coverPosition, accent, summary, hero, heroAlt } = entry.data;
+const { title, subtitle, category, cover, coverAlt, coverPosition, accent, summary, hero, heroJa, heroAlt } = entry.data;
+const heroImage = (locale === 'ja' && heroJa) || hero;
 const accentKey = entry.id === 'nba-research-lab' ? 'nba-lab' : entry.id;
 ---
 
@@ -34,8 +35,8 @@ const accentKey = entry.id === 'nba-research-lab' ? 'nba-lab' : entry.id;
       title={title}
       subtitle={subtitle}
       category={category}
-      cover={hero ?? cover}
-      coverAlt={hero ? heroAlt : coverAlt}
+      cover={heroImage ?? cover}
+      coverAlt={heroImage ? heroAlt : coverAlt}
       coverPosition={coverPosition}
       accent={accent}
     />

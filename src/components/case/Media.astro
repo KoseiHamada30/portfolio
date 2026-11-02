@@ -1,48 +1,52 @@
 ---
 // Image, video or embed with an optional caption (DESIGN.md §6).
 //   <Media src={img} alt={{ en, ja }} />                          image (astro:assets)
+//   <Media src={{ en: imgEn, ja: imgJa }} … />                    image that differs by language
 //   <Media video="media/circula/listview.mp4" frame="phone" />    muted loop; plays only while
-//                                                                 centred in the viewport (case.ts)
+//                                                                 centred in the viewport (case.ts);
+//                                                                 poster = same name .jpg
 //   <Media embed="https://embed.figma.com/…" title="…" />         lazy iframe (Figma prototypes)
-// size: "content" (column width, default) | "narrow" (max 600px, centred)
+// size: "content" (column width, default) | "medium" (max 720px) | "narrow" (max 600px), centred.
+// Wrap several in <div class="media-row"> to sit them side by side.
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 import { text, localeOf, type Text } from '../../lib/i18n';
 
 interface Props {
-  src?: ImageMetadata;
+  src?: ImageMetadata | { en: ImageMetadata; ja: ImageMetadata };
   video?: string;
   embed?: string;
   alt?: Text;
   title?: Text;
   caption?: Text;
   frame?: 'phone' | 'none';
-  size?: 'content' | 'narrow';
+  size?: 'content' | 'medium' | 'narrow';
 }
 
 const locale = localeOf(Astro.currentLocale);
 const { src, video, embed, alt, title, caption, frame = 'none', size = 'content' } = Astro.props;
 const label = alt ? text(locale, alt) : '';
+const image = src && 'en' in src && 'ja' in src && !('src' in src) ? src[locale] : (src as ImageMetadata | undefined);
+const widths = size === 'content' ? [800, 1200, 1600] : [600, 900, 1400];
+const sizes = size === 'narrow' ? '600px' : size === 'medium' ? '720px' : '(min-width: 1100px) 52rem, 92vw';
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
 <figure class:list={['media', `media--${size}`, `media--frame-${frame}`, { 'media--embed': embed }]} data-reveal="fade">
-  {
-    src && (
-      <Image
-        src={src}
-        alt={label}
-        widths={size === 'narrow' ? [600, 1200] : [800, 1200, 1600]}
-        sizes={size === 'narrow' ? '600px' : '(min-width: 1100px) 52rem, 92vw'}
-        loading="lazy"
-        decoding="async"
-      />
-    )
-  }
+  {image && <Image src={image} alt={label} widths={widths} sizes={sizes} loading="lazy" decoding="async" />}
   {
     video && (
       <div class="media__video">
-        <video src={`${base}${video}`} muted loop playsinline preload="metadata" aria-label={label} data-centre-play />
+        <video
+          src={`${base}${video}`}
+          poster={`${base}${video.replace(/\.mp4$/, '.jpg')}`}
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          aria-label={label}
+          data-centre-play
+        />
       </div>
     )
   }
@@ -62,6 +66,29 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
   .media--narrow {
     max-width: 600px;
     margin-inline: auto;
+  }
+
+  .media--medium {
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  /* side by side (MDX: <div class="media-row">…</div>) */
+  :global(.media-row) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: var(--gutter);
+  }
+
+  :global(.media-row) > .media {
+    flex: 1 1 0;
+    min-width: min(100%, 220px);
+  }
+
+  :global(.media-row) > .media--frame-phone {
+    flex: 0 1 auto;
   }
 
   .media :global(img) {

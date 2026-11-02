@@ -156,6 +156,59 @@ const scrollTo = async (page, selector) => {
   await ph.close();
 }
 
+// ------------------------------------------------- Reverie + NextScore (Phase 6)
+{
+  console.log('\nReverie & NextScore');
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  watch(page);
+  const pageInfo = () =>
+    page.evaluate(() => ({
+      sections: [...document.querySelectorAll('[data-case-section]')].map((s) => s.dataset.title),
+      images: [...document.querySelectorAll('.case img')].filter((i) => !i.closest('.next')).map((i) => i.currentSrc || i.src),
+      videos: [...document.querySelectorAll('video')].map((v) => [v.getAttribute('src'), v.getAttribute('poster')]),
+      embeds: document.querySelectorAll('.media iframe').length,
+      overflow: document.documentElement.scrollWidth - innerWidth,
+    }));
+
+  await page.goto(`${BASE}/work/reverie/`);
+  await ready(page);
+  const rev = await pageInfo();
+  check('Reverie: all eight v1 sections', rev.sections.join('|') === 'Challenge|Problem Discovery|User Research & Analysis|What is this app?|Visual Design|UX Experience|Vibe Coding|Review', rev.sections.join(' | '));
+  check('Reverie: 11 images per language (13 in v1, two swap by language), 4 videos with posters, 2 Figma prototypes', rev.images.length === 11 && rev.videos.length === 4 && rev.videos.every(([v, p]) => v.endsWith('.mp4') && p.endsWith('.jpg')) && rev.embeds === 2, `${rev.images.length} images, ${rev.videos.length} videos`);
+  const accent = () => page.evaluate(() => getComputedStyle(document.body).getPropertyValue('--accent').trim().toLowerCase());
+  const morning = await accent();
+  await page.evaluate(() => window.scrollTo(0, document.querySelector('#vibe-coding').offsetTop));
+  await page.waitForTimeout(900);
+  const night = await accent();
+  const tint = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(900);
+  const back = await accent();
+  check('Reverie: accent goes morning orange → night blue at the bedtime routine, and back', morning === '#f07a3c' && night === '#1e3a8a' && tint === 'rgb(236, 238, 244)' && back === '#f07a3c', `${morning} → ${night} (${tint}) → ${back}`);
+  check('Reverie: no sideways scroll', rev.overflow <= 0);
+  const enRoadmap = rev.images.find((src) => /roadmap-en|brainstorming-ja/.test(src));
+
+  await page.goto(`${BASE}/ja/work/reverie/`);
+  await ready(page);
+  const revJa = await pageInfo();
+  const jaRoadmap = revJa.images.find((src) => /roadmap-en|brainstorming-ja/.test(src));
+  check('Reverie: language-swapped images (roadmap EN / brainstorming JA)', /roadmap-en/.test(enRoadmap ?? '') && /brainstorming-ja/.test(jaRoadmap ?? ''));
+
+  await page.goto(`${BASE}/work/nextscore/`);
+  await ready(page);
+  const ns = await pageInfo();
+  const nsMeta = await page.evaluate(() => [...document.querySelectorAll('.meta-grid dd')].map((d) => d.textContent));
+  check('NextScore: all seven v1 sections', ns.sections.join('|') === 'Challenge|Problem Discovery|User Research & Analysis|What is this app?|Visual Design|UX Experience|Future Outlook', ns.sections.join(' | '));
+  check('NextScore: all 5 v1 images (hero included), 3 videos with posters', ns.images.length === 5 && ns.videos.length === 3 && ns.videos.every(([, p]) => p.endsWith('.jpg')), `${ns.images.length} images, ${ns.videos.length} videos`);
+  check('NextScore: duration is 3 months (not v1\'s "3 weeks ~ Current")', nsMeta[1] === '3 months', nsMeta[1]);
+  const enHero = ns.images[0];
+  await page.goto(`${BASE}/ja/work/nextscore/`);
+  await ready(page);
+  const nsJa = await pageInfo();
+  check('NextScore: hero and features image swap by language', /hero-en/.test(enHero) && /hero-ja/.test(nsJa.images[0]) && nsJa.images.some((i) => /features-ja/.test(i)));
+  await page.close();
+}
+
 await browser.close();
 check('No page or console errors', errors.length === 0, errors.slice(0, 4).join(' | '));
 if (external.length) console.log(`  (third-party responses ignored: ${[...new Set(external.map((e) => e.replace(/\?.*/, '')))].join(', ')})`);

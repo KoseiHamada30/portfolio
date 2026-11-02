@@ -9,10 +9,116 @@ role: { en: 'UX/UI designer', ja: 'UX/UI designer' }
 duration: { en: '3 months', ja: '3ヶ月' }
 tools: [Cursor, Figma, Google Apps Script]
 accent: '#24543C'
+caseStudy: true
+hero: ../../assets/projects/nextscore/hero-en.png
+heroJa: ../../assets/projects/nextscore/hero-ja.png
+heroAlt: { en: 'NextScore App', ja: 'NextScoreアプリ' }
 cover: ../../assets/projects/nextscore/cover.png
 coverAlt:
   en: 'NextScore sports prediction app screens on three phones'
   ja: '3台のスマートフォンに表示されたNextScoreのスポーツ予想アプリ画面'
 ---
 
-{/* Duration per Kosei (2026-10-25): 3 months. Case study body comes in the case-study phase. */}
+import T from '../../components/case/T.astro';
+import Section from '../../components/case/Section.astro';
+import MetaGrid from '../../components/case/MetaGrid.astro';
+import Media from '../../components/case/Media.astro';
+import Callout from '../../components/case/Callout.astro';
+import overview from '../../assets/projects/nextscore/overview.png';
+import project from '../../assets/projects/nextscore/project.png';
+import featuresEn from '../../assets/projects/nextscore/features-en.png';
+import featuresJa from '../../assets/projects/nextscore/features-ja.png';
+import googleScript from '../../assets/projects/nextscore/google-script.png';
+
+{/* Migrated from v1 nextscore.html (Phase 6). Strings are the v1 i18n keys; the duration is the
+    frontmatter value (3 months, per Kosei) instead of v1's "3 weeks ~ Current". JA alt texts are new —
+    TODO(kosei): review. */}
+
+<div class="case-intro">
+  <p class="lead"><T k="nextscore-hero-desc-1" /> <T k="nextscore-hero-desc-2" /></p>
+  <p class="lead"><T k="nextscore-hero-desc-3" /></p>
+  <MetaGrid items={[
+    { label: 'nextscore-meta-type', value: 'UX/UI design' },
+    { label: 'nextscore-meta-duration', value: { en: '3 months', ja: '3ヶ月' } },
+    { label: 'nextscore-meta-role', value: 'UX/UI designer' },
+    { label: 'nextscore-meta-tools', value: 'Cursor / Figma / Google Apps Script etc...' },
+  ]} />
+  <Media src={overview} alt={{ en: 'NextScore App Design', ja: 'NextScoreのアプリデザイン' }} />
+</div>
+
+<Section num="01" title="challenge" id="challenge">
+  <h3><T k="nextscore-challenge-title" /></h3>
+  <p><T k="nextscore-challenge-desc" /></p>
+  <Media src={project} size="medium" alt={{ en: 'NextScore Project', ja: 'NextScoreのプロジェクト' }} />
+</Section>
+
+<Section num="02" title="discovery" id="discovery">
+  <h3><T k="nextscore-discovery-title" /></h3>
+  <p><T k="nextscore-discovery-desc-1" /></p>
+  <Callout kind="decision">
+    <p><T k="nextscore-discovery-desc-2" /><b><T k="nextscore-discovery-desc-3" /></b><T k="nextscore-discovery-desc-4" /></p>
+  </Callout>
+</Section>
+
+<Section num="03" title="research" id="research">
+  <h3><T k="nextscore-research-title" /></h3>
+  <h4><T k="nextscore-research-survey-title" /></h4>
+  <ul>
+    <li><b><T k="nextscore-research-survey-1" /></b>: <T k="nextscore-research-survey-1-desc" /></li>
+    <li><b><T k="nextscore-research-survey-2" /></b>: <T k="nextscore-research-survey-2-desc" /></li>
+  </ul>
+  <h4><T k="nextscore-research-interview-title" /></h4>
+  <ul>
+    <li><b><T k="nextscore-research-interview-1" /></b>: <T k="nextscore-research-interview-1-desc" /></li>
+    <li><b><T k="nextscore-research-interview-2" /></b>: <T k="nextscore-research-interview-2-desc" /></li>
+  </ul>
+</Section>
+
+<Section num="04" title="What is this app?" id="what-is">
+  <h3><T k="nextscore-whatis-title" /></h3>
+  <p><T k="nextscore-whatis-desc" /></p>
+  <Media src={{ en: featuresEn, ja: featuresJa }} size="medium" alt={{ en: 'NextScore Features', ja: 'NextScoreの機能' }} />
+</Section>
+
+<Section num="05" title="visual-design" id="visual-design">
+  <h3><T k="nextscore-design-title" /></h3>
+  <p><T k="nextscore-design-desc" /></p>
+  <h4><T k="nextscore-design-1-title" /></h4>
+  <p><T k="nextscore-design-1-desc" /></p>
+  <h4><T k="nextscore-design-2-title" /></h4>
+  <p><T k="nextscore-design-2-desc" /></p>
+  <Media video="media/nextscore/splashscreen.mp4" frame="phone" alt={{ en: 'NextScore splash screen animation', ja: 'NextScoreのスプラッシュ画面のアニメーション' }} />
+  <h4><T k="nextscore-design-3-title" /></h4>
+  <p><T k="nextscore-design-3-desc" /></p>
+  <h4><T k="nextscore-design-4-title" /></h4>
+  <p><T k="nextscore-design-4-desc" /></p>
+  <Media src={googleScript} alt={{ en: 'Google Script Implementation', ja: 'Google Apps Scriptでの実装' }} />
+</Section>
+
+<Section num="06" title="ux-experience" id="ux">
+  <h3><T k="nextscore-ux-title" /></h3>
+  <h4><T k="nextscore-ux-flow1-title" /></h4>
+  <p><T k="nextscore-ux-flow1-desc" /></p>
+  <Media video="media/nextscore/userflow-1.mp4" frame="phone" alt={{ en: 'NextScore pick-up game AI prediction flow', ja: 'NextScoreのピックアップゲームAI予想のフロー' }} />
+  <h4><T k="nextscore-ux-flow2-title" /></h4>
+  <p><T k="nextscore-ux-flow2-desc" /></p>
+  <Media video="media/nextscore/userflow-2.mp4" frame="phone" alt={{ en: 'NextScore past predictions and rankings flow', ja: 'NextScoreの過去の予想とランキングのフロー' }} />
+</Section>
+
+<Section num="07" title="future" id="future">
+  <h3><T k="nextscore-future-title" /></h3>
+  <h4><T k="nextscore-future-like-title" /></h4>
+  <ul>
+    <li><T k="nextscore-future-like-1" /></li>
+    <li><T k="nextscore-future-like-2" /></li>
+    <li><T k="nextscore-future-like-3" /></li>
+  </ul>
+  <h4><T k="nextscore-future-next-title" /></h4>
+  <ul>
+    <li><T k="nextscore-future-next-1" /></li>
+    <li><T k="nextscore-future-next-2" /></li>
+    <li><T k="nextscore-future-next-3" /></li>
+    <li><T k="nextscore-future-next-4" /></li>
+    <li><T k="nextscore-future-next-5" /></li>
+  </ul>
+</Section>

@@ -1,7 +1,7 @@
 // Case-study behaviour (CaseStudyLayout + case components):
 //   reading rail built from the sections, with the current one marked; reading-progress bar;
 //   videos that play only while centred in the viewport (v1 behaviour); bar charts that grow and
-//   count up when they scroll in; before/after sliders.
+//   count up when they scroll in; before/after sliders; scroll-linked accent shifts (Reverie).
 import { gsap, ScrollTrigger } from './motion';
 import { onPage } from './lifecycle';
 import { getLenis } from './lenis';
@@ -124,6 +124,26 @@ function barCharts(reduced: boolean) {
   });
 }
 
+/** Reverie: the accent (progress bar, callouts…) and page tint move from morning to night. */
+function accentShifts(reduced: boolean) {
+  const body = document.body;
+  document.querySelectorAll<HTMLElement>('[data-accent-shift]').forEach((marker) => {
+    const { from, to, bg } = marker.dataset;
+    if (!from || !to) return;
+    const paper = getComputedStyle(document.documentElement).getPropertyValue('--paper-100').trim();
+    gsap.set(body, { '--accent': from, backgroundColor: paper });
+    const vars: gsap.TweenVars = { '--accent': to, ease: 'none' };
+    if (bg) vars.backgroundColor = bg;
+    gsap.to(body, {
+      ...vars,
+      scrollTrigger: reduced
+        ? { trigger: marker, start: 'top 50%', toggleActions: 'play none none reverse' }
+        : { trigger: marker, start: 'top 85%', end: 'top 25%', scrub: true },
+      duration: reduced ? 0 : 1,
+    });
+  });
+}
+
 function beforeAfter(signal: AbortSignal) {
   document.querySelectorAll<HTMLElement>('[data-before-after]').forEach((figure) => {
     const input = figure.querySelector('input');
@@ -139,6 +159,7 @@ onPage(({ mm, signal }) => {
     const { reduced } = context.conditions as Record<string, boolean>;
     progressBar();
     barCharts(reduced);
+    accentShifts(reduced);
     const controller = new AbortController();
     centredVideos(reduced, controller.signal);
     return () => controller.abort();
