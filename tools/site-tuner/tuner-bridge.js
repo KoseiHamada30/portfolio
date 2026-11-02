@@ -73,6 +73,21 @@
     apply();
     if (editing) document.designMode = 'on';
   });
-  document.addEventListener('astro:page-load', function () { send({ type: 'page', page: page(), title: document.title }); });
+  // Claude's artifact viewer blocks third-party frames, so Figma prototypes stay blank here (they
+  // work on the real site). Swap each one for a note with the same size and an "open in Figma" link.
+  function figmaNotes() {
+    document.querySelectorAll('iframe[src*="figma.com"]').forEach(function (frame) {
+      var note = document.createElement('div');
+      note.className = 'tuner-figma-note';
+      note.style.cssText = 'display:grid;place-content:center;gap:12px;height:' + (frame.offsetHeight || 560) + 'px;' +
+        'padding:24px;background:var(--paper-200,#eceae5);color:var(--ink-700,#333);text-align:center;font:inherit;';
+      var proto = frame.src.replace('embed.figma.com/', 'www.figma.com/').replace(/[?&]embed-host=[^&]*/, '');
+      note.innerHTML = '<strong style="font-size:1.1em">Figma prototype</strong>' +
+        '<span>The Site Tuner can\u2019t show embedded Figma frames. It loads on the real site.</span>' +
+        '<a href="' + proto + '" target="_blank" rel="noopener" style="text-decoration:underline">Open it in Figma \u2197</a>';
+      frame.replaceWith(note);
+    });
+  }
+  document.addEventListener('astro:page-load', function () { figmaNotes(); send({ type: 'page', page: page(), title: document.title }); });
   document.addEventListener('DOMContentLoaded', function () { apply(); send({ type: 'ready', page: page(), title: document.title }); });
 })();
