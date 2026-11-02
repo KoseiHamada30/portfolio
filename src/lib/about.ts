@@ -3,6 +3,7 @@
 //   the ending scrubs the splash composition — counter 0→100, centre image .5→1.4 — over the last
 //   ~150vh, and at 100 (held for 300ms, so a small overscroll doesn't count) carries on to Work with
 //   ?from=about, where only the splash exit plays. Scrolling back up before then cancels it.
+//   Work opens on its first project (NBA Research Lab), not the slide last viewed there.
 //   Arriving with the ending already at 100 (Back from Work) never re-triggers until you scroll up.
 import { gsap, ScrollTrigger } from './motion';
 import { onPage } from './lifecycle';
@@ -10,7 +11,17 @@ import { createComposition } from './splash-composition';
 
 const HOLD_MS = 300;
 
+// Forget the stage's remembered slide (lib/stage.ts) so Work starts on the first project.
+function resetStage() {
+  try {
+    sessionStorage.removeItem('stage-index');
+  } catch {
+    /* storage blocked: the stage starts at 0 anyway */
+  }
+}
+
 async function goToWork(href: string) {
+  resetStage();
   const { navigate } = await import('astro:transitions/client');
   navigate(`${href}?from=about`);
 }
@@ -24,6 +35,7 @@ onPage(({ mm, signal }) => {
   comp.fit();
   comp.setImage(0);
   window.addEventListener('resize', () => comp.fit(), { signal });
+  end.querySelector('[data-comp-cta]')?.addEventListener('click', resetStage, { signal });
 
   mm.add({ motion: '(prefers-reduced-motion: no-preference)', reduced: '(prefers-reduced-motion: reduce)' }, (context) => {
     const { reduced } = context.conditions as Record<string, boolean>;

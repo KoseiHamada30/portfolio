@@ -80,6 +80,9 @@ const scrollEnd = (page, fraction) =>
   await page.waitForTimeout(800);
   check('Scrolling back before the hold ends cancels the hand-off', page.url().endsWith('/about/'));
 
+  // a slide other than the first was viewed on Work earlier in the session
+  await page.evaluate(() => sessionStorage.setItem('stage-index', '2'));
+
   // hold at 100 → Work, exit only
   await scrollEnd(page, 1);
   await page.waitForURL(/\/portfolio\/$/, { timeout: 4000 });
@@ -91,6 +94,8 @@ const scrollEnd = (page, fraction) =>
   check('At 100 it carries on to Work, starting from the end state (counter at 100)', work.splash && work.count === '100' && work.query === '', JSON.stringify(work));
   await page.waitForFunction(() => !document.documentElement.classList.contains('splash-on'), null, { timeout: 4000 });
   check('Work plays only the splash exit (no loading phase)', true);
+  const active = await page.evaluate(() => document.querySelector('[data-stage-slide].is-active')?.dataset.id);
+  check('Work opens on NBA Research Lab, not the slide last viewed', active === 'nba-research-lab', active);
   await page.waitForTimeout(800);
 
   // Back → About, no loop
