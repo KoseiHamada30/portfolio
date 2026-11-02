@@ -17,7 +17,8 @@
     "check:stage": "node scripts/check-stage.mjs",
     "check:case": "node scripts/check-case.mjs",
     "check:about": "node scripts/check-about.mjs",
-    "check:splash": "node scripts/check-splash.mjs"
+    "check:splash": "node scripts/check-splash.mjs",
+    "check:transitions": "node scripts/check-transitions.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.5",

@@ -1,6 +1,6 @@
 ---
-// Temporary case-study page: title + cover, so project cards link somewhere and the
-// shared-element cover transition (transition:name="cover-{slug}") already works.
+// Temporary case-study page: title + cover, so project cards link somewhere. No transition:name on
+// the cover: it must ride up with the sheet (transitions.ts), not morph on its own.
 // Replaced by CaseStudyLayout in the case-study phase.
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
@@ -20,7 +20,7 @@ const { title, subtitle, category, cover, coverAlt, accent } = project.data;
   <p class="label">{category ? pick(locale, category) : t(locale, 'placeholder.text')}</p>
   <h1 class="case__title">{title}</h1>
   {subtitle && <p class="case__subtitle">{pick(locale, subtitle)}</p>}
-  <div class="case__cover" transition:name={`cover-${project.id}`}>
+  <div class="case__cover">
     {
       cover ? (
         <Image src={cover} alt={coverAlt ? pick(locale, coverAlt) : ''} widths={[800, 1200, 1600, 2400]} sizes="92vw" loading="eager" />

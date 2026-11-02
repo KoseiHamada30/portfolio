@@ -29,6 +29,7 @@ const aboutHref = url(locale, 'about');
         <a class="nav__item" href={aboutHref} data-nav-item="about" aria-current={section === 'about' ? 'page' : undefined}>
           {t(locale, 'nav.about')}
         </a>
+        <span class="nav__bar" aria-hidden="true" data-nav-bar></span>
       </nav>
       <a class="nav__close" href={url(locale)} data-nav-close>{t(locale, 'case.close')}</a>
       <a
@@ -116,6 +117,7 @@ const aboutHref = url(locale, 'about');
   }
 
   .nav__links {
+    position: relative;
     display: flex;
     align-items: baseline;
     font-weight: 500;
@@ -139,6 +141,33 @@ const aboutHref = url(locale, 'about');
   .nav__item[aria-current='page'],
   .nav__item:hover {
     text-decoration-color: currentColor;
+  }
+
+  /* With JS, one bar marks the current item and slides between Work and About (nav.ts) */
+  .nav__bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    background: currentColor;
+    transform-origin: 0 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .nav__links:global(.has-bar) .nav__item[aria-current='page']:not(:hover) {
+    text-decoration-color: transparent;
+  }
+
+  .nav__links:global(.has-bar) .nav__bar {
+    opacity: 1;
+  }
+
+  .nav__links:global(.bar-ready) .nav__bar {
+    transition:
+      transform var(--dur-section) var(--ease-sheet),
+      opacity var(--dur-fast) var(--ease-out);
   }
 
   /* Case-study sheets swap "Work, About" for "Close" (nav.ts keeps its href per page) */
@@ -187,7 +216,8 @@ const aboutHref = url(locale, 'about');
 
   @media (prefers-reduced-motion: reduce) {
     .nav,
-    .nav::before {
+    .nav::before,
+    .nav__links:global(.bar-ready) .nav__bar {
       transition-duration: 0.01ms;
     }
   }

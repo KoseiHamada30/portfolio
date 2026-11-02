@@ -7,6 +7,7 @@
 // Tuning lives in CSS custom properties (tokens.css) so the Site Tuner can change them live.
 import { gsap, ease, media } from './motion';
 import { onPage } from './lifecycle';
+import { arrivedBy } from './transitions';
 
 const SNAP_AFTER = 150;
 const STORE_INDEX = 'stage-index';
@@ -584,6 +585,8 @@ function setupViews(root: HTMLElement, signal: AbortSignal) {
 // ------------------------------------------------------------ rise-in
 
 function riseIn(root: HTMLElement) {
+  // Coming back from a sheet, the slider is already there under it: no entrance.
+  if (arrivedBy() === 'close') return;
   const links = [...root.querySelectorAll<HTMLElement>('.stage__slide .stage__link, [data-stage-titles]')];
   gsap.set(links, { y: 90, opacity: 0 });
   const play = () => {

@@ -86,3 +86,7 @@ Design and build decisions not covered by DESIGN.md. Newest first.
 | 2026-11-02 | About has no footer (it flows into Work); contact lives in its Email/LinkedIn/Resume rows. Tools are a text list (v1 logos dropped). | Stage & Sheet style. |
 | 2026-11-02 | TODO(kosei): the Cipher internship row has no dates or title yet (Phase 7 interview); about-me-1 still mentions digital marketing (v1 wording) and needs new wording; the new JA photo alts need review. | Never invent facts. |
 | 2026-11-02 | Home thumbnails: Kosei's new images for NBA Lab, Circula, Reverie, Brim CC (cover); About name label → K.H. | Kosei supplied the images; splash now ends on NBA Lab |
+| 2026-11-02 | Phase 10 page transitions: CSS view-transition keyframes keyed by `html[data-vt]` instead of a GSAP overlay | Runs on the compositor, needs no extra DOM, and Astro's router already snapshots both pages; GSAP lifecycle stays untouched |
+| 2026-11-02 | "Slider fades to 0.4" done as brightness(.4), not opacity | Opacity would show the incoming paper page through the slider; brightness keeps it opaque and dark |
+| 2026-11-02 | Work ↔ About fades out then in (not a crossfade) | A 50% blend of the stage and the About layout looked like a double exposure |
+| 2026-11-02 | Reduced motion forces a 150ms crossfade over Astro's `animation: none !important` | Brief asks for 150ms; Astro would otherwise make every page change instant |

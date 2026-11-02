@@ -39,15 +39,5 @@ export function startLangToggle(): void {
     }
   });
 
-  // Mark language switches so motion.css can shorten the view transition.
-  let switching = false;
-  document.addEventListener('astro:before-preparation', (event) => {
-    switching = Boolean(event.sourceElement?.closest('[data-lang-toggle]'));
-    if (switching) document.documentElement.dataset.vt = 'lang';
-    else delete document.documentElement.dataset.vt;
-  });
-  document.addEventListener('astro:before-swap', (event) => {
-    // The swap copies <html> attributes from the new document, so set it there too.
-    if (switching) event.newDocument.documentElement.dataset.vt = 'lang';
-  });
+  // The short crossfade for language switches is marked by transitions.ts (data-vt="lang").
 }

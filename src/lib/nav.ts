@@ -41,12 +41,38 @@ function syncPage() {
     if (alternate) toggle.setAttribute('href', new URL(alternate.href).pathname);
   }
 
+  placeBar(el);
+
   // Case sheets: "Close" goes back to the stage on this project (the persisted nav keeps old DOM)
   const close = el.querySelector<HTMLAnchorElement>('[data-nav-close]');
   if (close && document.body.dataset.close) close.setAttribute('href', document.body.dataset.close);
 
   el.classList.remove('is-hidden');
   updateScroll(true);
+}
+
+/** One bar under the current item; a CSS transition slides it between Work and About (§8.4). */
+function placeBar(el: HTMLElement) {
+  const links = el.querySelector<HTMLElement>('.nav__links');
+  const bar = el.querySelector<HTMLElement>('[data-nav-bar]');
+  if (!links || !bar) return;
+  const current = links.querySelector<HTMLElement>('[data-nav-item][aria-current="page"]');
+  // Hidden links (case sheets show "Close") have no box: keep the bar where it was.
+  if (!current || links.offsetParent === null) {
+    links.classList.toggle('has-bar', Boolean(current));
+    return;
+  }
+  // Underline of the text, not the 44px tap target.
+  const range = document.createRange();
+  range.selectNodeContents(current);
+  const text = range.getBoundingClientRect();
+  const box = links.getBoundingClientRect();
+  // 0.25em below the text, like text-underline-offset
+  const y = text.bottom - box.top + parseFloat(getComputedStyle(current).fontSize) * 0.25 - 2;
+  bar.style.transform = `translate(${text.left - box.left}px, ${y}px) scaleX(${text.width})`;
+  links.classList.add('has-bar');
+  // Animate moves only after the first placement, so the bar doesn't fly in on load.
+  if (!links.classList.contains('bar-ready')) requestAnimationFrame(() => links.classList.add('bar-ready'));
 }
 
 // -------------------------------------------------------------- scroll
@@ -92,4 +118,13 @@ export function startNav(): void {
   );
 
   document.addEventListener('astro:page-load', syncPage);
+  // Also right after the swap, so the bar slides while the page transition runs.
+  document.addEventListener('astro:after-swap', syncPage);
+  // Text metrics change once the webfont arrives and when the window resizes.
+  const replace = () => {
+    const el = nav();
+    if (el) placeBar(el);
+  };
+  document.fonts?.ready.then(replace);
+  window.addEventListener('resize', replace, { passive: true });
 }

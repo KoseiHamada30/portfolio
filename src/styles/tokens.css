@@ -105,6 +105,12 @@
   --dur-slow: 500ms;
   --dur-reveal: 900ms;
   --dur-page: 1000ms;
+  /* Page transitions (DESIGN.md §8.4, src/lib/transitions.ts) */
+  --dur-sheet: 900ms;
+  --ease-sheet: cubic-bezier(0.87, 0, 0.13, 1); /* expo.inOut */
+  --dur-sheet-close: 650ms;
+  --ease-sheet-close: cubic-bezier(0.55, 0.055, 0.675, 0.19); /* power3.in */
+  --dur-section: 600ms;
 
   --stagger-text: 40ms;
   --stagger-item: 80ms;

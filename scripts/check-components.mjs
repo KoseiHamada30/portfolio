@@ -53,7 +53,15 @@ const watch = (page) => {
     const work = document.querySelector('[data-nav-item="work"]');
     return {
       current: work.getAttribute('aria-current'),
-      underline: getComputedStyle(work).textDecorationColor,
+      // the sliding bar (nav.ts) sits under the current item's text
+      underline: (() => {
+        const bar = document.querySelector('[data-nav-bar]');
+        const r = document.createRange();
+        r.selectNodeContents(work);
+        const text = r.getBoundingClientRect();
+        const b = bar.getBoundingClientRect();
+        return getComputedStyle(bar).opacity === '1' && Math.abs(b.left - text.left) < 2 && Math.abs(b.width - text.width) < 2 && b.top > text.bottom - 2;
+      })(),
       color: getComputedStyle(document.querySelector('[data-nav]')).color,
       about: document.querySelector('[data-nav-item="about"]').textContent.trim(),
       contact: document.querySelector('.stage__contact')?.getAttribute('href'),
@@ -62,7 +70,7 @@ const watch = (page) => {
       footer: !!document.getElementById('contact'),
     };
   });
-  check('Work is current on / and underlined', home.current === 'page' && home.underline !== 'rgba(0, 0, 0, 0)', home.underline);
+  check('Work is current on / and underlined (sliding bar)', home.current === 'page' && home.underline === true, String(home.underline));
   check('Nav reads "Work, About"', home.about === 'About');
   check('Nav text is light on the stage', home.color === 'rgb(237, 235, 228)', home.color);
   check('No footer on the stage; Contact sits bottom-left and goes to About#contact', !home.footer && home.corner && !home.navContact && home.contact?.endsWith('/about/#contact'), home.contact);

@@ -299,6 +299,9 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
 | Open case study | Click the active slide → `--sheet` rises from the bottom (yPercent 100 → 0, 900ms expo.inOut) carrying the case-study hero; the slider fades to 0.4 behind it. |
 | Close | Top-right "Close" → the sheet slides down (650ms, fast power3.in), the slider reappears on the same slide (index kept in sessionStorage + `?p=slug`). |
 | About → Work | The last section of About is the splash composition. A ScrollTrigger scrub maps progress 0→1 to counter 0→100 + image scale .5→1.4. At 1 (and after 300ms of no reverse scroll), navigate to Work with `?from=about`, and Work plays only the splash exit. |
+| Next project | NextProject link → the current sheet lifts away (yPercent 0 → -30, dims) while the next rises from the bottom (900ms expo.inOut). Back plays the reverse. |
+| Work ↔ About | Nav links: Work fades out (300ms), then About fades in (360ms, 240ms later), so the two layouts never overlap and the colour passes stage → paper. One bar under the current nav item slides between "Work" and "About" (600ms expo.inOut). |
+| How (Phase 10) | Astro ClientRouter view transitions. `src/lib/transitions.ts` names the kind on `<html data-vt>` (open, close, next, prev, section, lang, cut) and `motion.css` animates `::view-transition-old/new(root)`. The nav has its own transition layer and shows live. The About → Work hand-off is a cut (the splash exit covers it). Reduced motion: 150ms crossfade for every kind. Browsers without view transitions get Astro's fallback (simple fade). |
 
 ### 8.5 Reduced motion / touch / no-JS
 - Reduced motion: no letter roll, no counter animation (just show 100), no sheet slide (150ms fade), the slider jumps

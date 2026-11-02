@@ -94,9 +94,134 @@ html.lenis body {
   will-change: transform;
 }
 
-/* Language switch (src/lib/lang.ts): 180ms crossfade instead of the page transition */
+/* Language switch: 180ms crossfade instead of the page transition (kind set by src/lib/transitions.ts) */
 :root[data-vt='lang']::view-transition-old(root),
 :root[data-vt='lang']::view-transition-new(root) {
   animation-duration: var(--dur-fast);
   animation-timing-function: var(--ease-out);
+}
+
+/* ---------------------------------------------------------------- Stage & Sheet (§8.4, Phase 10)
+   The nav keeps its own layer and shows live (its colour and the Work/About bar animate in the DOM),
+   so it stays put while sheets move underneath. */
+.nav {
+  view-transition-name: nav;
+}
+
+::view-transition-group(nav),
+::view-transition-new(nav) {
+  animation: none;
+}
+
+::view-transition-old(nav) {
+  display: none;
+}
+
+/* About → Work hand-off: the splash exit covers the change */
+:root[data-vt='cut']::view-transition-old(root),
+:root[data-vt='cut']::view-transition-new(root) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:is([data-vt='open'], [data-vt='close'], [data-vt='next'], [data-vt='prev'], [data-vt='section'])::view-transition-old(root),
+  :root:is([data-vt='open'], [data-vt='close'], [data-vt='next'], [data-vt='prev'], [data-vt='section'])::view-transition-new(root) {
+    mix-blend-mode: normal;
+    animation-fill-mode: both;
+  }
+
+  /* open: the sheet (new page) rises from the bottom; the slider dims behind it */
+  :root[data-vt='open']::view-transition-new(root) {
+    animation: vt-rise var(--dur-sheet) var(--ease-sheet) both;
+  }
+  :root[data-vt='open']::view-transition-old(root) {
+    animation: vt-dim var(--dur-sheet) var(--ease-sheet) both;
+  }
+
+  /* close: the sheet (old page, on top) slides down fast; the slider brightens back */
+  :root[data-vt='close']::view-transition-old(root) {
+    z-index: 1;
+    animation: vt-sink var(--dur-sheet-close) var(--ease-sheet-close) both;
+  }
+  :root[data-vt='close']::view-transition-new(root) {
+    animation: vt-undim var(--dur-sheet-close) var(--ease-out) both;
+  }
+
+  /* next: the current sheet lifts away while the next one rises over it */
+  :root[data-vt='next']::view-transition-old(root) {
+    animation: vt-lift var(--dur-sheet) var(--ease-sheet) both;
+  }
+  :root[data-vt='next']::view-transition-new(root) {
+    animation: vt-rise var(--dur-sheet) var(--ease-sheet) both;
+  }
+
+  /* prev (Back from a next project): the current sheet sinks, the previous one comes down into place */
+  :root[data-vt='prev']::view-transition-old(root) {
+    z-index: 1;
+    animation: vt-sink var(--dur-sheet) var(--ease-sheet) both;
+  }
+  :root[data-vt='prev']::view-transition-new(root) {
+    animation: vt-drop var(--dur-sheet) var(--ease-sheet) both;
+  }
+
+  /* section (Work ↔ About): one page fades out, then the other fades in, so the two busy layouts never
+     overlap; the background colour tweens stage ↔ paper across the middle */
+  :root[data-vt='section']::view-transition-old(root) {
+    animation: vt-fade-out calc(var(--dur-section) * 0.5) var(--ease-in-out) both;
+  }
+  :root[data-vt='section']::view-transition-new(root) {
+    animation: vt-fade-in calc(var(--dur-section) * 0.6) var(--ease-in-out) calc(var(--dur-section) * 0.4) both;
+  }
+}
+
+/* §4.5 reduced motion: a 150ms crossfade for every page change. Astro's ClientRouter turns all view-
+   transition animations off under reduced motion (animation: none !important), so this needs the same
+   weight to win; :root makes it more specific. The About hand-off stays a cut. */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-vt='cut'])::view-transition-old(root) {
+    animation: vt-fade-out 150ms var(--ease-out) both !important;
+  }
+
+  :root:not([data-vt='cut'])::view-transition-new(root) {
+    animation: vt-fade-in 150ms var(--ease-out) both !important;
+  }
+}
+
+@keyframes vt-rise {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes vt-sink {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes vt-lift {
+  to {
+    transform: translateY(-30%);
+    filter: brightness(var(--stage-dim-brightness));
+  }
+}
+
+@keyframes vt-drop {
+  from {
+    transform: translateY(-30%);
+    filter: brightness(var(--stage-dim-brightness));
+  }
+}
+
+/* "fades to 0.4" (§8.4) as brightness, so the dimmed slider stays opaque over the sheet's page */
+@keyframes vt-dim {
+  to {
+    filter: brightness(0.4);
+  }
+}
+
+@keyframes vt-undim {
+  from {
+    filter: brightness(0.4);
+  }
 }
