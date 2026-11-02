@@ -5,7 +5,8 @@
 //   </div>
 //
 // Moves linearly at ~40px/s (data-marquee-speed to override). Scroll velocity speeds it up
-// (clamped 0.5×–3×) and sets its direction. Pauses on hover and focus. Static under reduced motion.
+// (clamped 0.5×–3×) and sets its direction. Keeps moving under the cursor (Kosei 2026-11-02); pauses
+// while a link inside has keyboard focus. Static under reduced motion.
 import { gsap, ScrollTrigger, media } from './motion';
 import { onPage } from './lifecycle';
 
@@ -38,7 +39,7 @@ function marquee(root: HTMLElement, signal: AbortSignal) {
   let factor = 1;
   let targetFactor = 1;
   let paused = false;
-  let pauseMix = 1; // 1 = moving, 0 = stopped; eased so hover doesn't jolt
+  let pauseMix = 1; // 1 = moving, 0 = stopped; eased so focus doesn't jolt
 
   const velocityWatcher = ScrollTrigger.create({
     trigger: document.documentElement,
@@ -65,8 +66,6 @@ function marquee(root: HTMLElement, signal: AbortSignal) {
 
   const pause = () => (paused = true);
   const resume = () => (paused = false);
-  root.addEventListener('pointerenter', pause, { signal });
-  root.addEventListener('pointerleave', resume, { signal });
   root.addEventListener('focusin', pause, { signal });
   root.addEventListener('focusout', resume, { signal });
 
