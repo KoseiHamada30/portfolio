@@ -62,7 +62,10 @@ const altHref = url(alt, path);
           try {
             if (!sessionStorage.getItem('locale-checked')) {
               sessionStorage.setItem('locale-checked', '1');
-              if (localStorage.getItem('locale') === 'ja') location.replace(altHref);
+              if (localStorage.getItem('locale') === 'ja') {
+                sessionStorage.setItem('splash-skip', '1'); // the language redirect never replays the splash
+                location.replace(altHref);
+              }
             }
           } catch {}
         </script>

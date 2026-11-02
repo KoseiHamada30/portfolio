@@ -114,6 +114,24 @@ function recordSplash() {
   await page.waitForURL(/\/portfolio\/$/);
   await page.waitForTimeout(500);
   check('Navigating back to Work: no splash', !(await page.evaluate(() => document.documentElement.classList.contains('splash-on'))));
+  // Language switch: in-place swap, and the full-load fallback, both skip the splash
+  await page.click('[data-lang-toggle]');
+  await page.waitForURL(/\/ja\/$/);
+  await page.waitForTimeout(400);
+  check('Switching language on Home: no splash', !(await page.evaluate(() => document.documentElement.classList.contains('splash-on'))));
+  await page.evaluate(() => {
+    sessionStorage.setItem('splash-skip', '1'); // what the toggle sets right before a full-load fallback
+    location.href = document.querySelector('[data-lang-toggle]').href;
+  });
+  await page.waitForURL(/\/portfolio\/$/);
+  await page.waitForSelector('[data-splash]', { state: 'attached' });
+  check('Language switch that falls back to a full load: no splash', !(await page.evaluate(() => document.documentElement.classList.contains('splash-on'))));
+  await page.reload({ waitUntil: 'commit' });
+  await page.waitForSelector('[data-splash]', { state: 'attached' });
+  check('…and a real refresh afterwards still plays it', await page.evaluate(() => document.documentElement.classList.contains('splash-on')));
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => window.__motion?.setups() >= 1, null, { timeout: 15000 });
+  await page.evaluate(() => localStorage.removeItem('locale'));
   await page.goto(`${BASE}/info/`);
   await page.waitForFunction(() => window.__motion?.setups() >= 1);
   await page.click('[data-nav-item="work"]');

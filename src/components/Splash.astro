@@ -20,9 +20,16 @@ const { locale, covers } = Astro.props;
   // readyState is 'loading'; when ClientRouter swaps the home page in (from /info, a case study…)
   // it re-runs this script with readyState 'complete', so in-site navigation never plays it.
   // window.__splashBooted lets the test suites opt out.
+  // A language switch (toggle or the remembered-language redirect) sets splash-skip: switching
+  // language never replays the splash.
   if (document.readyState === 'loading' && !window.__splashBooted) {
     window.__splashBooted = true;
-    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var skip = false;
+    try {
+      skip = sessionStorage.getItem('splash-skip') === '1';
+      sessionStorage.removeItem('splash-skip');
+    } catch (e) {}
+    if (!skip && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
       document.documentElement.classList.add('splash-on');
     }
   }
