@@ -433,12 +433,11 @@ const subline = (item: Item) => {
     display: none;
   }
 
-  /* Rows share one grid (subgrid), so every title starts at the same x: number + title form a
-     left-aligned column that is centred as a block (the number right beside its title, Kosei
-     2026-11-02), period at the right edge. */
+  /* Rows share one grid (subgrid): number at the left edge, the title and its line left-aligned
+     right after it (no gap in between, Kosei 2026-11-03), period at the right edge. */
   .stage-index__list {
     display: grid;
-    grid-template-columns: 7rem minmax(0, 1fr) auto minmax(0, max-content) minmax(0, 1fr) 7rem;
+    grid-template-columns: 4rem minmax(0, 1fr) 7rem;
     column-gap: var(--space-5);
     width: 100%;
     max-width: var(--max-width);
@@ -456,7 +455,7 @@ const subline = (item: Item) => {
   }
 
   .stage-index__num {
-    grid-column: 3;
+    grid-column: 1;
   }
 
   .stage-index__link {
@@ -485,13 +484,13 @@ const subline = (item: Item) => {
   }
 
   .stage-index__year {
-    grid-column: 6;
+    grid-column: 3;
     text-align: end;
   }
 
   /* title and its line side by side in one row, left-aligned */
   .stage-index__main {
-    grid-column: 4;
+    grid-column: 2;
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
@@ -560,9 +559,6 @@ const subline = (item: Item) => {
       column-gap: var(--space-3);
     }
 
-    .stage-index__num { grid-column: 1; }
-    .stage-index__main { grid-column: 2; }
-    .stage-index__year { grid-column: 3; }
   }
 
   @media (max-width: 760px) {
