@@ -51,7 +51,7 @@ const settle = (page) => page.waitForTimeout(1700);
     virtual: document.querySelector('[data-stage]').classList.contains('is-virtual'),
     links: [...document.querySelectorAll('[data-stage-link]')].map((a) => a.getAttribute('href')),
     roledesc: document.querySelector('[data-stage]').getAttribute('aria-roledescription'),
-    sub: document.querySelector('.stage__slide.is-active [data-stage-sub]').textContent.trim(),
+    sub: document.querySelectorAll('[data-stage-sub]')[1].textContent.trim(),
     quest: document.querySelectorAll('[data-stage-sub]')[4].textContent.trim(),
     filterActive: getComputedStyle(document.querySelector('.stage__slide.is-active .stage__media')).filter,
     filterOther: getComputedStyle(document.querySelectorAll('.stage__media')[1]).filter,
@@ -59,16 +59,16 @@ const settle = (page) => page.waitForTimeout(1700);
     bg: getComputedStyle(document.body).backgroundColor,
     footer: !!document.querySelector('footer'),
   }));
-  check('Six items: four projects, then side quests', first.titles.join(',') === 'Circula,Reverie,NextScore,NBA Research Lab,Brim CC,Honne Festa', first.titles.join(', '));
+  check('Six items: NBA Research Lab first, then the other projects, then side quests', first.titles.join(',') === 'NBA Research Lab,Circula,Reverie,NextScore,Brim CC,Honne Festa', first.titles.join(', '));
   check('GSAP slider on a fine pointer', first.virtual);
-  check('A carousel of links to each case page', first.roledesc === 'carousel' && first.links.every((h, i) => h.endsWith(`/work/${['circula', 'reverie', 'nextscore', 'nba-research-lab', 'brim-cc', 'honne-festa'][i]}/`)));
+  check('A carousel of links to each case page', first.roledesc === 'carousel' && first.links.every((h, i) => h.endsWith(`/work/${['nba-research-lab', 'circula', 'reverie', 'nextscore', 'brim-cc', 'honne-festa'][i]}/`)));
   check('Subline from the v1 category, without brackets', first.sub === '/App/Website design', first.sub);
   check('Side quests are labelled', first.quest === '/Side quest · Graphic design', first.quest);
   check('Centre slide in colour, neighbours monochrome and dimmed', first.filterActive === 'none' && first.filterOther.includes('grayscale(1)'), first.filterOther);
   check('Full-height slides on the dark stage, no footer', first.height === 900 && first.bg === 'rgb(35, 35, 35)' && !first.footer, `${first.height}px ${first.bg}`);
 
   let s = await state(page);
-  check('Starts on Circula, centred', s.title === 'Circula' && s.centred < 2);
+  check('Starts on NBA Research Lab, centred', s.title === 'NBA Research Lab' && s.centred < 2);
   check('No "+" marks on the stage', (await page.evaluate(() => !document.querySelector('[data-stage-scope], .comp__plus'))));
   check('System cursor (hand over slides), no custom cursor', (await page.evaluate(() => !document.querySelector('[data-cursor-root]') && getComputedStyle(document.querySelector('[data-stage-link]')).cursor === 'pointer')));
 
@@ -79,8 +79,8 @@ const settle = (page) => page.waitForTimeout(1700);
   const skew = await page.evaluate(() => getComputedStyle(document.querySelector('[data-stage-slide]')).transform);
   await settle(page);
   s = await state(page);
-  check('Wheel moves to the next project and snaps', s.title === 'Reverie' && s.centred < 2, `${s.title}, ${s.centred?.toFixed(1)}px off centre`);
-  check('Live region announces it', s.live === 'Project 2 of 6: Reverie', s.live);
+  check('Wheel moves to the next project and snaps', s.title === 'Circula' && s.centred < 2, `${s.title}, ${s.centred?.toFixed(1)}px off centre`);
+  check('Live region announces it', s.live === 'Project 2 of 6: Circula', s.live);
   const m = skew.match(/matrix\(([^)]+)\)/)?.[1].split(',').map(Number);
   const skewDeg = m ? Math.abs((Math.atan2(m[2], m[3]) * 180) / Math.PI) : 0;
   // one strong trackpad flick (a burst plus a decaying momentum tail) moves exactly one slide
@@ -102,7 +102,7 @@ const settle = (page) => page.waitForTimeout(1700);
   await page.keyboard.press('ArrowLeft');
   await settle(page);
   s = await state(page);
-  check('Arrow keys move and the loop wraps (Circula ← Honne Festa)', s.title === 'Honne Festa' && s.centred < 2, `${s.title} ${s.centred}`);
+  check('Arrow keys move and the loop wraps (NBA Research Lab ← Honne Festa)', s.title === 'Honne Festa' && s.centred < 2, `${s.title} ${s.centred}`);
   await page.keyboard.press('ArrowRight');
   await settle(page);
 
@@ -113,13 +113,13 @@ const settle = (page) => page.waitForTimeout(1700);
   await page.waitForTimeout(1200);
   const hov = await state(page);
   const hovFilter = await page.evaluate(() => [...document.querySelectorAll('.stage__media')].map((m) => getComputedStyle(m).filter));
-  check('Hovering a neighbour: it turns colour, the centre goes grey', hov.lit === 'Reverie' && hovFilter[(hov.active + 1) % 6] === 'none' && hovFilter[hov.active].includes('grayscale(1)'), `${hov.lit}: ${hovFilter.join(' | ')}`);
-  check('The centred title follows the hovered slide (crossfade, no roll)', hov.shown === 'Reverie' && (await page.evaluate(() => [...document.querySelectorAll('[data-stage-titles] [data-stage-title]')].every((t) => !t.style.transform || /translate\(0(px|%), 0(px|%)\)|none/.test(t.style.transform)))), hov.shown);
+  check('Hovering a neighbour: it turns colour, the centre goes grey', hov.lit === 'Circula' && hovFilter[(hov.active + 1) % 6] === 'none' && hovFilter[hov.active].includes('grayscale(1)'), `${hov.lit}: ${hovFilter.join(' | ')}`);
+  check('The centred title follows the hovered slide (crossfade, no roll)', hov.shown === 'Circula' && (await page.evaluate(() => [...document.querySelectorAll('[data-stage-titles] [data-stage-title]')].every((t) => !t.style.transform || /translate\(0(px|%), 0(px|%)\)|none/.test(t.style.transform)))), hov.shown);
   await page.mouse.down();
   await page.mouse.up();
   await settle(page);
   s = await state(page);
-  check('Clicking a neighbour brings it to the centre (no navigation)', s.title === 'Reverie' && page.url().endsWith('/portfolio/'), s.title);
+  check('Clicking a neighbour brings it to the centre (no navigation)', s.title === 'Circula' && page.url().endsWith('/portfolio/'), s.title);
 
   // drag with inertia
   await page.mouse.move(900, 450);
@@ -128,7 +128,7 @@ const settle = (page) => page.waitForTimeout(1700);
   await page.mouse.up();
   await settle(page);
   s = await state(page);
-  check('Dragging left moves forward and snaps', ['NextScore', 'NBA Research Lab'].includes(s.title) && s.centred < 2, s.title);
+  check('Dragging left moves forward and snaps', ['Reverie', 'NextScore'].includes(s.title) && s.centred < 2, s.title);
   check('A drag does not open the project', page.url().endsWith('/portfolio/'));
 
   // lens: moving the pointer reveals a colour blob that trails it, gone again at rest
@@ -188,7 +188,7 @@ const settle = (page) => page.waitForTimeout(1700);
     id: document.querySelector('[data-index-preview] .is-shown')?.dataset.previewId,
     filter: getComputedStyle(document.querySelector('[data-index-preview] .is-shown')).filter,
   }));
-  check('Hovering a row shows its preview, ending in colour', prev.on && prev.id === 'nextscore' && prev.filter === 'grayscale(0)', `${prev.id} ${prev.filter}`);
+  check('Hovering a row shows its preview, ending in colour', prev.on && prev.id === 'reverie' && prev.filter === 'grayscale(0)', `${prev.id} ${prev.filter}`);
   await page.reload();
   await ready(page);
   check('View choice is remembered', (await state(page)).view === 'index');
@@ -222,7 +222,7 @@ const settle = (page) => page.waitForTimeout(1700);
   await page.goto(`${BASE}/ja/`);
   await ready(page);
   const ja = await page.evaluate(() => ({
-    sub: document.querySelector('.stage__slide.is-active [data-stage-sub]').textContent.trim(),
+    sub: document.querySelectorAll('[data-stage-sub]')[1].textContent.trim(),
     quest: document.querySelectorAll('[data-stage-sub]')[5].textContent.trim(),
     about: document.querySelector('[data-nav-item="info"]').textContent.trim(),
   }));
@@ -254,7 +254,7 @@ const settle = (page) => page.waitForTimeout(1700);
     track.scrollLeft = slide.offsetLeft + slide.offsetWidth / 2 - track.clientWidth / 2;
   });
   await page.waitForTimeout(500);
-  check('Swiping updates the active slide', (await state(page)).title === 'NextScore');
+  check('Swiping updates the active slide', (await state(page)).title === 'Reverie');
   await ctx.close();
 }
 
