@@ -224,7 +224,7 @@ const settle = (page) => page.waitForTimeout(1700);
   const ja = await page.evaluate(() => ({
     sub: document.querySelectorAll('[data-stage-sub]')[1].textContent.trim(),
     quest: document.querySelectorAll('[data-stage-sub]')[5].textContent.trim(),
-    about: document.querySelector('[data-nav-item="info"]').textContent.trim(),
+    about: document.querySelector('[data-nav-item="about"]').textContent.trim(),
   }));
   check('JA sublines', ja.sub === 'アプリ／Webデザイン' && ja.quest === 'サイドクエスト · グラフィックデザイン', `${ja.sub} | ${ja.quest}`);
   const res = await page.goto(`${BASE}/work/honne-festa/`);

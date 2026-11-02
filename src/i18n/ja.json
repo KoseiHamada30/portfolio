@@ -309,5 +309,12 @@
   "case.beforeAfter": "ドラッグして比較",
   "case.before": "Before",
   "case.after": "After",
-  "case.openFigma": "Figmaでプロトタイプを開く"
+  "case.openFigma": "Figmaでプロトタイプを開く",
+  "about.title": "About",
+  "about.email": "Email",
+  "about.linkedin": "LinkedIn",
+  "about.resume": "Resume",
+  "about.education": "Education",
+  "about.goToWork": "Workへ →",
+  "about.photosLabel": "写真"
 }

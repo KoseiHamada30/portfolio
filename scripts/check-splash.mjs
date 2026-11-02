@@ -111,8 +111,8 @@ function recordSplash() {
   check('Refresh plays the splash again', await page.evaluate(() => document.documentElement.classList.contains('splash-on')));
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => window.__motion?.setups() >= 1, null, { timeout: 15000 });
-  await page.click('[data-nav-item="info"]');
-  await page.waitForURL(/\/info\/$/);
+  await page.click('[data-nav-item="about"]');
+  await page.waitForURL(/\/about\/$/);
   await page.click('[data-nav-item="work"]');
   await page.waitForURL(/\/portfolio\/$/);
   await page.waitForTimeout(500);
@@ -135,12 +135,12 @@ function recordSplash() {
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => window.__motion?.setups() >= 1, null, { timeout: 15000 });
   await page.evaluate(() => localStorage.removeItem('locale'));
-  await page.goto(`${BASE}/info/`);
+  await page.goto(`${BASE}/about/`);
   await page.waitForFunction(() => window.__motion?.setups() >= 1);
   await page.click('[data-nav-item="work"]');
   await page.waitForURL(/\/portfolio\/$/);
   await page.waitForTimeout(500);
-  check('Landing on /info, then clicking Work: no splash', !(await page.evaluate(() => document.documentElement.classList.contains('splash-on'))));
+  check('Landing on /about, then clicking Work: no splash', !(await page.evaluate(() => document.documentElement.classList.contains('splash-on'))));
   await ctx.close();
 }
 

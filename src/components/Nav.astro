@@ -13,9 +13,8 @@ interface Props {
 const { locale, alternate = true } = Astro.props;
 const path = pathWithoutLocale(Astro.url.pathname);
 const alt = otherLocale(locale);
-const section = path.startsWith('info') ? 'info' : path === '' || path.startsWith('work') ? 'work' : null;
-// /about arrives in Phase 9; until then "About" is the Info page.
-const aboutHref = url(locale, 'info');
+const section = path.startsWith('about') ? 'about' : path === '' || path.startsWith('work') ? 'work' : null;
+const aboutHref = url(locale, 'about');
 ---
 
 <header class="nav" data-nav transition:persist={`nav-${locale}`}>
@@ -27,7 +26,7 @@ const aboutHref = url(locale, 'info');
         <a class="nav__item" href={url(locale)} data-nav-item="work" aria-current={section === 'work' ? 'page' : undefined}>
           {t(locale, 'nav.work')}</a
         ><span class="nav__comma" aria-hidden="true">,</span>
-        <a class="nav__item" href={aboutHref} data-nav-item="info" aria-current={section === 'info' ? 'page' : undefined}>
+        <a class="nav__item" href={aboutHref} data-nav-item="about" aria-current={section === 'about' ? 'page' : undefined}>
           {t(locale, 'nav.about')}
         </a>
       </nav>

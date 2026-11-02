@@ -7,7 +7,7 @@ import path from 'node:path';
 
 const [dist, out] = process.argv.slice(2);
 const PAGES = [
-  'index.html', 'info/index.html', 'ja/index.html', 'ja/info/index.html',
+  'index.html', 'about/index.html', 'ja/index.html', 'ja/about/index.html',
   ...['circula', 'reverie', 'nextscore', 'nba-research-lab', 'brim-cc', 'honne-festa'].flatMap((s) => [`work/${s}/index.html`, `ja/work/${s}/index.html`]),
 ];
 

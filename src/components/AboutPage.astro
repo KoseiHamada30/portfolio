@@ -1,0 +1,400 @@
+---
+// About (Phase 9, DESIGN.md §8.4), shared by /about and /ja/about. Layout after the reference: the
+// portrait sticky on the left half (subtle parallax), content on the right — statement, contact
+// rows, About me, two-column (year | item) tables, skills, tools, "Who I am" photos. It ends in the
+// splash composition: scrolling through it counts to 100 and carries on into Work (src/lib/about.ts).
+// Copy is the v1 info.html wording (v1 i18n keys).
+import { Image } from 'astro:assets';
+import { t, url, type Locale, type Key } from '../lib/i18n';
+import { site } from '../lib/site';
+import { getSplashCovers } from '../lib/content';
+import SplashComposition from './SplashComposition.astro';
+import LinkBullet from './LinkBullet.astro';
+import portrait from '../assets/about/portrait.jpg';
+import newYork from '../assets/about/new-york.jpg';
+import hongKong from '../assets/about/hong-kong.jpg';
+import cafe from '../assets/about/cafe.jpg';
+import japan from '../assets/about/japan.jpg';
+import strangerThings from '../assets/about/stranger-things.png';
+import personal from '../assets/about/personal.jpg';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const covers = await getSplashCovers();
+const current = t(locale, 'exp-period-current');
+
+const experience: { period: string; title: Key | string; org: Key | string; place?: Key; desc?: Key; todo?: boolean }[] = [
+  // TODO(kosei): dates and title for the Cipher internship (Phase 7 interview)
+  { period: 'TODO(kosei)', title: 'NBA Research Lab', org: 'Cipher', todo: true },
+  { period: `2025–${current}`, title: 'exp-circula-title', org: 'exp-circula-company', place: 'exp-location-melbourne', desc: 'exp-circula-desc' },
+  { period: `2025–${current}`, title: 'exp-draft-title', org: 'exp-draft-company', place: 'exp-location-tokyo', desc: 'exp-draft-desc' },
+];
+const education = [
+  { period: `2024–${current}`, title: 'exp-education-title', org: 'exp-education-uni', place: 'exp-location-melbourne', desc: 'exp-education-desc' },
+] as const;
+const skills: { title: Key; desc: Key }[] = [
+  { title: 'skill-ux-design', desc: 'skill-ux-desc' },
+  { title: 'skill-problem-discovery', desc: 'skill-problem-desc' },
+  { title: 'skill-solution', desc: 'skill-solution-desc' },
+  { title: 'skill-professional-docs', desc: 'skill-professional-docs-desc' },
+];
+const tools = ['Figma', 'Cursor', 'Canva', 'Google Apps Script', 'Framer'];
+// v1 alt texts (English only); JA versions are new — TODO(kosei): review
+const photos = [
+  { src: newYork, alt: { en: 'New York', ja: 'ニューヨーク' } },
+  { src: hongKong, alt: { en: 'Hong Kong', ja: '香港' } },
+  { src: cafe, alt: { en: 'Cafe', ja: 'カフェ' } },
+  { src: japan, alt: { en: 'Japan', ja: '日本' } },
+  { src: strangerThings, alt: { en: 'Stranger Things', ja: 'ストレンジャー・シングス' } },
+  { src: personal, alt: { en: 'Kosei Hamada', ja: '濵田紘誠' } },
+];
+const tx = (value: string) => (value.includes('-') && !value.includes(' ') ? t(locale, value as Key) : value);
+---
+
+<div class="about">
+  <div class="about__portrait">
+    <div class="about__portrait-inner" data-about-portrait>
+      <Image src={portrait} alt={t(locale, 'site.name')} widths={[600, 900, 1400]} sizes="(min-width: 900px) 50vw, 100vw" loading="eager" fetchpriority="high" />
+    </div>
+  </div>
+
+  <div class="about__content">
+    <p class="about__name">{t(locale, 'site.name')}</p>
+    <h1 class="about__lead" data-reveal="fade" set:html={t(locale, 'info-hero')} />
+
+    <dl class="about__rows about__contact" id="contact">
+      <div class="about__row" data-reveal="fade">
+        <dt>{t(locale, 'about.email')}</dt>
+        <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+      </div>
+      <div class="about__row" data-reveal="fade">
+        <dt>{t(locale, 'about.linkedin')}</dt>
+        <dd><a href={site.socials.linkedin} target="_blank" rel="noopener noreferrer">kosei-hamada<span class="visually-hidden"> {t(locale, 'footer.newTab')}</span></a></dd>
+      </div>
+      <div class="about__row" data-reveal="fade">
+        <dt>{t(locale, 'about.resume')}</dt>
+        <dd><a href={site.resume} target="_blank" rel="noopener noreferrer">{t(locale, 'resume')}<span class="visually-hidden"> {t(locale, 'footer.newTab')}</span></a></dd>
+      </div>
+    </dl>
+
+    <section class="about__block" aria-labelledby="about-me">
+      <h2 class="about__h" id="about-me">About Me</h2>
+      {/* TODO(kosei): about-me-1 still mentions digital marketing (v1 wording) — send the new line */}
+      <p data-reveal="fade">{t(locale, 'about-me-1')}</p>
+      <p data-reveal="fade">{t(locale, 'about-me-2')}</p>
+      <p data-reveal="fade">{t(locale, 'about-me-3')}</p>
+    </section>
+
+    <section class="about__block" aria-labelledby="about-experience">
+      <h2 class="about__h" id="about-experience">Experience</h2>
+      <dl class="about__rows about__table">
+        {
+          experience.map((item) => (
+            <div class:list={['about__row', { 'is-todo': item.todo }]} data-reveal="fade">
+              <dt>{item.period}</dt>
+              <dd>
+                <span class="about__item-title">{tx(item.title)}</span>
+                <span class="about__item-org">
+                  {tx(item.org)}
+                  {item.place && ` · ${t(locale, item.place)}`}
+                </span>
+                {item.desc && <span class="about__item-desc">{t(locale, item.desc)}</span>}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="about__block" aria-labelledby="about-education">
+      <h2 class="about__h" id="about-education">{t(locale, 'about.education')}</h2>
+      <dl class="about__rows about__table">
+        {
+          education.map((item) => (
+            <div class="about__row" data-reveal="fade">
+              <dt>{item.period}</dt>
+              <dd>
+                <span class="about__item-title">{t(locale, item.title)}</span>
+                <span class="about__item-org">{t(locale, item.org)} · {t(locale, item.place)}</span>
+                <span class="about__item-desc">{t(locale, item.desc)}</span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="about__block" aria-labelledby="about-skills">
+      <h2 class="about__h" id="about-skills">Skills</h2>
+      <dl class="about__rows about__table">
+        {
+          skills.map((skill, i) => (
+            <div class="about__row" data-reveal="fade">
+              <dt>({String.fromCharCode(97 + i)})</dt>
+              <dd>
+                <span class="about__item-title">{t(locale, skill.title)}</span>
+                <span class="about__item-desc">{t(locale, skill.desc)}</span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="about__block" aria-labelledby="about-tools">
+      <h2 class="about__h" id="about-tools">Tools</h2>
+      <ul class="about__tools" data-reveal="fade">
+        {tools.map((tool) => <li>{tool}</li>)}
+      </ul>
+    </section>
+
+    <section class="about__block" aria-labelledby="about-photos">
+      <h2 class="about__h" id="about-photos">"Who I am"</h2>
+      <ul class="about__photos" aria-label={t(locale, 'about.photosLabel')}>
+        {
+          photos.map((photo) => (
+            <li data-reveal="fade">
+              <Image src={photo.src} alt={photo.alt[locale]} widths={[400, 800]} sizes="(min-width: 900px) 22vw, 45vw" loading="lazy" />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</div>
+
+<section class="about-end" aria-label={t(locale, 'about.goToWork')} data-about-end data-work-href={url(locale)}>
+  <div class="about-end__sticky">
+    <SplashComposition locale={locale} covers={covers} cta={{ href: url(locale), label: t(locale, 'about.goToWork') }} />
+  </div>
+</section>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  /* ------------------------------------------------------- portrait */
+
+  .about__portrait {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .about__portrait-inner {
+    height: 100%;
+    will-change: transform;
+  }
+
+  .about__portrait :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* -------------------------------------------------------- content */
+
+  .about__content {
+    padding: clamp(var(--space-10), 16vh, 12rem) clamp(var(--space-6), 6vw, var(--space-10)) var(--section-gap);
+  }
+
+  .about__name {
+    margin: 0 0 clamp(var(--space-9), 18vh, 14rem);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .about__lead {
+    margin: 0;
+    max-width: 30ch;
+    font-family: var(--font-grotesk);
+    font-size: clamp(1.75rem, 2.7vw, 2.75rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+  }
+
+  .about__lead :global(b) {
+    font-weight: 800;
+  }
+
+  :global(:root:lang(ja)) .about__lead {
+    max-width: 22em;
+    font-family: var(--font-body-ja);
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+
+  /* two-column rows: label | value */
+  .about__rows {
+    margin: 0;
+  }
+
+  .about__rows.about__contact {
+    margin-top: clamp(var(--space-8), 16vh, 12rem);
+  }
+
+  .about__row {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: var(--space-4);
+    padding: var(--space-2) 0;
+  }
+
+  .about__row dt {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    padding-top: 0.25em;
+  }
+
+  .about__row dd {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .about__row a {
+    text-decoration: none;
+  }
+
+  .about__row a:hover,
+  .about__row a:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .about__block {
+    margin-top: var(--space-10);
+  }
+
+  .about__h {
+    margin: 0 0 var(--space-5);
+    font-family: var(--font-grotesk);
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .about__block > p {
+    max-width: var(--text-width);
+    margin: var(--space-4) 0 0;
+    line-height: var(--lh-body);
+  }
+
+  .about__table .about__row {
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .about__table dd {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .about__item-title {
+    font-weight: 600;
+  }
+
+  .about__item-org {
+    color: var(--ink-500);
+    font-size: var(--fs-small);
+  }
+
+  .about__item-desc {
+    margin-top: var(--space-2);
+    font-weight: 400;
+    font-size: var(--fs-small);
+    line-height: var(--lh-body);
+  }
+
+  .about__row.is-todo dt,
+  .about__row.is-todo .about__item-org {
+    color: var(--ink-500);
+  }
+
+  .about__tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-weight: 500;
+  }
+
+  .about__photos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gutter);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about__photos :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  :global(:root:lang(ja)) .about__block > p,
+  :global(:root:lang(ja)) .about__item-desc {
+    line-height: var(--lh-body-ja);
+  }
+
+  /* --------------------------------------------- ending → Work (§8.4) */
+
+  /* the splash's background, so the hand-off to Work's splash exit is seamless */
+  .about-end {
+    position: relative;
+    height: 250svh;
+    background: var(--paper-200);
+  }
+
+  .about-end__sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+  }
+
+  @media (max-width: 900px) {
+    .about {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .about__portrait {
+      position: relative;
+      height: auto;
+      aspect-ratio: 4 / 5;
+    }
+
+    .about__content {
+      padding-top: var(--space-8);
+    }
+
+    .about__name {
+      margin-bottom: var(--space-6);
+    }
+
+    .about__row {
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-end {
+      height: 100svh;
+    }
+  }
+</style>

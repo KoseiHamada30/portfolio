@@ -309,5 +309,12 @@
   "case.beforeAfter": "Drag to compare",
   "case.before": "Before",
   "case.after": "After",
-  "case.openFigma": "Open the prototype in Figma"
+  "case.openFigma": "Open the prototype in Figma",
+  "about.title": "About",
+  "about.email": "Email",
+  "about.linkedin": "LinkedIn",
+  "about.resume": "Resume",
+  "about.education": "Education",
+  "about.goToWork": "Go to Work →",
+  "about.photosLabel": "Photos"
 }

@@ -13,11 +13,11 @@ function nav() {
 
 // ------------------------------------------------------- per-page sync
 
-/** 'work' | 'info' | null for the current URL. */
+/** 'work' | 'about' | null for the current URL. */
 function currentSection(): string | null {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const path = location.pathname.slice(base.length).replace(/^\/+|\/+$/g, '').replace(/^ja(\/|$)/, '');
-  if (path.startsWith('info')) return 'info';
+  if (path.startsWith('about')) return 'about';
   if (path === '' || path.startsWith('work')) return 'work';
   return null;
 }

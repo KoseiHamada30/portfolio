@@ -11,6 +11,12 @@ export default defineConfig({
   site: 'https://koseihamada30.github.io',
   base: REPO_BASE,
   integrations: [mdx()],
+  // Phase 9: the Info page became About (DESIGN.md §8.4); old links keep working.
+  // Sources are base-relative, but destinations are used as written, so they include the base.
+  redirects: {
+    '/info': `${REPO_BASE}/about/`,
+    '/ja/info': `${REPO_BASE}/ja/about/`,
+  },
   i18n: {
     locales: ['en', 'ja'],
     defaultLocale: 'en',

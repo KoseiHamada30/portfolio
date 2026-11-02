@@ -33,9 +33,11 @@ interface Props {
   /** 'case' = a case-study sheet: the nav shows "Close" (to closeHref) instead of Work/About. */
   page?: 'case';
   closeHref?: string;
+  /** False on pages that end somewhere else (About flows into Work); the stage never has one. */
+  footer?: boolean;
 }
 
-const { locale, title, description, project, noindex = false, alternate = true, surface = 'paper', page, closeHref } = Astro.props;
+const { locale, title, description, project, noindex = false, alternate = true, surface = 'paper', page, closeHref, footer = true } = Astro.props;
 const path = pathWithoutLocale(Astro.url.pathname);
 const siteName = t(locale, 'site.name');
 const pageTitle = title ? `${title} — ${siteName}` : `${siteName} — ${t(locale, 'site.role')}`;
@@ -83,7 +85,7 @@ const altHref = url(alt, path);
     <main id="main">
       <slot />
     </main>
-    {surface !== 'stage' && <Footer locale={locale} />}
+    {surface !== 'stage' && footer && <Footer locale={locale} />}
     <Toast />
     <script>
       import { startLifecycle } from '../lib/lifecycle';
@@ -95,6 +97,7 @@ const altHref = url(alt, path);
       import '../lib/footer';
       import '../lib/stage';
       import '../lib/case';
+      import '../lib/about';
       import '../lib/splash'; // last: its onPage hook runs after the page modules
       startLifecycle();
       startNav();

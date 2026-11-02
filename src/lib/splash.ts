@@ -110,7 +110,43 @@ async function runSplash(): Promise<void> {
   exitPending = { comp, finish };
 }
 
+/** About → Work (?from=about): the About ending already counted to 100, so Work shows the splash
+ *  in that end state and plays only the exit (DESIGN.md §8.4). */
+async function exitFromAbout(): Promise<boolean> {
+  const params = new URLSearchParams(location.search);
+  if (params.get('from') !== 'about') return false;
+  params.delete('from');
+  const query = params.toString();
+  history.replaceState(history.state, '', location.pathname + (query ? `?${query}` : '') + location.hash);
+
+  const html = document.documentElement;
+  const root = document.querySelector<HTMLElement>('[data-splash]');
+  const compEl = root?.querySelector<HTMLElement>('[data-comp]');
+  if (!root || !compEl || matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+
+  html.classList.add('splash-on');
+  const lenis = getLenis();
+  lenis?.stop();
+  window.scrollTo(0, 0);
+  const comp = createComposition(compEl);
+  await document.fonts.ready;
+  comp.fit();
+  comp.setImage(0);
+  comp.setProgress(100, { scaleImage: true });
+  gsap.set(compEl, { opacity: 1 });
+  exitPending = {
+    comp,
+    finish: () => {
+      html.classList.remove('splash-on', 'splash-exit');
+      gsap.set([compEl, comp.media], { clearProps: 'all' });
+      lenis?.start();
+    },
+  };
+  return true;
+}
+
 beforePage(async () => {
+  if (await exitFromAbout()) return;
   if (!document.documentElement.classList.contains('splash-on')) return;
   await runSplash();
 });
@@ -137,7 +173,7 @@ onPage(() => {
   // The final picture grows from its frame to fill the whole screen while Home rises over it.
   const media = comp.media;
   const box = media.getBoundingClientRect();
-  gsap.set(media, { position: 'fixed', top: box.top, left: box.left, width: box.width, height: box.height, margin: 0, zIndex: 1 });
+  gsap.set(media, { position: 'fixed', top: box.top, left: box.left, width: box.width, height: box.height, margin: 0, zIndex: 1, scale: 1 });
   exit.to(media, { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight, duration: 0.7, ease: 'expo.inOut' }, 0);
   exit.fromTo(main, { yPercent: 100 }, { yPercent: 0, duration: 0.7, ease: 'expo.inOut' }, 0.05);
 });

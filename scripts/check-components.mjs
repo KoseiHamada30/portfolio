@@ -55,7 +55,7 @@ const watch = (page) => {
       current: work.getAttribute('aria-current'),
       underline: getComputedStyle(work).textDecorationColor,
       color: getComputedStyle(document.querySelector('[data-nav]')).color,
-      about: document.querySelector('[data-nav-item="info"]').textContent.trim(),
+      about: document.querySelector('[data-nav-item="about"]').textContent.trim(),
       contact: document.querySelector('.stage__contact')?.getAttribute('href'),
       corner: (() => { const r = document.querySelector('.stage__contact').getBoundingClientRect(); return r.left < 80 && innerHeight - r.bottom < 40; })(),
       navContact: !!document.querySelector('[data-nav] .link-bullet'),
@@ -65,19 +65,19 @@ const watch = (page) => {
   check('Work is current on / and underlined', home.current === 'page' && home.underline !== 'rgba(0, 0, 0, 0)', home.underline);
   check('Nav reads "Work, About"', home.about === 'About');
   check('Nav text is light on the stage', home.color === 'rgb(237, 235, 228)', home.color);
-  check('No footer on the stage; Contact sits bottom-left and goes to About#contact', !home.footer && home.corner && !home.navContact && home.contact?.endsWith('/info/#contact'), home.contact);
+  check('No footer on the stage; Contact sits bottom-left and goes to About#contact', !home.footer && home.corner && !home.navContact && home.contact?.endsWith('/about/#contact'), home.contact);
   await page.mouse.move(0, 400);
-  await page.click('[data-nav-item="info"]');
+  await page.click('[data-nav-item="about"]');
   await ready(page, 2);
   await page.waitForTimeout(400);
   const after = await page.evaluate(() => ({
     path: location.pathname,
     persisted: document.querySelector('[data-nav]').__persisted === true,
-    info: document.querySelector('[data-nav-item="info"]').getAttribute('aria-current'),
+    info: document.querySelector('[data-nav-item="about"]').getAttribute('aria-current'),
     work: document.querySelector('[data-nav-item="work"]').getAttribute('aria-current'),
     color: getComputedStyle(document.querySelector('[data-nav]')).color,
   }));
-  check('Nav element persisted across navigation', after.persisted && after.path.endsWith('/info/'));
+  check('Nav element persisted across navigation', after.persisted && after.path.endsWith('/about/'));
   check('About becomes current', after.info === 'page' && after.work === null);
   check('Nav text turns dark on paper', after.color === 'rgb(14, 14, 14)', after.color);
   await page.close();
@@ -89,7 +89,7 @@ const watch = (page) => {
   const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
   const page = await context.newPage();
   watch(page);
-  await page.goto(`${BASE}/info/`);
+  await page.goto(`${BASE}/work/circula/`);
   await ready(page);
   const vt = page.evaluate(
     () => new Promise((resolve) => document.addEventListener('astro:before-swap', () => resolve(document.documentElement.dataset.vt ?? null), { once: true })),
@@ -104,10 +104,10 @@ const watch = (page) => {
     label: document.querySelector('[data-lang-toggle]').textContent.trim(),
     footer: document.querySelector('#contact .link-bullet__label:not(.footer__email *)')?.textContent,
   }));
-  check('EN /info → JA /ja/info/', ja.path.endsWith('/ja/info/') && ja.lang === 'ja', ja.path);
+  check('EN /work/circula → JA /ja/work/circula/', ja.path.endsWith('/ja/work/circula/') && ja.lang === 'ja', ja.path);
   check('180ms crossfade flag set for the swap', (await vt) === 'lang');
   check('Choice stored', ja.stored === 'ja');
-  check('Toggle now points back to the English page', ja.toggle.endsWith('/portfolio/info/') && ja.label === 'EN', `${ja.toggle} (${ja.label})`);
+  check('Toggle now points back to the English page', ja.toggle.endsWith('/portfolio/work/circula/') && ja.label === 'EN', `${ja.toggle} (${ja.label})`);
   const resume = await page.locator('#contact a[href*="drive.google"] .link-bullet__label').textContent();
   check('Footer is in Japanese', resume === 'レジュメを見る', resume);
   await context.close();
@@ -128,7 +128,7 @@ const watch = (page) => {
   const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, permissions: ['clipboard-read', 'clipboard-write'] });
   const page = await context.newPage();
   watch(page);
-  await page.goto(`${BASE}/info/`);
+  await page.goto(`${BASE}/work/circula/`);
   await ready(page);
 
   const clock = await page.locator('[data-clock]').textContent();
@@ -163,7 +163,7 @@ const watch = (page) => {
   console.log('\nCursor');
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   watch(page);
-  for (const path of ['/', '/lab/', '/info/']) {
+  for (const path of ['/', '/lab/', '/about/']) {
     await page.goto(`${BASE}${path}`);
     await ready(page);
     const c = await page.evaluate(() => ({
@@ -214,7 +214,7 @@ const watch = (page) => {
     order.push(await k.evaluate(() => document.activeElement?.dataset.navItem ?? (document.activeElement?.hasAttribute('data-lang-toggle') ? 'lang' : document.activeElement?.textContent?.trim().slice(0, 12))));
   }
   const normalised = order.map((s) => String(s).replace(/\s+/g, ''));
-  check('Tab order: brand → Work → About → language', normalised.join(',') === 'KOSEI©,work,info,lang', order.join(' → '));
+  check('Tab order: brand → Work → About → language', normalised.join(',') === 'KOSEI©,work,about,lang', order.join(' → '));
   await k.close();
 }
 

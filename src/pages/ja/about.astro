@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import JaFonts from '../../components/JaFonts.astro';
+import AboutPage from '../../components/AboutPage.astro';
+import { t } from '../../lib/i18n';
+---
+
+<JaFonts />
+<BaseLayout locale="ja" title={t('ja', 'about.title')} footer={false}>
+  <AboutPage locale="ja" />
+</BaseLayout>

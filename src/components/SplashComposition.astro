@@ -19,9 +19,11 @@ interface Props {
   covers: SplashCover[];
   /** 0–100, rendered as the initial counter value. */
   progress?: number;
+  /** About ending: a "Go to Work →" link in place of the intro (DESIGN.md §8.4). */
+  cta?: { href: string; label: string };
 }
 
-const { locale, covers, progress = 0 } = Astro.props;
+const { locale, covers, progress = 0, cta } = Astro.props;
 const letters = [...'KOSEI©'];
 const COPIES = 4; // glyph copies per letter strip for the roll
 ---
@@ -63,7 +65,15 @@ const COPIES = 4; // glyph copies per letter strip for the roll
 
   <div class="comp__row">
     <p class="comp__label" lang="ja">{t(locale, 'splash.label')}</p>
-    <p class="comp__intro" set:html={t(locale, 'intro-text')} />
+    {
+      cta ? (
+        <a class="comp__intro comp__cta" href={cta.href} data-comp-cta>
+          {cta.label}
+        </a>
+      ) : (
+        <p class="comp__intro" set:html={t(locale, 'intro-text')} />
+      )
+    }
     <p class="comp__count" aria-hidden="true" data-comp-count>{Math.round(progress)}</p>
   </div>
 </div>
@@ -171,6 +181,18 @@ const COPIES = 4; // glyph copies per letter strip for the roll
     font-weight: 500;
     line-height: 1.45;
     text-align: center;
+  }
+
+  .comp__cta {
+    font-size: var(--fs-body);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .comp__cta:hover,
+  .comp__cta:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
   }
 
   .comp__intro :global(b) {
