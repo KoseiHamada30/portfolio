@@ -308,5 +308,6 @@
   "case.outOf": "（5点満点）",
   "case.beforeAfter": "ドラッグして比較",
   "case.before": "Before",
-  "case.after": "After"
+  "case.after": "After",
+  "case.openFigma": "Figmaでプロトタイプを開く"
 }

@@ -308,5 +308,6 @@
   "case.outOf": "out of 5",
   "case.beforeAfter": "Drag to compare",
   "case.before": "Before",
-  "case.after": "After"
+  "case.after": "After",
+  "case.openFigma": "Open the prototype in Figma"
 }

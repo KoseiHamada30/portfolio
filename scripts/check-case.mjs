@@ -45,6 +45,7 @@ const scrollTo = async (page, selector) => {
     images: [...document.querySelectorAll('.case img')].filter((i) => !i.closest('.next')).length,
     videos: [...document.querySelectorAll('video')].map((v) => v.getAttribute('src')),
     iframe: document.querySelector('.media iframe')?.getAttribute('src')?.includes('embed.figma.com'),
+    figmaLink: document.querySelector('.media__link a')?.getAttribute('href'),
     bars: [...document.querySelectorAll('[data-bars-value]')].map((b) => b.dataset.barsValue),
     next: document.querySelector('.next__title')?.textContent,
     overflow: document.documentElement.scrollWidth - innerWidth,
@@ -56,6 +57,7 @@ const scrollTo = async (page, selector) => {
   check('Circula accent applied', info.accent.toLowerCase() === '#f39237', info.accent);
   check('Every v1 image kept (hero, overview, features, screens)', info.images === 4, `${info.images} images`);
   check('Both screen recordings (web MP4) and the Figma prototype', info.videos.length === 2 && info.videos.every((v) => v.endsWith('.mp4')) && info.iframe);
+  check('Figma embed also has an "Open in Figma" link', info.figmaLink?.startsWith('https://www.figma.com/proto/') && !info.figmaLink.includes('embed-host'), info.figmaLink?.slice(0, 60));
   check('SUS chart: nine means from the v1 data', info.bars.join(' ') === '4.3 1.9 4.2 1.7 1.1 4.4 1.6 4.2 4.5', info.bars.join(' '));
   check('Next project link', info.next === 'Reverie', info.next);
   check('No sideways scroll', info.overflow <= 0);
