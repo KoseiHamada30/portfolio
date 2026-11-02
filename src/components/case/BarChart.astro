@@ -1,0 +1,149 @@
+---
+// Accessible horizontal bar chart (replaces v1's Chart.js canvas): a real list with visible values,
+// bars that grow and numbers that count up when it scrolls in (case.ts). Scale min…max (Likert 1–5).
+import { t, pick, localeOf, type Localized } from '../../lib/i18n';
+
+interface Props {
+  rows: { label: Localized; value: number }[];
+  n: number;
+  min?: number;
+  max?: number;
+}
+
+const locale = localeOf(Astro.currentLocale);
+const { rows, n, min = 1, max = 5 } = Astro.props;
+const ticks = Array.from({ length: max - min + 1 }, (_, i) => min + i);
+---
+
+<figure class="bars" data-bars data-reveal="fade">
+  <figcaption class="bars__legend">{t(locale, 'case.chartMean').replace('{n}', String(n))}</figcaption>
+  <ol class="bars__list">
+    {
+      rows.map(({ label, value }, i) => (
+        <li class="bars__row" style={`--v: ${((value - min) / (max - min)).toFixed(4)}; --i: ${i}`}>
+          <span class="bars__label">{pick(locale, label)}</span>
+          <span class="bars__track" aria-hidden="true">
+            <span class="bars__fill" />
+          </span>
+          <span class="bars__value">
+            <span data-bars-value={value.toFixed(1)}>{value.toFixed(1)}</span>
+            <span class="visually-hidden"> {t(locale, 'case.outOf')}</span>
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="bars__axis" aria-hidden="true">
+    <span class="bars__label"></span>
+    <span class="bars__ticks">{ticks.map((tick) => <span>{tick}</span>)}</span>
+    <span class="bars__value"></span>
+  </div>
+  <p class="bars__axis-title" aria-hidden="true">{t(locale, 'case.chartAxis')}</p>
+</figure>
+
+<style>
+  .bars {
+    margin: var(--space-6) 0 0;
+  }
+
+  .bars__legend {
+    margin-bottom: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+
+  .bars__list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .bars__row,
+  .bars__axis {
+    display: grid;
+    grid-template-columns: minmax(9rem, 14rem) minmax(0, 1fr) 2.5rem;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .bars__label {
+    font-size: var(--fs-small);
+  }
+
+  .bars__track {
+    position: relative;
+    height: 14px;
+    background: var(--paper-200);
+  }
+
+  .bars__fill {
+    position: absolute;
+    inset: 0;
+    background: var(--ink-900);
+    transform-origin: left;
+    transform: scaleX(var(--v));
+  }
+
+  /* With JS the bars start empty and grow in one after another (case.ts adds .is-in) */
+  :global(.js) .bars__fill {
+    transform: scaleX(0);
+    transition: transform 1s var(--ease-out-expo) calc(var(--i) * 60ms);
+  }
+
+  :global(.js) .bars.is-in .bars__fill {
+    transform: scaleX(var(--v));
+  }
+
+  .bars__value {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bars__axis {
+    margin-top: var(--space-2);
+  }
+
+  .bars__ticks {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    color: var(--ink-500);
+  }
+
+  .bars__axis-title {
+    margin: var(--space-2) 0 0;
+    font-size: var(--fs-label);
+    text-align: center;
+    color: var(--ink-500);
+  }
+
+  @media (max-width: 640px) {
+    .bars__row,
+    .bars__axis {
+      grid-template-columns: minmax(0, 1fr) 2.5rem;
+      row-gap: var(--space-1);
+    }
+
+    .bars__row .bars__label {
+      grid-column: 1 / -1;
+    }
+
+    .bars__axis .bars__label {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .bars__fill {
+      transition: none;
+    }
+  }
+</style>

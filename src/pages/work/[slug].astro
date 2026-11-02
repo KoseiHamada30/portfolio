@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import WorkPlaceholder from '../../components/WorkPlaceholder.astro';
+import WorkPage from '../../components/WorkPage.astro';
 
 export async function getStaticPaths() {
   // Side quests get the same placeholder page so their stage slides have somewhere to link.
@@ -13,6 +12,4 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 ---
 
-<BaseLayout locale="en" title={project.data.title} project={project.id === 'nba-research-lab' ? 'nba-lab' : project.id}>
-  <WorkPlaceholder project={project} locale="en" />
-</BaseLayout>
+<WorkPage project={project} locale="en" />

@@ -47,6 +47,7 @@ const subline = (item: Item) => {
           aria-label={fill(t(locale, 'stage.slide'), { n: i + 1, total })}
           data-project={item.accentKey}
           data-stage-slide
+          data-id={item.id}
           data-title={item.title}
         >
           <a class="stage__link" href={url(locale, `work/${item.id}`)} data-stage-link>

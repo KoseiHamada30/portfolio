@@ -41,6 +41,10 @@ function syncPage() {
     if (alternate) toggle.setAttribute('href', new URL(alternate.href).pathname);
   }
 
+  // Case sheets: "Close" goes back to the stage on this project (the persisted nav keeps old DOM)
+  const close = el.querySelector<HTMLAnchorElement>('[data-nav-close]');
+  if (close && document.body.dataset.close) close.setAttribute('href', document.body.dataset.close);
+
   el.classList.remove('is-hidden');
   updateScroll(true);
 }

@@ -30,9 +30,12 @@ interface Props {
   alternate?: boolean;
   /** 'stage' = the dark Work stage (DESIGN.md §8): light nav, no footer. */
   surface?: 'paper' | 'stage';
+  /** 'case' = a case-study sheet: the nav shows "Close" (to closeHref) instead of Work/About. */
+  page?: 'case';
+  closeHref?: string;
 }
 
-const { locale, title, description, project, noindex = false, alternate = true, surface = 'paper' } = Astro.props;
+const { locale, title, description, project, noindex = false, alternate = true, surface = 'paper', page, closeHref } = Astro.props;
 const path = pathWithoutLocale(Astro.url.pathname);
 const siteName = t(locale, 'site.name');
 const pageTitle = title ? `${title} — ${siteName}` : `${siteName} — ${t(locale, 'site.role')}`;
@@ -73,7 +76,7 @@ const altHref = url(alt, path);
     }
     <ClientRouter />
   </head>
-  <body data-project={project} data-surface={surface}>
+  <body data-project={project} data-surface={surface} data-page={page} data-close={closeHref}>
     <slot name="overlay" />
     <a class="skip-link" href="#main">{t(locale, 'a11y.skip')}</a>
     <Nav locale={locale} alternate={alternate} />
@@ -91,6 +94,7 @@ const altHref = url(alt, path);
       import '../lib/marquee';
       import '../lib/footer';
       import '../lib/stage';
+      import '../lib/case';
       import '../lib/splash'; // last: its onPage hook runs after the page modules
       startLifecycle();
       startNav();

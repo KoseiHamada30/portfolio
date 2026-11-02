@@ -296,5 +296,17 @@
   "reverie-review-next-title": "今後の改善点：",
   "reverie-review-next-1": "プロトタイプのUI面をさらに洗練させ、ユーザーテストを実施",
   "reverie-review-next-2": "テキストの色使い、フォント、テキスト量など、情報の見せ方を工夫する",
-  "reverie-review-next-3": "シンプルさを保ちつつ、ゲーミフィケーションなどの要素を加え、ユーザーが「使いたくなる」ようなUI設計"
+  "reverie-review-next-3": "シンプルさを保ちつつ、ゲーミフィケーションなどの要素を加え、ユーザーが「使いたくなる」ようなUI設計",
+  "case.close": "Close",
+  "case.category": "カテゴリー",
+  "case.contents": "目次",
+  "case.next": "次のプロジェクト",
+  "case.insight": "インサイト",
+  "case.decision": "デザインの方針",
+  "case.chartAxis": "平均スコア（1～5）",
+  "case.chartMean": "平均（n={n}）",
+  "case.outOf": "（5点満点）",
+  "case.beforeAfter": "ドラッグして比較",
+  "case.before": "Before",
+  "case.after": "After"
 }

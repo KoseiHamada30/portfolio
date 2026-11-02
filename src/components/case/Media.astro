@@ -1,0 +1,107 @@
+---
+// Image, video or embed with an optional caption (DESIGN.md §6).
+//   <Media src={img} alt={{ en, ja }} />                          image (astro:assets)
+//   <Media video="media/circula/listview.mp4" frame="phone" />    muted loop; plays only while
+//                                                                 centred in the viewport (case.ts)
+//   <Media embed="https://embed.figma.com/…" title="…" />         lazy iframe (Figma prototypes)
+// size: "content" (column width, default) | "narrow" (max 600px, centred)
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { text, localeOf, type Text } from '../../lib/i18n';
+
+interface Props {
+  src?: ImageMetadata;
+  video?: string;
+  embed?: string;
+  alt?: Text;
+  title?: Text;
+  caption?: Text;
+  frame?: 'phone' | 'none';
+  size?: 'content' | 'narrow';
+}
+
+const locale = localeOf(Astro.currentLocale);
+const { src, video, embed, alt, title, caption, frame = 'none', size = 'content' } = Astro.props;
+const label = alt ? text(locale, alt) : '';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+<figure class:list={['media', `media--${size}`, `media--frame-${frame}`, { 'media--embed': embed }]} data-reveal="fade">
+  {
+    src && (
+      <Image
+        src={src}
+        alt={label}
+        widths={size === 'narrow' ? [600, 1200] : [800, 1200, 1600]}
+        sizes={size === 'narrow' ? '600px' : '(min-width: 1100px) 52rem, 92vw'}
+        loading="lazy"
+        decoding="async"
+      />
+    )
+  }
+  {
+    video && (
+      <div class="media__video">
+        <video src={`${base}${video}`} muted loop playsinline preload="metadata" aria-label={label} data-centre-play />
+      </div>
+    )
+  }
+  {
+    embed && (
+      <iframe src={embed} title={title ? text(locale, title) : label} loading="lazy" allowfullscreen />
+    )
+  }
+  {caption && <figcaption>{text(locale, caption)}</figcaption>}
+</figure>
+
+<style>
+  .media {
+    margin: var(--space-7) 0 0;
+  }
+
+  .media--narrow {
+    max-width: 600px;
+    margin-inline: auto;
+  }
+
+  .media :global(img) {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Screen recordings in a phone-shaped frame (v1: 180–220px wide) */
+  .media--frame-phone .media__video {
+    width: clamp(160px, 22vw, 220px);
+    margin-inline: auto;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #0a0a0a;
+  }
+
+  video {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Figma prototype player: wide enough for the flows sidebar + device */
+  iframe {
+    display: block;
+    width: 100%;
+    height: clamp(420px, 58vw, 720px);
+    border: 0;
+    background: var(--paper-200);
+  }
+
+  @media (max-width: 760px) {
+    iframe {
+      height: clamp(480px, 85vh, 720px);
+    }
+  }
+
+  figcaption {
+    margin-top: var(--space-3);
+    font-size: var(--fs-small);
+    color: var(--ink-500);
+  }
+</style>

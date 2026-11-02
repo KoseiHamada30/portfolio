@@ -9,6 +9,9 @@ role: { en: 'UX designer / UX researcher', ja: 'UX designer / UX researcher' }
 duration: { en: 'Ongoing', ja: '継続中' }
 tools: [Figma, Cursor, Framer]
 accent: '#F39237'
+caseStudy: true
+hero: ../../assets/projects/circula/frontpage.png
+heroAlt: { en: 'Circula App', ja: 'Circulaアプリ' }
 cover: ../../assets/projects/circula/cover.png
 coverPosition: 'left center'
 coverAlt:
@@ -16,4 +19,122 @@ coverAlt:
   ja: 'メルボルン大学を背景に、スマートフォンに表示されたCirculaのキャンパスマップ'
 ---
 
-{/* Case study body comes in the case-study phase. Strings above are from v1 i18n.js. */}
+import T from '../../components/case/T.astro';
+import Section from '../../components/case/Section.astro';
+import MetaGrid from '../../components/case/MetaGrid.astro';
+import Media from '../../components/case/Media.astro';
+import Callout from '../../components/case/Callout.astro';
+import BarChart from '../../components/case/BarChart.astro';
+import overview from '../../assets/projects/circula/overview.png';
+import features from '../../assets/projects/circula/features.png';
+import screens from '../../assets/projects/circula/screens.png';
+import { labels as susLabels, means as susMeans, responses as susResponses } from '../../data/circula-sus';
+
+{/* Migrated from v1 circula.html (Phase 5). Every string is the v1 i18n key (src/i18n/*.json);
+    JA alt texts are new — TODO(kosei): review. */}
+
+<div class="case-intro">
+  <p class="lead"><T k="circula-hero-desc-1" /></p>
+  <p class="lead"><T k="circula-hero-desc-2" /></p>
+  <MetaGrid items={[
+    { label: 'circula-meta-type', value: 'circula-meta-type-value' },
+    { label: 'circula-meta-duration', value: 'circula-meta-duration-value' },
+    { label: 'circula-meta-role', value: 'circula-meta-role-value' },
+    { label: 'circula-meta-tools', value: 'circula-meta-tools-value' },
+  ]} />
+  <Media src={overview} alt={{ en: 'Circula design', ja: 'Circulaのデザイン' }} />
+</div>
+
+<Section num="01" title="challenge" id="challenge">
+  <h3><T k="circula-challenge-title" /></h3>
+  <p><T k="circula-challenge-desc" /></p>
+</Section>
+
+<Section num="02" title="discovery" id="discovery">
+  <h3><T k="circula-discovery-title" /></h3>
+  <p><T k="circula-discovery-desc-1" /></p>
+  <Callout kind="decision">
+    <p><T k="circula-discovery-desc-2" /><b><T k="circula-discovery-desc-3" /></b><T k="circula-discovery-desc-4" /></p>
+  </Callout>
+</Section>
+
+<Section num="03" title="research" id="research">
+  <h3><T k="circula-research-title" /></h3>
+  <h4><T k="circula-research-survey-title" /></h4>
+  <ul>
+    <li><b><T k="circula-research-survey-1" /></b>: <T k="circula-research-survey-1-desc" /></li>
+    <li><b><T k="circula-research-survey-2" /></b>: <T k="circula-research-survey-2-desc" /></li>
+    <li><b><T k="circula-research-survey-3" /></b>: <T k="circula-research-survey-3-desc" /></li>
+  </ul>
+  <h4><T k="circula-research-interview-title" /></h4>
+  <ul>
+    <li><b><T k="circula-research-interview-1" /></b>: <T k="circula-research-interview-1-desc" /></li>
+    <li><b><T k="circula-research-interview-2" /></b>: <T k="circula-research-interview-2-desc" /></li>
+    <li><b><T k="circula-research-interview-3" /></b>: <T k="circula-research-interview-3-desc" /></li>
+  </ul>
+</Section>
+
+<Section num="04" title="What is this app?" id="what-is">
+  <h3><T k="circula-whatis-title" /></h3>
+  <p><T k="circula-whatis-desc" /></p>
+  <Media src={features} size="narrow" alt={{ en: 'Circula features', ja: 'Circulaの機能' }} />
+</Section>
+
+<Section num="05" title="visual-design" id="visual-design">
+  <h3><T k="circula-design-title" /></h3>
+  <h4><T k="circula-design-2-title" /></h4>
+  <p><T k="circula-design-2-desc" /></p>
+  <h4><T k="circula-design-1-title" /></h4>
+  <p><T k="circula-design-1-desc" /></p>
+  <h4><T k="circula-design-3-title" /></h4>
+  <p><T k="circula-design-3-desc" /></p>
+  <Media src={screens} alt={{ en: 'Circula screens', ja: 'Circulaの画面' }} />
+</Section>
+
+<Section num="06" title="ux-experience" id="ux">
+  <h3><T k="circula-ux-title" /></h3>
+  <h4><T k="circula-ux-flow1-title" /></h4>
+  <p><T k="circula-ux-flow1-desc" /></p>
+  <Media
+    embed="https://embed.figma.com/proto/i4Be5dEw21Ri8qVUCt9bTE/Mobile-Design?node-id=1044-5836&scaling=scale-down&content-scaling=responsive&device-frame=true&footer=true&show-proto-sidebar=true&viewport-controls=true&starting-point-node-id=1044%3A5836&page-id=0%3A1&embed-host=share"
+    title={{ en: 'Circula prototype — discover nearby events', ja: 'Circulaのプロトタイプ — 周辺のイベントを発見' }}
+  />
+  <h4><T k="circula-ux-flow-list-title" /></h4>
+  <p><T k="circula-ux-flow-list-desc" /></p>
+  <Media video="media/circula/listview.mp4" frame="phone" alt={{ en: 'List view demo video', ja: 'リストビューのデモ動画' }} />
+  <h4><T k="circula-ux-flow2-title" /></h4>
+  <p><T k="circula-ux-flow2-desc" /></p>
+  <Media video="media/circula/clubsearch.mp4" frame="phone" alt={{ en: 'Circula club search and save flow', ja: 'Circulaでサークルを探して保存する流れ' }} />
+</Section>
+
+<Section num="07" title="circula-ongoing-section" id="ongoing-research">
+  <p><T k="circula-ongoing-intro" /></p>
+  <h4><T k="circula-ongoing-qual-heading" /></h4>
+  <p class="muted"><T k="circula-ongoing-qual-lead" /></p>
+  <ul>
+    <li><T k="circula-ongoing-qual-1" /></li>
+    <li><T k="circula-ongoing-qual-2" /></li>
+    <li><T k="circula-ongoing-qual-3" /></li>
+  </ul>
+  <h4><T k="circula-ongoing-quant-heading" /></h4>
+  <p><T k="circula-ongoing-quant-lead" /></p>
+  <p class="muted"><T k="circula-sus-chart-caption" /></p>
+  <BarChart rows={susLabels.map((label, i) => ({ label, value: susMeans[i] }))} n={susResponses.length} />
+  <p class="muted"><T k="circula-sus-chart-footnote" /></p>
+</Section>
+
+<Section num="08" title="future" id="future">
+  <h3><T k="circula-future-title" /></h3>
+  <h4><T k="circula-future-like-title" /></h4>
+  <ul>
+    <li><T k="circula-future-like-1" /></li>
+    <li><T k="circula-future-like-2" /></li>
+    <li><T k="circula-future-like-3" /></li>
+  </ul>
+  <h4><T k="circula-future-next-title" /></h4>
+  <ul>
+    <li><T k="circula-future-next-1" /></li>
+    <li><T k="circula-future-next-2" /></li>
+    <li><T k="circula-future-next-3" /></li>
+  </ul>
+</Section>

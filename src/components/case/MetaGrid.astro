@@ -1,0 +1,54 @@
+---
+// Label/value pairs (Role · Duration · Tools …), mono labels, 2–5 columns (DESIGN.md §6).
+import { text, localeOf, type Text } from '../../lib/i18n';
+
+interface Props {
+  items: { label: Text; value: Text }[];
+}
+
+const locale = localeOf(Astro.currentLocale);
+const { items } = Astro.props;
+---
+
+<dl class="meta-grid" style={`--cols: ${Math.min(Math.max(items.length, 2), 5)}`} data-reveal="fade">
+  {
+    items.map(({ label, value }) => (
+      <div class="meta-grid__item">
+        <dt>{text(locale, label)}</dt>
+        <dd>{text(locale, value)}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: var(--space-5) var(--gutter);
+    margin: var(--space-7) 0 0;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--line);
+  }
+
+  dt {
+    margin-bottom: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+
+  dd {
+    margin: 0;
+    font-size: var(--fs-small);
+    font-weight: 500;
+  }
+
+  @media (max-width: 760px) {
+    .meta-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

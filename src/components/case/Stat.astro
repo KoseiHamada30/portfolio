@@ -1,0 +1,36 @@
+---
+// Big number + label; counts up when it scrolls in (reveal.ts data-reveal="counter").
+import { text, localeOf, type Text } from '../../lib/i18n';
+
+interface Props {
+  value: number;
+  suffix?: string;
+  label: Text;
+}
+
+const locale = localeOf(Astro.currentLocale);
+const { value, suffix = '', label } = Astro.props;
+---
+
+<div class="stat">
+  <p class="stat__value"><span data-reveal="counter">{value}</span>{suffix}</p>
+  <p class="stat__label">{text(locale, label)}</p>
+</div>
+
+<style>
+  .stat__value {
+    margin: 0;
+    font-family: var(--font-grotesk);
+    font-size: var(--fs-display);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat__label {
+    margin: var(--space-2) 0 0;
+    font-size: var(--fs-small);
+    color: var(--ink-500);
+  }
+</style>

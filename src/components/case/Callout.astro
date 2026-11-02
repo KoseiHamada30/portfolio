@@ -1,0 +1,44 @@
+---
+// "Insight" / "Decision" box on the project's soft accent (DESIGN.md §6).
+import { t, localeOf } from '../../lib/i18n';
+
+interface Props {
+  kind?: 'insight' | 'decision';
+}
+
+const locale = localeOf(Astro.currentLocale);
+const { kind = 'insight' } = Astro.props;
+---
+
+<aside class="callout" data-reveal="fade">
+  <p class="callout__label">{t(locale, kind === 'decision' ? 'case.decision' : 'case.insight')}</p>
+  <div class="callout__body"><slot /></div>
+</aside>
+
+<style>
+  .callout {
+    margin: var(--space-6) 0 0;
+    padding: var(--space-5) var(--space-6);
+    border-left: 2px solid var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .callout__label {
+    margin: 0 0 var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--ink-700);
+  }
+
+  .callout__body {
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    line-height: 1.45;
+  }
+
+  .callout__body :global(p) {
+    margin: 0;
+  }
+</style>

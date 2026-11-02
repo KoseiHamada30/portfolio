@@ -204,12 +204,12 @@ const settle = (page) => page.waitForTimeout(1700);
   await page.waitForURL(/\/work\//);
   await ready(page, 2);
   check('Clicking the centre slide opens the project', page.url().includes('/work/'), page.url());
-  await page.click('[data-nav-item="work"]');
+  await page.click('[data-nav-close]');
   await page.waitForURL(/\/portfolio\/$/);
   await ready(page, 3);
   await settle(page);
   s = await state(page);
-  check('Back on Work, the same slide is centred', s.title === opened && s.centred < 2, `${opened} → ${s.title}`);
+  check('Close goes back to Work with the same slide centred', s.title === opened && s.centred < 2, `${opened} → ${s.title}`);
   check('No ScrollTriggers or stray tickers after navigation', (await page.evaluate(() => window.__motion.triggers())) === 0);
   await page.close();
 }

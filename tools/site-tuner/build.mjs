@@ -18,6 +18,7 @@ const write = (rel, data) => {
 };
 
 const assets = new Set();
+const publicFiles = new Set(); // e.g. media/circula/listview.mp4 (served from public/)
 let glyphs = '';
 
 // Pages are flattened into one folder (info/index.html → info.html, ja/work/x/ → ja-work-x.html) so
@@ -31,6 +32,7 @@ for (const page of PAGES) {
   glyphs += html.replace(/<[^>]+>/g, '');
   html = html.replace(/(?:https:\/\/koseihamada30\.github\.io)?\/portfolio\/([^"'\s)?#,]*)/g, (_, p) => {
     if (p.startsWith('_astro/')) assets.add(p.slice(7));
+    else if (/\.\w+$/.test(p) && p !== 'favicon.svg' && fs.existsSync(path.join(dist, p))) publicFiles.add(p);
     if (p === '' || p.endsWith('/')) p = fixJa(flat(p));
     return up + p;
   });
@@ -79,6 +81,10 @@ for (const name of assets) {
   fs.copyFileSync(path.join(dist, '_astro', name), path.join(out, '_astro', name));
   copied++;
 }
+for (const file of publicFiles) {
+  fs.mkdirSync(path.dirname(path.join(out, file)), { recursive: true });
+  fs.copyFileSync(path.join(dist, file), path.join(out, file));
+}
 fs.copyFileSync(path.join(dist, 'favicon.svg'), path.join(out, 'favicon.svg'));
 fs.copyFileSync(new URL('./tuner-bridge.js', import.meta.url), path.join(out, 'tuner-bridge.js'));
-console.log(`pages ${PAGES.length}, assets ${copied}, total files ${fs.readdirSync(path.join(out, '_astro')).length + PAGES.length + 1}`);
+console.log(`pages ${PAGES.length}, assets ${copied}, public files ${publicFiles.size}`);

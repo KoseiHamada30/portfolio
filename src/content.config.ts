@@ -31,6 +31,11 @@ const projects = defineCollection({
       stagePosition: z.string().optional(),
       coverVideo: z.string().optional(),
       summary: localized.optional(),
+      /** Case-study hero image (defaults to the cover), e.g. v1's project hero. */
+      hero: image().optional(),
+      heroAlt: localized.optional(),
+      /** True once the MDX body is a real case study (CaseStudyLayout); otherwise the placeholder page. */
+      caseStudy: z.boolean().default(false),
       draft: z.boolean().default(false),
     }),
 });

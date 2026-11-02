@@ -1,0 +1,31 @@
+---
+// One work page, shared by /work/[slug] and /ja/work/[slug]: the case study once its MDX is
+// written (frontmatter caseStudy: true), otherwise the placeholder. Both are sheets with "Close".
+import { render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CaseStudyLayout from '../layouts/CaseStudyLayout.astro';
+import WorkPlaceholder from './WorkPlaceholder.astro';
+import { url, type Locale } from '../lib/i18n';
+
+interface Props {
+  project: CollectionEntry<'projects'> | CollectionEntry<'sidequests'>;
+  locale: Locale;
+}
+
+const { project, locale } = Astro.props;
+const isCase = project.collection === 'projects' && project.data.caseStudy;
+const { Content } = isCase ? await render(project) : { Content: null };
+const accentKey = project.id === 'nba-research-lab' ? 'nba-lab' : project.id;
+---
+
+{
+  isCase && Content ? (
+    <CaseStudyLayout entry={project as CollectionEntry<'projects'>} locale={locale}>
+      <Content />
+    </CaseStudyLayout>
+  ) : (
+    <BaseLayout locale={locale} title={project.data.title} project={accentKey} page="case" closeHref={`${url(locale)}?p=${project.id}`}>
+      <WorkPlaceholder project={project} locale={locale} />
+    </BaseLayout>
+  )
+}

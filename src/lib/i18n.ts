@@ -45,3 +45,15 @@ export type Localized = { en: string; ja: string };
 export function pick(locale: Locale, value: Localized): string {
   return value[locale];
 }
+
+/** Locale of the page being rendered (Astro.currentLocale), for components used inside MDX. */
+export function localeOf(current: string | undefined): Locale {
+  return isLocale(current) ? current : defaultLocale;
+}
+
+/** A UI key, a { en, ja } pair, or plain text that is the same in both languages. */
+export type Text = Key | Localized | string;
+export function text(locale: Locale, value: Text): string {
+  if (typeof value !== 'string') return value[locale];
+  return value in dictionaries.en ? t(locale, value as Key) : value;
+}

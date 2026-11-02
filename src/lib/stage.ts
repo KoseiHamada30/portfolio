@@ -16,6 +16,24 @@ const wrap = (value: number, n: number) => ((value % n) + n) % n;
 /** Signed distance in a loop of n, in [-n/2, n/2). */
 const loopDelta = (value: number, n: number) => wrap(value + n / 2, n) - n / 2;
 
+/** Slide to start on: ?p=<slug> (Close from a case study), else the remembered one. */
+function startIndex(root: HTMLElement, n: number): number {
+  const params = new URLSearchParams(location.search);
+  const slug = params.get('p');
+  if (slug) {
+    params.delete('p');
+    const query = params.toString();
+    history.replaceState(history.state, '', location.pathname + (query ? `?${query}` : '') + location.hash);
+    const i = [...root.querySelectorAll<HTMLElement>('[data-stage-slide]')].findIndex((s) => s.dataset.id === slug);
+    if (i >= 0) {
+      writeStore(STORE_INDEX, String(i));
+      return i;
+    }
+  }
+  const saved = Number(readStore(STORE_INDEX));
+  return Number.isInteger(saved) && saved >= 0 && saved < n ? saved : 0;
+}
+
 function readStore(key: string): string | null {
   try {
     return sessionStorage.getItem(key);
@@ -135,8 +153,7 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
   };
   readTuning();
 
-  const saved = Number(readStore(STORE_INDEX));
-  let target = Number.isInteger(saved) && saved >= 0 && saved < n ? saved : 0;
+  let target = startIndex(root, n);
   let current = target;
   let lastInput = 0;
   let dragging = false;
@@ -453,8 +470,8 @@ function nativeSlider(root: HTMLElement): () => void {
     return best;
   };
 
-  const saved = Number(readStore(STORE_INDEX));
-  if (Number.isInteger(saved) && slides[saved]) {
+  const saved = startIndex(root, slides.length);
+  if (slides[saved]) {
     const el = slides[saved].el;
     track.scrollLeft = el.offsetLeft + el.offsetWidth / 2 - track.clientWidth / 2;
   }

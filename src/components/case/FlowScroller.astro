@@ -1,0 +1,65 @@
+---
+// A row of screens with captions that scrolls sideways (scroll-snap; drag/trackpad/touch).
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { text, localeOf, type Text } from '../../lib/i18n';
+
+interface Props {
+  items: { src: ImageMetadata; alt: Text; caption?: Text }[];
+  label: Text;
+}
+
+const locale = localeOf(Astro.currentLocale);
+const { items, label } = Astro.props;
+---
+
+<div class="flow" role="region" aria-label={text(locale, label)} tabindex="0" data-reveal="fade">
+  <ol class="flow__track">
+    {
+      items.map((item) => (
+        <li class="flow__item">
+          <Image src={item.src} alt={text(locale, item.alt)} widths={[320, 640]} sizes="280px" loading="lazy" />
+          {item.caption && <p>{text(locale, item.caption)}</p>}
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .flow {
+    margin: var(--space-7) calc(-1 * var(--page-margin)) 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+
+  .flow:focus-visible {
+    outline: 2px solid var(--ink-900);
+    outline-offset: 4px;
+  }
+
+  .flow__track {
+    display: flex;
+    gap: var(--gutter);
+    margin: 0;
+    padding: 0 var(--page-margin) var(--space-4);
+    list-style: none;
+  }
+
+  .flow__item {
+    flex: 0 0 min(280px, 70vw);
+    scroll-snap-align: start;
+  }
+
+  .flow__item :global(img) {
+    width: 100%;
+    height: auto;
+  }
+
+  .flow__item p {
+    margin: var(--space-2) 0 0;
+    font-size: var(--fs-small);
+    color: var(--ink-500);
+  }
+</style>

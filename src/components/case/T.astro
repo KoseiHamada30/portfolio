@@ -1,0 +1,13 @@
+---
+// Inline UI string for MDX case studies: <T k="circula-challenge-desc" />. The v1 strings live in
+// src/i18n/*.json under their original keys, so the MDX body keeps one structure for both languages.
+import { t, localeOf, type Key } from '../../lib/i18n';
+
+interface Props {
+  k: Key;
+}
+
+const locale = localeOf(Astro.currentLocale);
+---
+
+{t(locale, Astro.props.k)}

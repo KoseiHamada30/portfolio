@@ -1,0 +1,210 @@
+---
+// Case-study page (DESIGN.md §6, §8, Phase 5): a paper "sheet" with the hero, a sticky reading
+// rail (built from the sections by src/lib/case.ts), a reading-progress bar, the MDX body and the
+// next-project handoff. The nav shows "Close", back to the stage on the same project.
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import CaseHero from '../components/case/CaseHero.astro';
+import NextProject from '../components/case/NextProject.astro';
+import { t, url, pick, type Locale } from '../lib/i18n';
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+  locale: Locale;
+}
+
+const { entry, locale } = Astro.props;
+const { title, subtitle, category, cover, coverAlt, coverPosition, accent, summary, hero, heroAlt } = entry.data;
+const accentKey = entry.id === 'nba-research-lab' ? 'nba-lab' : entry.id;
+---
+
+<BaseLayout
+  locale={locale}
+  title={title}
+  description={summary ? pick(locale, summary) : subtitle ? `${title} — ${pick(locale, subtitle)}` : undefined}
+  project={accentKey}
+  page="case"
+  closeHref={`${url(locale)}?p=${entry.id}`}
+>
+  <div class="case-progress" aria-hidden="true"><span data-case-progress></span></div>
+
+  <article class="case">
+    <CaseHero
+      locale={locale}
+      title={title}
+      subtitle={subtitle}
+      category={category}
+      cover={hero ?? cover}
+      coverAlt={hero ? heroAlt : coverAlt}
+      coverPosition={coverPosition}
+      accent={accent}
+    />
+
+    <div class="case-body">
+      <nav class="case-rail" aria-label={t(locale, 'case.contents')}>
+        <p class="case-rail__label">{t(locale, 'case.contents')}</p>
+        <ol data-case-rail></ol>
+      </nav>
+      <div class="case-prose">
+        <slot />
+      </div>
+    </div>
+
+    <NextProject locale={locale} current={entry.id} />
+  </article>
+</BaseLayout>
+
+<style is:global>
+  .case-progress {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 850;
+    height: 2px;
+    pointer-events: none;
+  }
+
+  .case-progress span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  .case-body {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 52rem);
+    justify-content: space-between;
+    gap: var(--gutter);
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding: 0 var(--page-margin);
+  }
+
+  /* ----------------------------------------------------- reading rail */
+
+  .case-rail {
+    position: sticky;
+    top: var(--space-10);
+    align-self: start;
+    padding-top: clamp(var(--space-9), 10vw, var(--space-11));
+  }
+
+  .case-rail__label {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+
+  .case-rail ol {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .case-rail a {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-1) 0;
+    font-size: var(--fs-small);
+    color: var(--ink-500);
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .case-rail a span:first-child {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    padding-top: 0.15em;
+  }
+
+  .case-rail a:hover,
+  .case-rail a[aria-current='true'] {
+    color: var(--ink-900);
+  }
+
+  .case-rail a[aria-current='true'] span:last-child {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  @media (max-width: 1100px) {
+    .case-body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .case-rail {
+      display: none;
+    }
+  }
+
+  /* --------------------------------------------------- body typography */
+
+  .case-prose {
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+  }
+
+  .case-prose p {
+    max-width: var(--text-width);
+    margin: var(--space-4) 0 0;
+  }
+
+  .case-prose h3 {
+    margin: var(--space-8) 0 0;
+    font-family: var(--font-grotesk);
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    line-height: var(--lh-head);
+    letter-spacing: -0.03em;
+  }
+
+  .case-section__body > h3:first-child {
+    margin-top: 0;
+  }
+
+  .case-prose h4 {
+    margin: var(--space-7) 0 0;
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    line-height: var(--lh-head);
+  }
+
+  .case-prose ul {
+    max-width: var(--text-width);
+    margin: var(--space-4) 0 0;
+    padding-left: 1.1em;
+  }
+
+  .case-prose li + li {
+    margin-top: var(--space-2);
+  }
+
+  .case-prose b,
+  .case-prose strong {
+    font-weight: 600;
+  }
+
+  .case-prose .lead {
+    font-size: var(--fs-h3);
+    line-height: 1.5;
+  }
+
+  .case-prose .muted {
+    font-size: var(--fs-small);
+    color: var(--ink-500);
+  }
+
+  .case-intro {
+    padding-top: var(--space-8);
+  }
+
+  :root:lang(ja) .case-prose {
+    line-height: var(--lh-body-ja);
+  }
+</style>

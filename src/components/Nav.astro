@@ -31,6 +31,7 @@ const aboutHref = url(locale, 'info');
           {t(locale, 'nav.about')}
         </a>
       </nav>
+      <a class="nav__close" href={url(locale)} data-nav-close>{t(locale, 'case.close')}</a>
       <a
         class="nav__lang"
         href={url(alt, path)}
@@ -139,6 +140,25 @@ const aboutHref = url(locale, 'info');
   .nav__item[aria-current='page'],
   .nav__item:hover {
     text-decoration-color: currentColor;
+  }
+
+  /* Case-study sheets swap "Work, About" for "Close" (nav.ts keeps its href per page) */
+  .nav__close {
+    display: none;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+
+  :global(body[data-page='case']) .nav__links {
+    display: none;
+  }
+
+  :global(body[data-page='case']) .nav__close {
+    display: inline-flex;
   }
 
   .nav__lang {

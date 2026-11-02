@@ -296,5 +296,17 @@
   "reverie-review-next-title": "Future Improvements:",
   "reverie-review-next-1": "Further refine the prototype's UI and conduct user testing",
   "reverie-review-next-2": "Improve how information is presented through text colors, fonts, text volume, etc.",
-  "reverie-review-next-3": "Maintain simplicity while adding elements like gamification to create UI that makes users \"want to use it\""
+  "reverie-review-next-3": "Maintain simplicity while adding elements like gamification to create UI that makes users \"want to use it\"",
+  "case.close": "Close",
+  "case.category": "Category",
+  "case.contents": "Contents",
+  "case.next": "Next project",
+  "case.insight": "Insight",
+  "case.decision": "Decision",
+  "case.chartAxis": "Mean score (1–5)",
+  "case.chartMean": "Mean (n={n})",
+  "case.outOf": "out of 5",
+  "case.beforeAfter": "Drag to compare",
+  "case.before": "Before",
+  "case.after": "After"
 }
