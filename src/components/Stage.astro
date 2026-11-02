@@ -442,9 +442,11 @@ const subline = (item: Item) => {
 
   .stage-index__link {
     display: grid;
-    grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 18rem) 4rem;
-    align-items: baseline;
-    gap: var(--space-5);
+    /* title and its line stacked, centred between the number and the year */
+    grid-template-columns: 4rem minmax(0, 1fr) 4rem;
+    grid-template-areas: 'num title year' 'num cat year';
+    align-items: center;
+    gap: var(--space-2) var(--space-5);
     padding: var(--space-4) 0;
     border-bottom: 1px solid color-mix(in oklab, var(--stage-ink) 18%, transparent);
     color: inherit;
@@ -468,16 +470,26 @@ const subline = (item: Item) => {
     letter-spacing: var(--tracking-label);
   }
 
+  .stage-index__num { grid-area: num; }
+  .stage-index__cat { grid-area: cat; }
+
   .stage-index__year {
+    grid-area: year;
     text-align: end;
   }
 
   .stage-index__title {
+    grid-area: title;
     font-family: var(--font-grotesk);
     font-size: var(--fs-h1);
     font-weight: 700;
     line-height: 0.95;
     letter-spacing: -0.04em;
+  }
+
+  .stage-index__title,
+  .stage-index__cat {
+    text-align: center;
   }
 
   .stage-index__cat {
@@ -531,14 +543,8 @@ const subline = (item: Item) => {
   @media (max-width: 760px) {
     .stage-index__link {
       grid-template-columns: 3rem minmax(0, 1fr) 3rem;
-      grid-template-areas: 'num title year' '. cat cat';
       gap: var(--space-1) var(--space-3);
     }
-
-    .stage-index__num { grid-area: num; }
-    .stage-index__title { grid-area: title; }
-    .stage-index__cat { grid-area: cat; }
-    .stage-index__year { grid-area: year; }
   }
 
   @media (max-width: 760px) {
