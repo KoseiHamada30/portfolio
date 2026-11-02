@@ -19,6 +19,8 @@ export interface StageItem {
   accentKey: string;
   title: string;
   category?: { en: string; ja: string };
+  /** Shown in the stage subline when there is no category yet. */
+  subtitle?: { en: string; ja: string };
   year?: number;
   sideQuest: boolean;
   cover?: ImageMetadata;
@@ -37,6 +39,7 @@ export async function getStageItems(): Promise<StageItem[]> {
     accentKey: id === 'nba-research-lab' ? 'nba-lab' : id,
     title: data.title,
     category: data.category,
+    subtitle: data.subtitle,
     year: data.year,
     sideQuest: data.tier === 'sidequest',
     cover: data.cover,
