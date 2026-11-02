@@ -14,9 +14,20 @@ export type TransitionKind = 'open' | 'close' | 'next' | 'prev' | 'section' | 'l
 
 type Place = 'work' | 'case' | 'about' | 'other';
 
-function place(target: URL): Place {
+/** Page path without base or locale: '', 'work/circula', 'about'. Also reads the Site Tuner's
+ *  flattened files (index.html, ja-work-circula.html). */
+export function pagePath(pathname: string): string {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-  const path = target.pathname.slice(base.length).replace(/^\/+|\/+$/g, '').replace(/^ja(\/|$)/, '');
+  return (pathname.startsWith(base) ? pathname.slice(base.length) : pathname)
+    .replace(/^\/+|\/+$/g, '')
+    .replace(/^ja(\/|-|$)/, '')
+    .replace(/(^|\/)index\.html$/, '')
+    .replace(/\.html$/, '')
+    .replace(/^work-/, 'work/');
+}
+
+function place(target: URL): Place {
+  const path = pagePath(target.pathname);
   if (path === '') return 'work';
   if (path.startsWith('work/')) return 'case';
   if (path.startsWith('about')) return 'about';

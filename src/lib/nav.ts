@@ -2,6 +2,7 @@
 // after 40px, and per-page sync of the active link and language toggle.
 // The <Nav /> element is persisted, so this runs once and re-syncs on every page load.
 import { prefersReducedMotion } from './motion';
+import { pagePath } from './transitions';
 
 const SCROLLED_AT = 40;
 const HIDE_AFTER = 120;
@@ -15,8 +16,7 @@ function nav() {
 
 /** 'work' | 'about' | null for the current URL. */
 function currentSection(): string | null {
-  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-  const path = location.pathname.slice(base.length).replace(/^\/+|\/+$/g, '').replace(/^ja(\/|$)/, '');
+  const path = pagePath(location.pathname);
   if (path.startsWith('about')) return 'about';
   if (path === '' || path.startsWith('work')) return 'work';
   return null;
