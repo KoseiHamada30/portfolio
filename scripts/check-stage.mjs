@@ -62,8 +62,8 @@ const settle = (page) => page.waitForTimeout(1700);
   check('Six items: NBA Research Lab first, then the other projects, then side quests', first.titles.join(',') === 'NBA Research Lab,Circula,Reverie,NextScore,Brim CC,Honne Festa', first.titles.join(', '));
   check('GSAP slider on a fine pointer', first.virtual);
   check('A carousel of links to each case page', first.roledesc === 'carousel' && first.links.every((h, i) => h.endsWith(`/work/${['nba-research-lab', 'circula', 'reverie', 'nextscore', 'brim-cc', 'honne-festa'][i]}/`)));
-  check('Subline from the v1 category, without brackets', first.sub === '/App/Website design', first.sub);
-  check('Side quests are labelled', first.quest === '/Side quest · Graphic design', first.quest);
+  check('Subline from the v1 category, without brackets or a leading slash', first.sub === 'App/Website design', first.sub);
+  check('Side quests are labelled', first.quest === 'Side quest · Graphic design', first.quest);
   check('Centre slide in colour, neighbours monochrome and dimmed', first.filterActive === 'none' && first.filterOther.includes('grayscale(1)'), first.filterOther);
   check('Full-height slides on the dark stage, no footer', first.height === 900 && first.bg === 'rgb(35, 35, 35)' && !first.footer, `${first.height}px ${first.bg}`);
 
@@ -226,7 +226,7 @@ const settle = (page) => page.waitForTimeout(1700);
     quest: document.querySelectorAll('[data-stage-sub]')[5].textContent.trim(),
     about: document.querySelector('[data-nav-item="info"]').textContent.trim(),
   }));
-  check('JA sublines', ja.sub === '/アプリ／Webデザイン' && ja.quest === '/サイドクエスト · グラフィックデザイン', `${ja.sub} | ${ja.quest}`);
+  check('JA sublines', ja.sub === 'アプリ／Webデザイン' && ja.quest === 'サイドクエスト · グラフィックデザイン', `${ja.sub} | ${ja.quest}`);
   const res = await page.goto(`${BASE}/work/honne-festa/`);
   check('Side-quest slides link to a page that exists', res.status() === 200);
   await page.close();

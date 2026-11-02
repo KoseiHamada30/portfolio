@@ -75,3 +75,4 @@ Design and build decisions not covered by DESIGN.md. Newest first.
 | 2026-11-02 | The SUS chart is an accessible list with visible values (BarChart) instead of v1's Chart.js canvas; it uses the same data and labels (`src/data/circula-sus.ts`). | Phase 5 brief. |
 | 2026-11-02 | Case and placeholder pages are sheets: the nav shows "Close" (to `/?p=<slug>`, so the stage centres that project) instead of Work/About. | Phase 5 brief. |
 | 2026-11-02 | Faster splash, to reach Home sooner: counter 0.9–1.8s (was 1.2–2.4s), image cycle 120ms, hold 120ms (was 300), letter roll 0.7s with 40ms stagger (was 0.9s/50ms), fade-in 0.3s, exit 0.7s (was 0.9s). About 3.2s in total (was about 4.2s). | Kosei: the splash should get to Home faster. |
+| 2026-11-02 | Stage and next-project sublines have no leading "/" (e.g. "App/Website design"). | Kosei. |

@@ -46,7 +46,7 @@ export async function getStageItems(): Promise<StageItem[]> {
   }));
 }
 
-/** v1 categories are written "(App design)"; the stage shows them as "/App design". */
+/** v1 categories are written "(App design)"; the stage shows them as "App design". */
 export function unbracket(text: string): string {
   return text.replace(/^[(（]\s*/, '').replace(/\s*[)）]$/, '');
 }

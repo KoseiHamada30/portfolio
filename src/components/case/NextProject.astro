@@ -19,7 +19,7 @@ const next = items[(index + 1) % items.length];
   <a class="next__link" href={url(locale, `work/${next.id}`)}>
     <span class="next__label">{t(locale, 'case.next')}</span>
     <span class="next__title">{next.title}</span>
-    {next.category && <span class="next__sub">/{unbracket(pick(locale, next.category))}</span>}
+    {next.category && <span class="next__sub">{unbracket(pick(locale, next.category))}</span>}
     <span class="next__cover" aria-hidden="true">
       {next.cover && <Image src={next.cover} alt="" widths={[480, 960]} sizes="(min-width: 760px) 30vw, 80vw" loading="lazy" style={`object-position: ${next.position}`} />}
     </span>

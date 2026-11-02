@@ -1,5 +1,5 @@
 ---
-// Stage slide title: "Circula⁽⁰¹⁾" over "/App design" (DESIGN.md §8.2). Used inside each slide
+// Stage slide title: "Circula⁽⁰¹⁾" over "App design" (DESIGN.md §8.2). Used inside each slide
 // (native mode) and in the centred title stack, which stage.ts crossfades.
 import { t, type Locale } from '../lib/i18n';
 
@@ -22,7 +22,7 @@ const { title, count, subline, locale } = Astro.props;
   </span>
   <span class="stage__sub">
     <span class="stage__sub-inner" data-stage-sub>
-      {subline ? `/${subline}` : <span class="stage__todo">{t(locale, 'placeholder.text')}</span>}
+      {subline ? subline : <span class="stage__todo">{t(locale, 'placeholder.text')}</span>}
     </span>
   </span>
 </span>
