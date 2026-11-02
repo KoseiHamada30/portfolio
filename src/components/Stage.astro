@@ -433,7 +433,12 @@ const subline = (item: Item) => {
     display: none;
   }
 
+  /* Rows share one grid (subgrid), so every title starts at the same x: the titles form a
+     left-aligned column that is centred as a block, number at the left edge, period at the right. */
   .stage-index__list {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr) minmax(0, max-content) minmax(0, 1fr) 7rem;
+    column-gap: var(--space-5);
     width: 100%;
     max-width: var(--max-width);
     margin: 0 auto;
@@ -442,11 +447,19 @@ const subline = (item: Item) => {
     border-top: 1px solid color-mix(in oklab, var(--stage-ink) 18%, transparent);
   }
 
+  .stage-index__row,
   .stage-index__link {
     display: grid;
-    grid-template-columns: 7rem minmax(0, 1fr) 7rem;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+  }
+
+  .stage-index__num {
+    grid-column: 1;
+  }
+
+  .stage-index__link {
     align-items: center;
-    gap: var(--space-5);
     padding: var(--space-4) 0;
     border-bottom: 1px solid color-mix(in oklab, var(--stage-ink) 18%, transparent);
     color: inherit;
@@ -471,17 +484,17 @@ const subline = (item: Item) => {
   }
 
   .stage-index__year {
+    grid-column: 5;
     text-align: end;
   }
 
-  /* title and its line side by side in one row, centred between the number and the year */
+  /* title and its line side by side in one row, left-aligned */
   .stage-index__main {
+    grid-column: 3;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     align-items: baseline;
     gap: var(--space-1) var(--space-4);
-    text-align: center;
   }
 
   .stage-index__title {
@@ -541,9 +554,9 @@ const subline = (item: Item) => {
   }
 
   @media (max-width: 760px) {
-    .stage-index__link {
-      grid-template-columns: 2.5rem minmax(0, 1fr) 4.5rem;
-      gap: var(--space-3);
+    .stage-index__list {
+      grid-template-columns: 2.5rem 0 minmax(0, 1fr) 0 4.5rem;
+      column-gap: var(--space-3);
     }
   }
 
