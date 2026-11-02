@@ -1,6 +1,6 @@
 ---
-// Case-study hero on the paper sheet (DESIGN.md §6, §8): "CATEGORY / App design" label, the big
-// grotesk title, the subtitle, then the cover in full colour.
+// Case-study hero on the paper sheet (DESIGN.md §6, §8): the big grotesk title, right below it the
+// "CATEGORY / App design" label (Kosei 2026-11-02), the subtitle, then the cover in full colour.
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 import { t, pick, type Locale, type Localized } from '../../lib/i18n';
@@ -22,12 +22,12 @@ const { locale, title, subtitle, category, cover, coverAlt, accent } = Astro.pro
 ---
 
 <header class="case-hero">
+  <h1 class="case-hero__title" data-reveal="lines">{title}</h1>
   <p class="case-hero__label">
     <span class="case-hero__label-key">{t(locale, 'case.category')}</span>
     <span aria-hidden="true">/</span>
     <span>{category ? unbracket(pick(locale, category)) : t(locale, 'placeholder.text')}</span>
   </p>
-  <h1 class="case-hero__title" data-reveal="lines">{title}</h1>
   {subtitle && <p class="case-hero__subtitle" data-reveal="fade">{pick(locale, subtitle)}</p>}
   <div class="case-hero__cover" data-reveal="image">
     {
@@ -57,7 +57,7 @@ const { locale, title, subtitle, category, cover, coverAlt, accent } = Astro.pro
   .case-hero__label {
     display: flex;
     gap: var(--space-2);
-    margin: 0 0 var(--space-5);
+    margin: var(--space-4) 0 0;
     font-family: var(--font-mono);
     font-size: var(--fs-label);
     letter-spacing: var(--tracking-label);
