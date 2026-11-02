@@ -24,6 +24,7 @@ export interface StageItem {
   /** Shown in the stage subline when there is no category yet. */
   subtitle?: { en: string; ja: string };
   year?: number;
+  period?: { en: string; ja: string };
   sideQuest: boolean;
   cover?: ImageMetadata;
   coverAlt?: { en: string; ja: string };
@@ -44,6 +45,7 @@ export async function getStageItems(): Promise<StageItem[]> {
     stageLine: data.stageLine,
     subtitle: data.subtitle,
     year: data.year,
+    period: data.period,
     sideQuest: data.tier === 'sidequest',
     cover: data.cover,
     coverAlt: data.coverAlt,

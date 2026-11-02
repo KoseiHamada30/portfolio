@@ -86,11 +86,13 @@ const subline = (item: Item) => {
           <li class="stage-index__row" data-project={item.accentKey}>
             <a class="stage-index__link" href={url(locale, `work/${item.id}`)} data-index-link={item.id}>
               <span class="stage-index__num">({num(i)})</span>
-              <span class="stage-index__title">{item.title}</span>
-              <span class="stage-index__cat">
-                {subline(item) || <span class="stage__todo">{t(locale, 'placeholder.text')}</span>}
+              <span class="stage-index__main">
+                <span class="stage-index__title">{item.title}</span>
+                <span class="stage-index__cat">
+                  {subline(item) || <span class="stage__todo">{t(locale, 'placeholder.text')}</span>}
+                </span>
               </span>
-              <span class="stage-index__year">{item.year ?? '—'}</span>
+              <span class="stage-index__year">{item.period ? pick(locale, item.period) : (item.year ?? '—')}</span>
             </a>
           </li>
         ))
@@ -442,11 +444,9 @@ const subline = (item: Item) => {
 
   .stage-index__link {
     display: grid;
-    /* title and its line stacked, centred between the number and the year */
-    grid-template-columns: 4rem minmax(0, 1fr) 4rem;
-    grid-template-areas: 'num title year' 'num cat year';
+    grid-template-columns: 7rem minmax(0, 1fr) 7rem;
     align-items: center;
-    gap: var(--space-2) var(--space-5);
+    gap: var(--space-5);
     padding: var(--space-4) 0;
     border-bottom: 1px solid color-mix(in oklab, var(--stage-ink) 18%, transparent);
     color: inherit;
@@ -470,26 +470,26 @@ const subline = (item: Item) => {
     letter-spacing: var(--tracking-label);
   }
 
-  .stage-index__num { grid-area: num; }
-  .stage-index__cat { grid-area: cat; }
-
   .stage-index__year {
-    grid-area: year;
     text-align: end;
   }
 
+  /* title and its line side by side in one row, centred between the number and the year */
+  .stage-index__main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: var(--space-1) var(--space-4);
+    text-align: center;
+  }
+
   .stage-index__title {
-    grid-area: title;
     font-family: var(--font-grotesk);
     font-size: var(--fs-h1);
     font-weight: 700;
     line-height: 0.95;
     letter-spacing: -0.04em;
-  }
-
-  .stage-index__title,
-  .stage-index__cat {
-    text-align: center;
   }
 
   .stage-index__cat {
@@ -542,8 +542,8 @@ const subline = (item: Item) => {
 
   @media (max-width: 760px) {
     .stage-index__link {
-      grid-template-columns: 3rem minmax(0, 1fr) 3rem;
-      gap: var(--space-1) var(--space-3);
+      grid-template-columns: 2.5rem minmax(0, 1fr) 4.5rem;
+      gap: var(--space-3);
     }
   }
 

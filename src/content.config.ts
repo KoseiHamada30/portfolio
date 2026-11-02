@@ -18,6 +18,8 @@ const projects = defineCollection({
       subtitle: localized.optional(),
       category: localized.optional(),
       year: z.number().optional(),
+      /** Shown instead of the year where a single year doesn't fit ("Present", "2025–2026"). */
+      period: z.object({ en: z.string(), ja: z.string() }).optional(),
       role: localized.optional(),
       team: z.array(z.string()).optional(),
       duration: localized.optional(),
@@ -55,6 +57,8 @@ const sidequests = defineCollection({
       category: localized.optional(),
       tag: localized,
       year: z.number().optional(),
+      /** Shown instead of the year where a single year doesn't fit ("Present", "2025–2026"). */
+      period: z.object({ en: z.string(), ja: z.string() }).optional(),
       role: localized.optional(),
       accent: hex,
       cover: image().optional(),
