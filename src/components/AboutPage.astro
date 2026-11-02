@@ -355,11 +355,11 @@ const tx = (value: string) => (value.includes('-') && !value.includes(' ') ? t(l
 
   /* --------------------------------------------- ending → Work (§8.4) */
 
-  /* the splash's background, so the hand-off to Work's splash exit is seamless */
+  /* the page and splash share one background, so the hand-off to Work's splash exit is seamless */
   .about-end {
     position: relative;
     height: 250svh;
-    background: var(--paper-200);
+    background: var(--paper-100);
   }
 
   .about-end__sticky {
