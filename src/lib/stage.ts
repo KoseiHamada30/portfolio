@@ -287,6 +287,16 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
   gsap.ticker.add(render);
 
   // ----------------------------------------------------------- wheel
+  // One gesture = one slide. A trackpad flick fires a long tail of momentum events, so after a
+  // step the wheel is locked until it goes quiet (160ms), or until a clearly new push arrives
+  // during the tail. Each mouse-wheel notch with a pause between moves one slide.
+  const WHEEL_STEP = 30; // px of travel needed to move
+  const WHEEL_QUIET = 160;
+  let wheelSum = 0;
+  let wheelLocked = false;
+  let wheelLockedAt = 0;
+  let wheelLast = 0;
+  let wheelLastAbs = 0;
   root.addEventListener(
     'wheel',
     (event) => {
@@ -294,7 +304,23 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
       event.preventDefault();
       const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
       const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * unit;
-      nudge(target + gsap.utils.clamp(-0.6, 0.6, (delta / step) * 1.6));
+      const abs = Math.abs(delta);
+      const now = event.timeStamp;
+      const freshPush = wheelLocked && now - wheelLockedAt > 450 && abs > 20 && abs > wheelLastAbs * 1.6;
+      if (now - wheelLast > WHEEL_QUIET || freshPush) {
+        wheelLocked = false;
+        wheelSum = 0;
+      }
+      wheelLast = now;
+      wheelLastAbs = abs;
+      if (wheelLocked) return;
+      wheelSum += delta;
+      if (Math.abs(wheelSum) >= WHEEL_STEP) {
+        nudge(Math.round(target) + Math.sign(wheelSum));
+        wheelLocked = true;
+        wheelLockedAt = now;
+        wheelSum = 0;
+      }
     },
     { passive: false, signal },
   );

@@ -89,6 +89,18 @@ const settle = (page) => page.waitForTimeout(1700);
   check('Live region announces it', s.live === 'Project 2 of 6: Reverie', s.live);
   const m = skew.match(/matrix\(([^)]+)\)/)?.[1].split(',').map(Number);
   const skewDeg = m ? Math.abs((Math.atan2(m[2], m[3]) * 180) / Math.PI) : 0;
+  // one strong trackpad flick (a burst plus a decaying momentum tail) moves exactly one slide
+  await page.waitForTimeout(400);
+  const beforeFlick = (await state(page)).active;
+  for (const d of [80, 140, 160, 150, 120, 95, 75, 60, 46, 35, 26, 19, 14, 10, 7, 5, 3, 2, 1]) {
+    await page.mouse.wheel(0, d);
+    await page.waitForTimeout(16);
+  }
+  await settle(page);
+  const afterFlick = (await state(page)).active;
+  check('One strong scroll moves exactly one slide', afterFlick === (beforeFlick + 1) % 6, `${beforeFlick} → ${afterFlick}`);
+  await page.keyboard.press('ArrowLeft');
+  await settle(page);
   check('Movement adds a skew (≤ 4°)', skewDeg > 0.05 && skewDeg <= 4.01, `${skewDeg.toFixed(2)}°`);
 
   // keys + loop
