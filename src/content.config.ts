@@ -29,6 +29,8 @@ const projects = defineCollection({
       coverPosition: z.string().optional(),
       /** object-position for the tall stage-slider crop (DESIGN.md §8); falls back to coverPosition. */
       stagePosition: z.string().optional(),
+      /** Line under the title on the Home stage ("What · @Where"); falls back to category, then subtitle. */
+      stageLine: z.object({ en: z.string(), ja: z.string() }).optional(),
       coverVideo: z.string().optional(),
       summary: localized.optional(),
       /** Case-study hero image (defaults to the cover), e.g. v1's project hero. */
@@ -59,6 +61,8 @@ const sidequests = defineCollection({
       coverAlt: localized.optional(),
       /** object-position for the tall stage-slider crop (DESIGN.md §8). */
       stagePosition: z.string().optional(),
+      /** Line under the title on the Home stage ("What · @Where"); falls back to category, then subtitle. */
+      stageLine: z.object({ en: z.string(), ja: z.string() }).optional(),
       summary: localized.optional(),
       draft: z.boolean().default(false),
     }),
