@@ -65,25 +65,22 @@ function makeActivator(root: HTMLElement, slides: Slide[]) {
   };
 }
 
-/** Slider mode's single centred title: rolls to whichever slide is shown (hovered, else centred). */
-function makeTitles(root: HTMLElement, roll: boolean) {
-  const captions = [...root.querySelectorAll<HTMLElement>('[data-stage-titles] .stage__caption')].map((el) => [
-    el.querySelector<HTMLElement>('[data-stage-title]')!,
-    el.querySelector<HTMLElement>('[data-stage-sub]')!,
-  ]);
+/** Slider mode's single centred title: crossfades to whichever slide is shown (hovered, else centred). */
+function makeTitles(root: HTMLElement, animate: boolean) {
+  const captions = [...root.querySelectorAll<HTMLElement>('[data-stage-titles] .stage__caption')];
   let shown = -1;
-  gsap.set(captions.flat(), { yPercent: 105 });
+  gsap.set(captions, { autoAlpha: 0 });
 
   return (index: number) => {
     if (index === shown) return;
     const previous = shown;
     shown = index;
-    if (!roll) {
-      captions.forEach((lines, i) => gsap.set(lines, { yPercent: i === index ? 0 : 105 }));
+    if (!animate) {
+      captions.forEach((el, i) => gsap.set(el, { autoAlpha: i === index ? 1 : 0 }));
       return;
     }
-    gsap.fromTo(captions[index], { yPercent: 105 }, { yPercent: 0, duration: 0.7, ease: ease.outExpo, stagger: 0.04, overwrite: true });
-    if (previous >= 0) gsap.to(captions[previous], { yPercent: -105, duration: 0.45, ease: ease.out, overwrite: true });
+    gsap.to(captions[index], { autoAlpha: 1, duration: 0.5, ease: 'power2.out', overwrite: true });
+    if (previous >= 0) gsap.to(captions[previous], { autoAlpha: 0, duration: 0.4, ease: 'power2.out', overwrite: true });
   };
 }
 

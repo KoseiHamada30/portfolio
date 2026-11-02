@@ -292,8 +292,6 @@ const subline = (item: Item) => {
   .stage__title,
   .stage__sub {
     display: block;
-    /* masks for the roll; padding keeps descenders and the superscript inside */
-    overflow: hidden;
     padding: 0.08em 0.6em 0.04em;
   }
 
@@ -334,7 +332,7 @@ const subline = (item: Item) => {
     opacity: 0.7;
   }
 
-  /* Slider mode swaps the per-slide captions for one centred stack (stage.ts rolls them). */
+  /* Slider mode swaps the per-slide captions for one centred stack (stage.ts crossfades them). */
   .stage.is-virtual .stage__slide .stage__caption {
     display: none;
   }

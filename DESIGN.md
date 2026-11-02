@@ -282,7 +282,8 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
   in the Index view.
 - **Hover:** colour fills the slide under the pointer gradually: a brighter full-colour circle with a ragged edge
   grows outward from the pointer (from ~4% to ~38% of the viewport width) while the whole slide warms from grey,
-  both on the same 1s power2.out curve. Every other slide, including the centred one, returns to monochrome. The centred title rolls to the hovered slide. With no hover, the centred slide
+  both on the same 1s power2.out curve. Every other slide, including the centred one, returns to monochrome.
+  The centred title crossfades to the hovered slide (0.5s in / 0.4s out, no roll; Kosei 2026-11-02). With no hover, the centred slide
   is lit.
 - **Lens:** a full-colour blob with a wobbling edge trails the pointer (ease 0.1). Its radius grows with pointer
   speed (up to ~40px) and closes at rest.

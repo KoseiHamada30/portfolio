@@ -29,7 +29,7 @@ const state = (page) =>
       centred: box ? Math.abs(box.left + box.width / 2 - innerWidth / 2) : null,
       live: document.querySelector('[data-stage-live]').textContent,
       lit: slides.find((s) => s.classList.contains('is-lit'))?.dataset.title,
-      shown: [...document.querySelectorAll('[data-stage-titles] [data-stage-title]')].find((t) => Math.abs(t.getBoundingClientRect().top - t.parentElement.getBoundingClientRect().top) < 15)?.firstChild.textContent.trim(),
+      shown: [...document.querySelectorAll('[data-stage-titles] .stage__caption')].find((c) => parseFloat(getComputedStyle(c).opacity) > 0.9)?.querySelector('[data-stage-title]').firstChild.textContent.trim(),
       view: document.querySelector('[data-stage]').dataset.view,
     };
   });
@@ -120,7 +120,7 @@ const settle = (page) => page.waitForTimeout(1700);
   const hov = await state(page);
   const hovFilter = await page.evaluate(() => [...document.querySelectorAll('.stage__media')].map((m) => getComputedStyle(m).filter));
   check('Hovering a neighbour: it turns colour, the centre goes grey', hov.lit === 'Reverie' && hovFilter[(hov.active + 1) % 6] === 'none' && hovFilter[hov.active].includes('grayscale(1)'), `${hov.lit}: ${hovFilter.join(' | ')}`);
-  check('The centred title follows the hovered slide', hov.shown === 'Reverie', hov.shown);
+  check('The centred title follows the hovered slide (crossfade, no roll)', hov.shown === 'Reverie' && (await page.evaluate(() => [...document.querySelectorAll('[data-stage-titles] [data-stage-title]')].every((t) => !t.style.transform || /translate\(0(px|%), 0(px|%)\)|none/.test(t.style.transform)))), hov.shown);
   await page.mouse.down();
   await page.mouse.up();
   await settle(page);
