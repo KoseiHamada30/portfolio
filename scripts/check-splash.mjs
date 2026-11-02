@@ -79,7 +79,7 @@ function recordSplash() {
   check('Splash shown on first visit', samples[0].on);
   check('Page content is already in the DOM underneath', samples[0].work > 0, `${samples[0].work} stage slides`);
   check('Counter only ever goes up and ends at 100', counts.every((c, i) => i === 0 || c >= counts[i - 1]) && counts.at(-1) === 100, `${counts[0]} → ${counts.at(-1)}`);
-  check('Counter fill time within ~1.2–2.4s', fill >= 1100 && fill <= 2700, `${fill}ms`);
+  check('Counter fill time within ~0.9–1.8s', fill >= 800 && fill <= 2100, `${fill}ms`);
   check('Centre image cycles while loading', imgs.size >= 2, [...imgs].join(', '));
   check('Settles on the first project (circula)', samples.filter((s) => s.count === 100).at(-1)?.img === 'circula');
   check('Letter roll plays after 100', rolled);

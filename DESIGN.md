@@ -293,7 +293,7 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
 |---|---|
 | Letter roll | Each wordmark letter is a vertical strip of 3–4 glyph copies in an overflow-hidden box; translate from yPercent 100 → 0 (or cycle), stagger 50ms, 900ms expo.out. |
 | Splash centre image | Cycles project covers every 140ms while loading (stops at the first project). |
-| Load counter | Real asset progress (fonts + first 4 covers), tweened so it never jumps backwards, min 1.2s, max 2.4s. |
+| Load counter | Real asset progress (fonts + first 4 covers), tweened so it never jumps backwards, min 0.9s, max 1.8s (faster, Kosei 2026-11-02). |
 | Splash exit | **[Changed 2026-11-02 (Kosei): no blank sheet.]** The final centre image expands from its frame to fill the whole screen (900ms, expo.inOut) while Home itself slides up from the bottom over it (yPercent 100 → 0, 900ms, expo.inOut, 80ms later), slider items rise in (stagger 60ms), then the splash is removed and the nav fades in. |
 | Slider | Wheel / drag / arrow keys drive a target index; position lerps (0.09). Velocity adds a subtle skewX (max 4°) and inactive scale .92. Infinite loop. Snaps to the nearest slide after 150ms idle. |
 | Open case study | Click the active slide → `--sheet` rises from the bottom (yPercent 100 → 0, 900ms expo.inOut) carrying the case-study hero; the slider fades to 0.4 behind it. |

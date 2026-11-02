@@ -9,10 +9,10 @@ import { beforePage, onPage } from './lifecycle';
 import { getLenis } from './lenis';
 import { createComposition } from './splash-composition';
 
-const MIN_MS = 1200;
-const MAX_MS = 2400;
-const CYCLE_MS = 140;
-const HOLD_MS = 300;
+const MIN_MS = 900;
+const MAX_MS = 1800;
+const CYCLE_MS = 120;
+const HOLD_MS = 120;
 const IMAGES_TO_WAIT = 4;
 
 
@@ -88,7 +88,7 @@ async function runSplash(): Promise<void> {
 
   await document.fonts.ready; // fit needs the real glyph widths
   comp.fit();
-  gsap.fromTo(compEl, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out' });
+  gsap.fromTo(compEl, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
 
   const cycle = setInterval(() => comp.nextImage(), CYCLE_MS);
   await runCounter(loadTasks(root), (value) => comp.setProgress(value), () => skipped);
@@ -104,7 +104,7 @@ async function runSplash(): Promise<void> {
   }
 
   await wait(HOLD_MS);
-  await play(comp.roll());
+  await play(comp.roll({ stagger: 0.04, duration: 0.7 }));
 
   // The splash stays up while the page modules set up underneath; then Home slides in over it.
   exitPending = { comp, finish };
@@ -138,6 +138,6 @@ onPage(() => {
   const media = comp.media;
   const box = media.getBoundingClientRect();
   gsap.set(media, { position: 'fixed', top: box.top, left: box.left, width: box.width, height: box.height, margin: 0, zIndex: 1 });
-  exit.to(media, { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight, duration: 0.9, ease: 'expo.inOut' }, 0);
-  exit.fromTo(main, { yPercent: 100 }, { yPercent: 0, duration: 0.9, ease: 'expo.inOut' }, 0.08);
+  exit.to(media, { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight, duration: 0.7, ease: 'expo.inOut' }, 0);
+  exit.fromTo(main, { yPercent: 100 }, { yPercent: 0, duration: 0.7, ease: 'expo.inOut' }, 0.05);
 });
