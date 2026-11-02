@@ -231,8 +231,9 @@ const subline = (item: Item) => {
     filter: none;
   }
 
-  /* Slider mode: colour follows the pointer — the hovered slide (else the centred one) fades
-     into colour over ~1s while the rest go grey (stage.ts sets .is-lit). */
+  /* Slider mode: colour follows the pointer (stage.ts sets .is-lit on the hovered slide, else
+     the centred one). A brighter colour circle grows out from the pointer through the lens
+     layer while the whole slide warms from grey on the same 1s power2.out curve. */
   .stage.is-virtual .stage__media {
     transition: filter 1s cubic-bezier(0.215, 0.61, 0.355, 1);
   }
@@ -256,6 +257,8 @@ const subline = (item: Item) => {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* a touch brighter than the slide, so the circle reads while the slide is still warming */
+    filter: brightness(1.06) saturate(1.08);
   }
 
   .stage__media img {

@@ -280,8 +280,9 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
 - **Fixed "+" at the centre of the stage:** a 12px box (0.8333vw; 2.4876vw on phones), 1px strokes each 40% of
   the box, with an open centre, in `--stage-ink`. It collapses and turns 180° (0.5s) while the slides enter and
   in the Index view.
-- **Hover:** the slide under the pointer fades into colour over ~1s (power2.out); every other slide, including
-  the centred one, is monochrome. The centred title rolls to the hovered slide. With no hover, the centred slide
+- **Hover:** colour fills the slide under the pointer gradually: a brighter full-colour circle with a ragged edge
+  grows outward from the pointer (from ~4% to ~38% of the viewport width) while the whole slide warms from grey,
+  both on the same 1s power2.out curve. Every other slide, including the centred one, returns to monochrome. The centred title rolls to the hovered slide. With no hover, the centred slide
   is lit.
 - **Lens:** a full-colour blob with a wobbling edge trails the pointer (ease 0.1). Its radius grows with pointer
   speed (up to ~40px) and closes at rest.

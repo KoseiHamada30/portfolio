@@ -133,8 +133,26 @@ const settle = (page) => page.waitForTimeout(1700);
   }
   const moving = await page.evaluate(() => [...document.querySelectorAll('.stage__lens')].some((l) => l.style.clipPath.startsWith('polygon')));
   await page.waitForTimeout(1500);
-  const resting = await page.evaluate(() => [...document.querySelectorAll('.stage__lens')].every((l) => l.style.clipPath === 'circle(0px)'));
-  check('Colour lens trails the moving pointer and closes at rest', moving && resting);
+  const resting = await page.evaluate(() => [...document.querySelectorAll('.stage__lens')].filter((l) => l.style.clipPath !== 'circle(0px)').length);
+  check('Colour lens trails the moving pointer; at rest only the hovered slide keeps its fill', moving && resting === 1, `${resting} open at rest`);
+
+  // hover fill grows outward from the pointer over ~1s
+  await page.mouse.move(720, 450);
+  await page.waitForTimeout(1500);
+  const nb = await page.locator('[data-stage-slide]').nth(((await state(page)).active + 1) % 6).boundingBox();
+  await page.mouse.move(Math.min(1430, nb.x + 120), 600, { steps: 2 });
+  const spread = [];
+  for (const wait of [80, 300, 900]) {
+    await page.waitForTimeout(wait);
+    spread.push(await page.evaluate(() => {
+      const lens = document.querySelector('.stage__slide.is-lit .stage__lens');
+      const pts = (lens?.style.clipPath.match(/-?[\d.]+px -?[\d.]+px/g) ?? []).map((p) => p.split(' ').map(parseFloat));
+      if (pts.length < 3) return 0;
+      const xs = pts.map((p) => p[0]);
+      return Math.round(Math.max(...xs) - Math.min(...xs));
+    }));
+  }
+  check('Hover colour spreads out from the pointer (circle keeps growing)', spread[0] < spread[1] && spread[1] < spread[2] && spread[2] < 1440 * 0.9, spread.join(' → ') + 'px wide');
 
   // tab focus
   await page.keyboard.press('ArrowLeft');

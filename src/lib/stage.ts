@@ -212,15 +212,29 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
     const shown = lit >= 0 ? lit : centred;
     slides.forEach((slide, i) => slide.el.classList.toggle('is-lit', i === shown));
     showTitle(shown);
+    if (lenses.length) setFill(shown);
 
     if (lenses.length) drawLens(deltaMs);
     // focus() on an off-centre link can scroll even an overflow:hidden track
     if (track.scrollLeft) track.scrollLeft = 0;
   };
 
-  // The lens trails the pointer (ease .1) and grows with its speed, with a slowly wobbling edge.
-  const POINTS = 24;
+  // The lens trails the pointer (ease .1). Its radius on each slide is a small speed-sized blob
+  // plus that slide's hover fill: hovering grows a brighter full-colour circle outward from the
+  // pointer (1s, power2.out) while the whole slide warms from grey on the same curve (CSS), with
+  // a ragged, slowly shifting edge — the reference's noise-dissolve circle, done with clip-path.
+  const POINTS = 64;
+  const fill = slides.map(() => ({ v: 0 }));
+  let filled = -2;
   let time = 0;
+  const setFill = (index: number) => {
+    if (index === filled) return;
+    const first = filled === -2;
+    filled = index;
+    // on load the centred slide is simply in colour; nothing grows from a stale pointer position
+    if (first) return fill.forEach((f, i) => (f.v = i === index ? 1 : 0));
+    fill.forEach((f, i) => gsap.to(f, { v: i === index ? 1 : 0, duration: 1, ease: 'power2.out', overwrite: true }));
+  };
   const drawLens = (deltaMs: number) => {
     const f = Math.min(deltaMs, 100) / (1000 / 60);
     const target = pointer ?? { x: lens.x, y: lens.y };
@@ -231,11 +245,15 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
     lens.lastY = target.y;
     lens.pow += (Math.min(speed / 40, 1) - lens.pow) * (1 - Math.pow(0.9, f));
     time += 0.03 * f;
-    const radius = pointer && inStageView() ? lens.pow * 40 : 0;
+    const blob = pointer && inStageView() ? lens.pow * 40 : 0;
+    // the reference's colour circle grows from ~4% to ~38% of the viewport width as hover goes 0 → 1
+    const reach = box.w * 0.34;
+    const base = box.w * 0.04;
 
     for (let i = 0; i < n; i++) {
       const el = lenses[i];
       const g = geometry(i);
+      const radius = blob + (fill[i].v > 0.001 ? base + fill[i].v * reach : 0);
       if (radius < 0.5 || Math.abs(g.d) > 1.6) {
         if (el.style.clipPath !== 'circle(0px)') el.style.clipPath = 'circle(0px)';
         continue;
@@ -244,11 +262,17 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
       const cx = (lens.x - box.left - g.left) / g.scale;
       const cy = (lens.y - box.top - g.top) / g.scale;
       const r = radius / g.scale;
+      // edge raggedness in px, capped so the big fill keeps a fine, grainy edge
+      const amp = Math.min(r * 0.12, 28);
       let path = '';
       for (let p = 0; p < POINTS; p++) {
         const a = (p / POINTS) * Math.PI * 2;
-        const wobble = 1 + 0.12 * Math.sin(3 * a + time) + 0.07 * Math.sin(5 * a - time * 1.3);
-        path += `${p ? ',' : ''}${(cx + Math.cos(a) * r * wobble).toFixed(1)}px ${(cy + Math.sin(a) * r * wobble).toFixed(1)}px`;
+        const edge =
+          Math.sin(3 * a + time) * 0.55 +
+          Math.sin(7 * a - time * 1.4) * 0.3 +
+          Math.sin(17 * a + time * 2.1) * 0.15;
+        const rr = r + edge * amp;
+        path += `${p ? ',' : ''}${(cx + Math.cos(a) * rr).toFixed(1)}px ${(cy + Math.sin(a) * rr).toFixed(1)}px`;
       }
       el.style.clipPath = `polygon(${path})`;
     }
