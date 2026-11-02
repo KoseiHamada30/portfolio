@@ -289,6 +289,7 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
   speed (up to ~40px) and closes at rest.
 - Static decorative "+" marks at 1/6 and 5/6 stay on the splash and the About ending.
 - Keyboard focus ring always visible.
+- **Contact** sits in the stage's bottom-left corner, opposite the view toggle; the nav holds only the wordmark, "Work, About" and the language (Kosei 2026-11-02).
 
 ### 8.4 Motion recipes (replace §5.1, 5.2, 5.3, 5.10, 5.12)
 | Moment | Recipe |

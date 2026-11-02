@@ -1,9 +1,8 @@
 ---
-// Global nav (DESIGN.md §8): KOSEI© wordmark left; "Work, About" (active one underlined),
-// language and Contact right. Text colour follows the surface: light on the dark Work stage,
+// Global nav (DESIGN.md §8): KOSEI© wordmark left; "Work, About" (active one underlined) and
+// language right. Contact sits in the stage's bottom-left corner (Stage.astro) and the footer. Text colour follows the surface: light on the dark Work stage,
 // ink on paper pages. Persisted across same-locale navigations; behaviour in src/lib/nav.ts.
 import { t, url, otherLocale, pathWithoutLocale, type Locale } from '../lib/i18n';
-import LinkBullet from './LinkBullet.astro';
 
 interface Props {
   locale: Locale;
@@ -15,7 +14,7 @@ const { locale, alternate = true } = Astro.props;
 const path = pathWithoutLocale(Astro.url.pathname);
 const alt = otherLocale(locale);
 const section = path.startsWith('info') ? 'info' : path === '' || path.startsWith('work') ? 'work' : null;
-// /about arrives in Phase 9; until then "About" is the Info page, where the footer (#contact) lives.
+// /about arrives in Phase 9; until then "About" is the Info page.
 const aboutHref = url(locale, 'info');
 ---
 
@@ -43,9 +42,6 @@ const aboutHref = url(locale, 'info');
       >
         <span aria-hidden="true">{t(locale, 'nav.lang')}</span>
       </a>
-      <LinkBullet class="nav__contact" href="#contact" data-nav-contact data-fallback={`${aboutHref}#contact`}>
-        {t(locale, 'contact')}
-      </LinkBullet>
     </div>
   </div>
 </header>
@@ -167,10 +163,6 @@ const aboutHref = url(locale, 'info');
 
     .nav__end {
       gap: var(--space-3);
-    }
-
-    .nav__end :global(.nav__contact) {
-      display: none;
     }
   }
 

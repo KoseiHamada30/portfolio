@@ -1,5 +1,5 @@
 // Nav behaviour (DESIGN.md §5.7, §8): hide on scroll down / show on scroll up, blurred backdrop
-// after 40px, and per-page sync of the active link, language toggle and Contact target.
+// after 40px, and per-page sync of the active link and language toggle.
 // The <Nav /> element is persisted, so this runs once and re-syncs on every page load.
 import { prefersReducedMotion } from './motion';
 
@@ -40,10 +40,6 @@ function syncPage() {
     // hreflang links are absolute (production origin); keep the toggle same-origin.
     if (alternate) toggle.setAttribute('href', new URL(alternate.href).pathname);
   }
-
-  // Contact scrolls to this page's footer, or goes to the page that has one (the Work stage has none).
-  const contact = el.querySelector<HTMLAnchorElement>('[data-nav-contact]');
-  if (contact) contact.setAttribute('href', document.getElementById('contact') ? '#contact' : (contact.dataset.fallback ?? '#contact'));
 
   el.classList.remove('is-hidden');
   updateScroll(true);

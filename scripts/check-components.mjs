@@ -56,14 +56,16 @@ const watch = (page) => {
       underline: getComputedStyle(work).textDecorationColor,
       color: getComputedStyle(document.querySelector('[data-nav]')).color,
       about: document.querySelector('[data-nav-item="info"]').textContent.trim(),
-      contact: document.querySelector('[data-nav-contact]').getAttribute('href'),
+      contact: document.querySelector('.stage__contact')?.getAttribute('href'),
+      corner: (() => { const r = document.querySelector('.stage__contact').getBoundingClientRect(); return r.left < 80 && innerHeight - r.bottom < 40; })(),
+      navContact: !!document.querySelector('[data-nav] .link-bullet'),
       footer: !!document.getElementById('contact'),
     };
   });
   check('Work is current on / and underlined', home.current === 'page' && home.underline !== 'rgba(0, 0, 0, 0)', home.underline);
   check('Nav reads "Work, About"', home.about === 'About');
   check('Nav text is light on the stage', home.color === 'rgb(237, 235, 228)', home.color);
-  check('No footer on the stage; Contact goes to About#contact', !home.footer && home.contact.endsWith('/info/#contact'), home.contact);
+  check('No footer on the stage; Contact sits bottom-left and goes to About#contact', !home.footer && home.corner && !home.navContact && home.contact?.endsWith('/info/#contact'), home.contact);
   await page.mouse.move(0, 400);
   await page.click('[data-nav-item="info"]');
   await ready(page, 2);
@@ -74,11 +76,10 @@ const watch = (page) => {
     info: document.querySelector('[data-nav-item="info"]').getAttribute('aria-current'),
     work: document.querySelector('[data-nav-item="work"]').getAttribute('aria-current'),
     color: getComputedStyle(document.querySelector('[data-nav]')).color,
-    contact: document.querySelector('[data-nav-contact]').getAttribute('href'),
   }));
   check('Nav element persisted across navigation', after.persisted && after.path.endsWith('/info/'));
   check('About becomes current', after.info === 'page' && after.work === null);
-  check('Nav text turns dark on paper; Contact scrolls to this footer', after.color === 'rgb(14, 14, 14)' && after.contact === '#contact', `${after.color} ${after.contact}`);
+  check('Nav text turns dark on paper', after.color === 'rgb(14, 14, 14)', after.color);
   await page.close();
 }
 
@@ -208,12 +209,12 @@ const watch = (page) => {
   const first = await k.evaluate(() => ({ cls: document.activeElement?.className, top: document.activeElement?.getBoundingClientRect().top }));
   check('First Tab focuses the visible skip link', String(first.cls).includes('skip-link') && first.top >= 0);
   const order = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 4; i++) {
     await k.keyboard.press('Tab');
     order.push(await k.evaluate(() => document.activeElement?.dataset.navItem ?? (document.activeElement?.hasAttribute('data-lang-toggle') ? 'lang' : document.activeElement?.textContent?.trim().slice(0, 12))));
   }
   const normalised = order.map((s) => String(s).replace(/\s+/g, ''));
-  check('Tab order: brand → Work → About → language → Contact', normalised.join(',') === 'KOSEI©,work,info,lang,•Contact', order.join(' → '));
+  check('Tab order: brand → Work → About → language', normalised.join(',') === 'KOSEI©,work,info,lang', order.join(' → '));
   await k.close();
 }
 

@@ -65,3 +65,4 @@ Design and build decisions not covered by DESIGN.md. Newest first.
 | 2026-11-02 | Splash exit: Home slides up over the splash (900ms, expo.inOut) as the centre image grows. The paper sheet is removed. | Kosei: no blank screen before Home. |
 | 2026-11-02 | The stage title crossfades between projects instead of rolling. | Kosei: just fade in and out. |
 | 2026-11-02 | Switching language never replays the splash, even when it ends up as a full page load (router fallback, or the remembered-language redirect). Both set a one-time `splash-skip` flag in sessionStorage; an in-place swap clears it. | Kosei: language change should be instant, with no splash. |
+| 2026-11-02 | Contact moved out of the nav to the bottom-left corner of the Work stage (to About#contact). Paper pages keep the footer. | Kosei: the nav had too much in it. |

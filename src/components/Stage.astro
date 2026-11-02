@@ -7,6 +7,7 @@ import { t, url, pick, type Locale } from '../lib/i18n';
 import { getStageItems, unbracket } from '../lib/content';
 import CoverPlaceholder from './CoverPlaceholder.astro';
 import Caption from './StageCaption.astro';
+import LinkBullet from './LinkBullet.astro';
 
 interface Props {
   locale: Locale;
@@ -118,6 +119,9 @@ const subline = (item: Item) => {
       }
     </div>
   </div>
+
+  <!-- Contact: bottom-left corner, opposite the view toggle (the stage has no footer) -->
+  <LinkBullet class="stage__contact" href={`${url(locale, 'info')}#contact`}>{t(locale, 'contact')}</LinkBullet>
 
   <div class="stage__views" role="group" aria-label={t(locale, 'stage.views')} data-stage-views>
     <button type="button" class="stage__view-btn" data-view-option="index" aria-pressed="false">
@@ -415,6 +419,24 @@ const subline = (item: Item) => {
     .stage__scope {
       --scope: 2.4876vw;
     }
+  }
+
+  /* ----------------------------------------------------------- contact */
+
+  .stage__contact {
+    position: absolute;
+    left: var(--page-margin);
+    bottom: var(--space-5);
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--stage-ink);
+  }
+
+  .stage__contact:focus-visible {
+    outline: 2px solid var(--stage-ink);
+    outline-offset: 2px;
   }
 
   /* -------------------------------------------------------- view toggle */
