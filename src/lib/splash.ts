@@ -1,10 +1,9 @@
 // Splash sequence (DESIGN.md §8.4–8.5):
 //   fade in → counter 0→100 from real loading (fonts + first covers, min 1.2s, max 2.4s)
 //   while the centre image cycles every 140ms → hold → letter roll (the beat observed on the
-//   reference) → image scales up as the paper sheet rises → page inits run under the sheet →
-//   sheet slides off upward.
+//   reference) → page inits run under the splash → Home slides up over it as the image grows.
 // Plays on every full load / refresh of the home page; any key or click skips. Runs as a beforePage() hook, so page animations
-// start only when the sheet is about to reveal them.
+// start under the splash, before Home slides in.
 import { gsap } from './motion';
 import { beforePage, onPage } from './lifecycle';
 import { getLenis } from './lenis';
@@ -16,7 +15,6 @@ const CYCLE_MS = 140;
 const HOLD_MS = 300;
 const IMAGES_TO_WAIT = 4;
 
-let sheetPending = false;
 
 function loadTasks(root: HTMLElement): Promise<unknown>[] {
   const images = [...root.querySelectorAll<HTMLImageElement>('img')].slice(0, IMAGES_TO_WAIT);
@@ -57,12 +55,14 @@ function runCounter(tasks: Promise<unknown>[], onUpdate: (value: number) => void
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const play = (tl: gsap.core.Animation) => new Promise<void>((resolve) => tl.eventCallback('onComplete', () => resolve()));
 
+/** Set when the splash has played through; the onPage hook below then slides Home in over it. */
+let exitPending: { comp: ReturnType<typeof createComposition>; finish: () => void } | null = null;
+
 async function runSplash(): Promise<void> {
   const html = document.documentElement;
   const root = document.querySelector<HTMLElement>('[data-splash]');
-  const sheet = document.querySelector<HTMLElement>('[data-splash-sheet]');
   const compEl = root?.querySelector<HTMLElement>('[data-comp]');
-  if (!root || !sheet || !compEl) {
+  if (!root || !compEl) {
     html.classList.remove('splash-on');
     return;
   }
@@ -81,7 +81,7 @@ async function runSplash(): Promise<void> {
 
   const finish = () => {
     controller.abort();
-    html.classList.remove('splash-on');
+    html.classList.remove('splash-on', 'splash-exit');
     gsap.set([compEl, comp.media], { clearProps: 'all' });
     lenis?.start();
   };
@@ -96,7 +96,7 @@ async function runSplash(): Promise<void> {
   comp.setImage(0);
 
   if (skipped) {
-    // Quick way out: fade the overlay, no sheet.
+    // Quick way out: fade the overlay.
     await play(gsap.to(root, { opacity: 0, duration: 0.25, ease: 'power2.out' }));
     gsap.set(root, { clearProps: 'opacity' });
     finish();
@@ -106,16 +106,8 @@ async function runSplash(): Promise<void> {
   await wait(HOLD_MS);
   await play(comp.roll());
 
-  // Exit: image grows while the sheet rises over everything.
-  sheet.classList.add('is-active');
-  const exit = gsap.timeline();
-  exit.to(comp.media, { scale: 1.25, duration: 0.6, ease: 'power3.inOut' }, 0);
-  // y: 0 drops the CSS translateY(100%), which GSAP would otherwise read in and add to yPercent
-  exit.fromTo(sheet, { y: 0, yPercent: 100 }, { yPercent: 0, duration: 0.8, ease: 'expo.inOut' }, 0);
-  await play(exit);
-
-  finish();
-  sheetPending = true; // the onPage hook below slides it away once the page is set up
+  // The splash stays up while the page modules set up underneath; then Home slides in over it.
+  exitPending = { comp, finish };
 }
 
 beforePage(async () => {
@@ -123,22 +115,25 @@ beforePage(async () => {
   await runSplash();
 });
 
-// Registered after the page modules (import order in BaseLayout), so their start states are
-// already applied when the sheet moves away.
+// Registered after the page modules (import order in BaseLayout), so the page is set up before it
+// moves. Exit (DESIGN.md §8.4, changed 2026-11-02): no blank sheet — Home itself slides up from the
+// bottom over the splash while the centre image grows, then the splash is removed.
 onPage(() => {
-  if (!sheetPending) return;
-  sheetPending = false;
-  const sheet = document.querySelector<HTMLElement>('[data-splash-sheet]');
-  if (!sheet) return;
-  // DESIGN.md §8.4: the stage background switch + slider rise-in hook in here (Phase 4R-b).
+  if (!exitPending) return;
+  const { comp, finish } = exitPending;
+  exitPending = null;
+  const main = document.querySelector<HTMLElement>('main');
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  document.documentElement.classList.add('splash-exit'); // lifts <main> above the splash
   document.dispatchEvent(new CustomEvent('splash:reveal'));
-  gsap.to(sheet, {
-    yPercent: -100,
-    duration: 0.7,
-    ease: 'expo.inOut',
+
+  const exit = gsap.timeline({
     onComplete: () => {
-      sheet.classList.remove('is-active');
-      gsap.set(sheet, { clearProps: 'transform' });
+      finish();
+      gsap.set(main, { clearProps: 'transform' });
+      if (nav) gsap.fromTo(nav, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out', clearProps: 'opacity' });
     },
   });
+  exit.to(comp.media, { scale: 1.25, duration: 0.6, ease: 'power3.inOut' }, 0);
+  exit.fromTo(main, { yPercent: 100 }, { yPercent: 0, duration: 0.9, ease: 'expo.inOut' }, 0);
 });

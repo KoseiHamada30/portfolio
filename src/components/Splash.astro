@@ -32,11 +32,9 @@ const { locale, covers } = Astro.props;
   <SplashComposition locale={locale} covers={covers} progress={0} />
   <p class="splash__skip">{t(locale, 'splash.skip')}</p>
 </div>
-<div class="splash-sheet" aria-hidden="true" data-splash-sheet></div>
 
 <style>
-  .splash,
-  .splash-sheet {
+  .splash {
     display: none;
   }
 
@@ -49,7 +47,6 @@ const { locale, covers } = Astro.props;
     inset: 0;
     z-index: 950;
     display: block;
-    /* a shade darker than the page so the rising --sheet reads as a sheet (reference) */
     background: var(--paper-200);
     cursor: progress;
   }
@@ -59,18 +56,10 @@ const { locale, covers } = Astro.props;
     opacity: 0;
   }
 
-  .splash-sheet {
-    position: fixed;
-    inset: 0;
+  /* Exit: <main> slides up over the splash (splash.ts) */
+  :global(html.splash-exit main) {
+    position: relative;
     z-index: 960;
-    background: var(--sheet);
-    transform: translateY(100%);
-    pointer-events: none;
-  }
-
-  :global(html.splash-on) .splash-sheet,
-  .splash-sheet:global(.is-active) {
-    display: block;
   }
 
   /* Only visible to people who look for it; any key or click skips. */

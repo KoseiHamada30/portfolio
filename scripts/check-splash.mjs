@@ -25,7 +25,7 @@ function recordSplash() {
     const samples = [];
     const html = document.documentElement;
     const tick = () => {
-      const sheet = document.querySelector('[data-splash-sheet]');
+      const main = document.querySelector('main');
       const strip = document.querySelector('[data-comp-strip]');
       samples.push({
         t: Math.round(performance.now() - t0),
@@ -33,10 +33,16 @@ function recordSplash() {
         count: Number(document.querySelector('[data-comp-count]')?.textContent),
         img: document.querySelector('[data-comp-img].is-active')?.dataset.compImg,
         roll: strip ? new DOMMatrix(getComputedStyle(strip).transform).f : 0,
-        sheetTop: sheet && getComputedStyle(sheet).display !== 'none' ? Math.round(sheet.getBoundingClientRect().top) : null,
+        mainTop: Math.round(main.getBoundingClientRect().top),
+        exiting: html.classList.contains('splash-exit'),
+        blank: (() => {
+          // a full-screen element at the centre that is neither the splash nor the page = a blank sheet
+          const el = document.elementFromPoint(innerWidth / 2, innerHeight / 2);
+          return !!el && !el.closest('[data-splash], main, [data-nav]');
+        })(),
         work: document.querySelectorAll('[data-stage-slide]').length,
       });
-      const done = !html.classList.contains('splash-on') && !(sheet?.classList.contains('is-active'));
+      const done = !html.classList.contains('splash-on');
       if ((done && samples.length > 5) || performance.now() - t0 > 12000) resolve(samples);
       else setTimeout(tick, 30);
     };
@@ -65,7 +71,8 @@ function recordSplash() {
   const firstMove = samples.find((s) => s.count > 0);
   const imgs = new Set(samples.filter((s) => s.count < 100).map((s) => s.img));
   const rolled = samples.some((s) => s.roll < -5);
-  const covered = samples.some((s) => s.sheetTop !== null && s.sheetTop <= 1);
+  const sliding = samples.some((s) => s.on && s.exiting && s.mainTop > 50 && s.mainTop < 850);
+  const blank = samples.some((s) => s.blank);
   const fill = (reached?.t ?? 0) - (firstMove?.t ?? 0);
 
   check('Splash shown on first visit', samples[0].on);
@@ -75,9 +82,10 @@ function recordSplash() {
   check('Centre image cycles while loading', imgs.size >= 2, [...imgs].join(', '));
   check('Settles on the first project (circula)', samples.filter((s) => s.count === 100).at(-1)?.img === 'circula');
   check('Letter roll plays after 100', rolled);
-  check('Sheet rises to cover the screen', covered);
+  check('Home slides up over the splash', sliding);
+  check('No blank screen between the splash and Home', !blank);
   const handoff = samples.find((s) => !s.on);
-  check('Splash is removed only while the sheet covers the screen', handoff?.sheetTop !== null && handoff?.sheetTop <= 1, `sheet top ${handoff?.sheetTop}px`);
+  check('Splash is removed only once Home covers the screen', handoff?.mainTop <= 1, `main top ${handoff?.mainTop}px`);
   const total = samples.at(-1).t;
   check('Whole sequence finishes', !samples.at(-1).on, `${(total / 1000).toFixed(1)}s`);
 
@@ -86,11 +94,11 @@ function recordSplash() {
   const after = await page.evaluate(() => ({
     overflow: getComputedStyle(document.documentElement).overflow,
     lenis: document.documentElement.classList.contains('lenis') && !document.documentElement.classList.contains('lenis-stopped'),
-    sheet: getComputedStyle(document.querySelector('[data-splash-sheet]')).display,
+    main: getComputedStyle(document.querySelector('main')).transform,
     title: getComputedStyle(document.querySelector('.stage__slide.is-active .stage__link')).opacity,
     lcp: Math.round(window.__lcp),
   }));
-  check('Afterwards: scrolling unlocked, Lenis running, sheet gone', after.overflow !== 'hidden' && after.lenis && after.sheet === 'none');
+  check('Afterwards: scrolling unlocked, Lenis running, Home in place', after.overflow !== 'hidden' && after.lenis && after.main === 'none', after.main);
   check('Page animations played after the reveal', after.title === '1');
   console.log(`  (LCP in dev: ${after.lcp}ms)`);
 

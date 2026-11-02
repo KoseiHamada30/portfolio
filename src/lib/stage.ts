@@ -578,8 +578,8 @@ function riseIn(root: HTMLElement) {
     root.classList.remove('is-entering');
     gsap.to(links, { y: 0, opacity: 1, duration: 1, ease: ease.outExpo, stagger: 0.06, clearProps: 'transform,opacity' });
   };
-  // After the splash, wait until its sheet starts sliding away (splash.ts dispatches this).
-  if (document.querySelector('[data-splash-sheet].is-active')) {
+  // Under the splash, wait until Home starts sliding in (splash.ts dispatches this).
+  if (document.documentElement.classList.contains('splash-on')) {
     document.addEventListener('splash:reveal', play, { once: true });
   } else play();
 }
