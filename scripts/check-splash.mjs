@@ -34,6 +34,7 @@ function recordSplash() {
         img: document.querySelector('[data-comp-img].is-active')?.dataset.compImg,
         roll: strip ? new DOMMatrix(getComputedStyle(strip).transform).f : 0,
         mainTop: Math.round(main.getBoundingClientRect().top),
+        media: (() => { const r = document.querySelector('[data-comp-media]')?.getBoundingClientRect(); return r ? [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)] : null; })(),
         exiting: html.classList.contains('splash-exit'),
         blank: (() => {
           // a full-screen element at the centre that is neither the splash nor the page = a blank sheet
@@ -83,6 +84,8 @@ function recordSplash() {
   check('Settles on the first project (circula)', samples.filter((s) => s.count === 100).at(-1)?.img === 'circula');
   check('Letter roll plays after 100', rolled);
   check('Home slides up over the splash', sliding);
+  const lastOn = samples.filter((s) => s.on).at(-1);
+  check('The final picture expands to fill the screen as Home arrives', lastOn?.media && lastOn.media[2] >= 1380 && lastOn.media[3] >= 860, `${lastOn?.media?.join(' ')}`);
   check('No blank screen between the splash and Home', !blank);
   const handoff = samples.find((s) => !s.on);
   check('Splash is removed only once Home covers the screen', handoff?.mainTop <= 1, `main top ${handoff?.mainTop}px`);
@@ -159,6 +162,10 @@ function recordSplash() {
         available: comp.clientWidth - pad * 2,
         label: document.querySelector('.comp__label').textContent,
         intro: document.querySelector('.comp__intro').textContent.slice(0, 20),
+        // each letter cell only clips top/bottom, and the word starts on screen
+        clip: [...document.querySelectorAll('.comp__cell')].every((c) => getComputedStyle(c).overflow === 'visible' && getComputedStyle(c).clipPath.startsWith('inset')),
+        wordTop: document.querySelector('.comp__cell').getBoundingClientRect().top,
+        plus: document.querySelectorAll('.comp__plus').length,
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         media: document.querySelector('[data-comp-media]').getBoundingClientRect().height,
       };
@@ -166,6 +173,7 @@ function recordSplash() {
     check(`${width}px ${path}: KOSEI© fills the width`, Math.abs(layout.word - layout.available) / layout.available < 0.03, `${Math.round(layout.word)} / ${Math.round(layout.available)}px`);
     check(`${width}px ${path}: centre image has room`, layout.media > 120, `${Math.round(layout.media)}px tall`);
     check(`${width}px ${path}: no sideways scroll`, layout.overflow <= 0);
+    check(`${width}px ${path}: letters not cropped (sides free, top on screen), no "+" marks`, layout.clip && layout.wordTop > -10 && layout.plus === 0, `top ${layout.wordTop.toFixed(1)}px`);
     if (path === '/ja/') check('JA: label and intro in Japanese', layout.label === 'プロダクトデザイナー［•］ハマダコウセイ' && layout.intro.startsWith('濵田紘誠'), layout.intro);
     await ctx.close();
   }

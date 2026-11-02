@@ -1,6 +1,6 @@
 ---
-// The splash composition (DESIGN.md §8): full-width KOSEI© wordmark, a centre cover, "+" marks at
-// 1/6 and 5/6, and a bottom row (JP label · intro · counter). Pure layout: it is driven from JS via
+// The splash composition (DESIGN.md §8): full-width KOSEI© wordmark, a centre cover and a bottom
+// row (JP label · intro · counter). Pure layout: it is driven from JS via
 // src/lib/splash-composition.ts (setProgress / setImage / roll), so the splash can drive it by
 // loading progress and the About ending (later) by scroll progress.
 import { Image } from 'astro:assets';
@@ -40,9 +40,6 @@ const COPIES = 4; // glyph copies per letter strip for the roll
       ))
     }
   </p>
-
-  <span class="comp__plus comp__plus--left" aria-hidden="true"></span>
-  <span class="comp__plus comp__plus--right" aria-hidden="true"></span>
 
   <div class="comp__stage">
     <div class="comp__media" data-comp-media>
@@ -95,14 +92,16 @@ const COPIES = 4; // glyph copies per letter strip for the roll
     /* shrink-wrap the text so the fit in splash-composition.ts measures glyphs, not the grid cell */
     width: max-content;
     color: var(--ink-900);
-    /* sit flush with the top edge like the reference */
-    margin-block-start: -0.06em;
+    /* close to the top edge like the reference, without cropping round letters (O, S, ©) */
+    margin-block-start: -0.02em;
   }
 
+  /* Clip only top and bottom (the roll's other copies). With the tight tracking each glyph is wider
+     than its cell, so overflow: hidden would shave the sides of K, O, S and ©. */
   .comp__cell {
     display: inline-block;
     height: 0.82em;
-    overflow: hidden;
+    clip-path: inset(0 -0.5em);
     vertical-align: top;
   }
 
@@ -146,46 +145,6 @@ const COPIES = 4; // glyph copies per letter strip for the roll
 
   .comp__img.is-active {
     opacity: 1;
-  }
-
-  /* ----------------------------------------------------------- "+" marks */
-
-  .comp__plus {
-    position: absolute;
-    top: 50%;
-    width: 15px;
-    height: 15px;
-    translate: -50% -50%;
-    color: var(--ink-700);
-  }
-
-  .comp__plus--left {
-    left: calc(100% / 6);
-  }
-
-  .comp__plus--right {
-    left: calc(100% * 5 / 6);
-  }
-
-  .comp__plus::before,
-  .comp__plus::after {
-    content: '';
-    position: absolute;
-    background: currentColor;
-  }
-
-  .comp__plus::before {
-    left: 7px;
-    top: 0;
-    width: 1px;
-    height: 15px;
-  }
-
-  .comp__plus::after {
-    top: 7px;
-    left: 0;
-    width: 15px;
-    height: 1px;
   }
 
   /* ----------------------------------------------------------- bottom row */
@@ -247,10 +206,6 @@ const COPIES = 4; // glyph copies per letter strip for the roll
 
     .comp__count {
       grid-area: count;
-    }
-
-    .comp__plus {
-      display: none;
     }
   }
 </style>

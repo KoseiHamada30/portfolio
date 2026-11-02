@@ -116,8 +116,8 @@ beforePage(async () => {
 });
 
 // Registered after the page modules (import order in BaseLayout), so the page is set up before it
-// moves. Exit (DESIGN.md §8.4, changed 2026-11-02): no blank sheet — Home itself slides up from the
-// bottom over the splash while the centre image grows, then the splash is removed.
+// moves. Exit (DESIGN.md §8.4, changed 2026-11-02): no blank sheet — the centre image expands to fill
+// the screen while Home itself slides up from the bottom over it, then the splash is removed.
 onPage(() => {
   if (!exitPending) return;
   const { comp, finish } = exitPending;
@@ -134,6 +134,10 @@ onPage(() => {
       if (nav) gsap.fromTo(nav, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out', clearProps: 'opacity' });
     },
   });
-  exit.to(comp.media, { scale: 1.25, duration: 0.6, ease: 'power3.inOut' }, 0);
-  exit.fromTo(main, { yPercent: 100 }, { yPercent: 0, duration: 0.9, ease: 'expo.inOut' }, 0);
+  // The final picture grows from its frame to fill the whole screen while Home rises over it.
+  const media = comp.media;
+  const box = media.getBoundingClientRect();
+  gsap.set(media, { position: 'fixed', top: box.top, left: box.left, width: box.width, height: box.height, margin: 0, zIndex: 1 });
+  exit.to(media, { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight, duration: 0.9, ease: 'expo.inOut' }, 0);
+  exit.fromTo(main, { yPercent: 100 }, { yPercent: 0, duration: 0.9, ease: 'expo.inOut' }, 0.08);
 });

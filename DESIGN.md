@@ -277,9 +277,7 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
 > **[Changed 2026-11-02 (Kosei): match the reference exactly.]** The earlier spec (a following crosshair with
 > View/Prev/Next/Drag pills) is replaced by the following.
 - **No custom cursor.** The system cursor stays: a hand over slides and links, the default arrow elsewhere.
-- **Fixed "+" at the centre of the stage:** a 12px box (0.8333vw; 2.4876vw on phones), 1px strokes each 40% of
-  the box, with an open centre, in `--stage-ink`. It collapses and turns 180° (0.5s) while the slides enter and
-  in the Index view.
+- **No "+" marks** anywhere (Kosei 2026-11-02): no centre crosshair on the stage, none on the splash.
 - **Hover:** colour fills the slide under the pointer gradually: a brighter full-colour circle with a ragged edge
   grows outward from the pointer (from ~4% to ~38% of the viewport width) while the whole slide warms from grey,
   both on the same 1s power2.out curve. Every other slide, including the centred one, returns to monochrome.
@@ -287,7 +285,6 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
   is lit.
 - **Lens:** a full-colour blob with a wobbling edge trails the pointer (ease 0.1). Its radius grows with pointer
   speed (up to ~40px) and closes at rest.
-- Static decorative "+" marks at 1/6 and 5/6 stay on the splash and the About ending.
 - Keyboard focus ring always visible.
 - **Contact** sits in the stage's bottom-left corner, opposite the view toggle; the nav holds only the wordmark, "Work, About" and the language (Kosei 2026-11-02).
 
@@ -297,7 +294,7 @@ Do NOT build: scroll-jacking that hijacks reading speed, cursor trails, sounds t
 | Letter roll | Each wordmark letter is a vertical strip of 3–4 glyph copies in an overflow-hidden box; translate from yPercent 100 → 0 (or cycle), stagger 50ms, 900ms expo.out. |
 | Splash centre image | Cycles project covers every 140ms while loading (stops at the first project). |
 | Load counter | Real asset progress (fonts + first 4 covers), tweened so it never jumps backwards, min 1.2s, max 2.4s. |
-| Splash exit | **[Changed 2026-11-02 (Kosei): no blank sheet.]** Centre image scale 1 → 1.25 (600ms, power3.inOut) while Home itself slides up from the bottom over the splash (yPercent 100 → 0, 900ms, expo.inOut), slider items rise in (stagger 60ms), then the splash is removed and the nav fades in. |
+| Splash exit | **[Changed 2026-11-02 (Kosei): no blank sheet.]** The final centre image expands from its frame to fill the whole screen (900ms, expo.inOut) while Home itself slides up from the bottom over it (yPercent 100 → 0, 900ms, expo.inOut, 80ms later), slider items rise in (stagger 60ms), then the splash is removed and the nav fades in. |
 | Slider | Wheel / drag / arrow keys drive a target index; position lerps (0.09). Velocity adds a subtle skewX (max 4°) and inactive scale .92. Infinite loop. Snaps to the nearest slide after 150ms idle. |
 | Open case study | Click the active slide → `--sheet` rises from the bottom (yPercent 100 → 0, 900ms expo.inOut) carrying the case-study hero; the slider fades to 0.4 behind it. |
 | Close | Top-right "Close" → the sheet slides down (650ms, fast power3.in), the slider reappears on the same slide (index kept in sessionStorage + `?p=slug`). |

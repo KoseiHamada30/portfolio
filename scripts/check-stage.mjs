@@ -69,13 +69,7 @@ const settle = (page) => page.waitForTimeout(1700);
 
   let s = await state(page);
   check('Starts on Circula, centred', s.title === 'Circula' && s.centred < 2);
-  const scope = await page.evaluate(() => {
-    const el = document.querySelector('[data-stage-scope]');
-    const r = el.getBoundingClientRect();
-    const lines = [...el.children].map((l) => l.getBoundingClientRect());
-    return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, size: r.width, thin: lines.every((l) => Math.min(l.width, l.height) === 1), gap: lines[0].bottom < lines[2].top };
-  });
-  check('Fixed "+" at the centre: 12px, 1px strokes, open middle', Math.abs(scope.cx - 720) < 1 && Math.abs(scope.cy - 450) < 1 && Math.round(scope.size) === 12 && scope.thin && scope.gap, JSON.stringify(scope));
+  check('No "+" marks on the stage', (await page.evaluate(() => !document.querySelector('[data-stage-scope], .comp__plus'))));
   check('System cursor (hand over slides), no custom cursor', (await page.evaluate(() => !document.querySelector('[data-cursor-root]') && getComputedStyle(document.querySelector('[data-stage-link]')).cursor === 'pointer')));
 
   // wheel

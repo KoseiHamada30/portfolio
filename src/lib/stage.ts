@@ -2,8 +2,7 @@
 //   Fine pointer: a looping slider. Wheel, drag (with inertia), arrow keys and clicks on the
 //   neighbours set a target index; the position eases toward it, movement adds a small skew,
 //   and it snaps to the nearest slide after 150ms idle. Colour and the centred title follow
-//   the hovered slide, and a colour lens trails the pointer. The pointer itself stays native;
-//   a fixed "+" marks the centre (as in the reference).
+//   the hovered slide, and a colour lens trails the pointer. The pointer itself stays native.
 //   Touch / no JS: the track stays a native scroll-snap list; this only tracks the active slide.
 // Tuning lives in CSS custom properties (tokens.css) so the Site Tuner can change them live.
 import { gsap, ease, media } from './motion';
@@ -570,9 +569,7 @@ function setupViews(root: HTMLElement, signal: AbortSignal) {
 function riseIn(root: HTMLElement) {
   const links = [...root.querySelectorAll<HTMLElement>('.stage__slide .stage__link, [data-stage-titles]')];
   gsap.set(links, { y: 90, opacity: 0 });
-  root.classList.add('is-entering'); // crosshair collapsed until the slides arrive
   const play = () => {
-    root.classList.remove('is-entering');
     gsap.to(links, { y: 0, opacity: 1, duration: 1, ease: ease.outExpo, stagger: 0.06, clearProps: 'transform,opacity' });
   };
   // Under the splash, wait until Home starts sliding in (splash.ts dispatches this).
