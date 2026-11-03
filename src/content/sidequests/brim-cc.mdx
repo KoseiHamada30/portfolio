@@ -13,6 +13,114 @@ cover: ../../assets/sidequests/brim-cc/thumb.webp
 coverAlt:
   en: 'Brim CC menu cards with the red seal logo, fanned out on a wooden table'
   ja: '赤い印章ロゴ入りのBrim CCのメニューカードを木のテーブルに広げた様子' # TODO(kosei): review JA
+caseStudy: true
+hero: ../../assets/sidequests/brim-cc/hero.webp
+heroAlt:
+  en: 'Brim CC menu cards with the red seal logo on a wooden table'
+  ja: '木のテーブルに置かれた、赤い印章ロゴ入りのBrim CCのメニューカード' # TODO(kosei): review JA
 ---
 
-{/* University of Melbourne GDES30002, Brief 1. Outline: AUDIT.md §7.1. */}
+import Section from '../../components/case/Section.astro';
+import MetaGrid from '../../components/case/MetaGrid.astro';
+import Media from '../../components/case/Media.astro';
+import Callout from '../../components/case/Callout.astro';
+import currentBrand from '../../assets/sidequests/brim-cc/current-brand.webp';
+import stylescape from '../../assets/sidequests/brim-cc/stylescape.webp';
+import logoSketches from '../../assets/sidequests/brim-cc/logo-sketches.webp';
+import logoDevelopment from '../../assets/sidequests/brim-cc/logo-development.webp';
+import logoFinal from '../../assets/sidequests/brim-cc/logo-final.webp';
+import logoSeal from '../../assets/sidequests/brim-cc/logo-seal.webp';
+import logoVersions from '../../assets/sidequests/brim-cc/logo-versions.webp';
+import typeImg from '../../assets/sidequests/brim-cc/typography.webp';
+import palette from '../../assets/sidequests/brim-cc/palette.webp';
+import instagram from '../../assets/sidequests/brim-cc/instagram.webp';
+import menu from '../../assets/sidequests/brim-cc/menu.webp';
+import businessCard from '../../assets/sidequests/brim-cc/business-card.webp';
+
+{/* University of Melbourne GDES30002, Brief 1 (Kosei 2026-11-03: built from Branding_assignment1.pdf
+    and the branding_brimcc folder). Images are cropped from that deck. English only for now —
+    TODO(kosei): Japanese translation; duration and tools. */}
+
+<div class="case-intro">
+  <p class="lead">Brim CC is a small Japanese eatery on Little Collins Street in Melbourne, run by James, a Chinese owner who earned his Japanese cooking through years of work. Its tagline, "Mum's Kitchen", comes from his mother's cooking.</p>
+  <p class="lead">I rebranded it around that story, with a bilingual seal mark that brings together Chinese seal culture and Japanese craft.</p>
+  <MetaGrid items={[
+    { label: 'Type', value: 'Brand identity (rebrand)' },
+    { label: 'Course', value: 'GDES30002, University of Melbourne' },
+    { label: 'My Role', value: 'Solo' },
+    { label: 'Year', value: '2026' },
+  ]} />
+</div>
+
+<Section num="01" title="Problem" id="problem">
+  <h3>A story nobody can see</h3>
+  <p>Brim CC's branding was close to nonexistent: one illuminated sign in three mismatched typefaces, plastic letters inside, a Facebook page last updated in 2020, and Japanese decorations that felt borrowed rather than designed.</p>
+  <p>Interviewing James, I learned that "Brim CC" stands for Believe, Credit and Quality, and that "Mum's Kitchen" came straight from his mother. None of that was in the brand. The richest surface in the shop was the community wall, covered in notes, origami cranes and messages in Japanese, Korean, English and Chinese left by customers.</p>
+  <Media src={currentBrand} alt="The current Brim CC: the illuminated sign, the dining room, the community wall of notes and origami cranes, the food display and the counter" />
+  <p>Nearby competitors like Don Don and Onsen Japanese compete on quick, affordable Japanese food. Brim CC could stand apart on its story.</p>
+</Section>
+
+<Section num="02" title="Strategy" id="strategy">
+  <h3>Make the invisible visible</h3>
+  <p>The goal was for Brim CC to become Melbourne CBD's most honest multicultural dining spot, where James's Chinese heritage and his Japanese craft are both visible, and where a Japanese expat, an international student or a city worker all feel welcome.</p>
+  <Callout kind="goal">
+    <p>Put James's values (Believe, Credit, Quality) into the identity, and move "Mum's Kitchen" from a buried tagline to its emotional heart.</p>
+  </Callout>
+  <p>The concept: a bilingual mark that combines a Chinese seal stamp with Japanese calligraphy, handmade and warm, so anyone walking past on Little Collins Street understands who made this place and why.</p>
+  <p>A short brand story set the tone: an overseas student between lectures, cold and hungry, finds a curry don in eight minutes and a wall of notes from people like her, and decides to come back next week.</p>
+</Section>
+
+<Section num="03" title="Visual Direction" id="direction">
+  <h3>Seal red, ink black and warm timber</h3>
+  <p>Three stylescapes explored the mood, from black and white calligraphy to Chinese reds and greens to warm, vintage Asian print.</p>
+  <Media src={stylescape} alt="Three stylescapes: black and white type with a red seal, red and green Chinese street signage, and warm vintage Asian print with brown tones" />
+  <p>Four references set the direction:</p>
+  <ul>
+    <li><b>Mirá (a São Paulo bakery)</b>: Japanese script used as an equal voice next to the Latin wordmark. This led to pairing "Brim CC" with 母味.</li>
+    <li><b>Zoe Cui's Women in Chinese Characters</b>: Chinese characters as a design language in deep red, black and white, which set the seal red.</li>
+    <li><b>Studio Rejane Dal Bello</b>: minimal black on light grey, where type leads. This shaped the supporting text and layouts.</li>
+    <li><b>The Japanese ryokan</b>: omotenashi, warm timber and quiet craft, matching James's "warm and friendly home feeling".</li>
+  </ul>
+</Section>
+
+<Section num="04" title="Logo" id="logo">
+  <h3>From brush lettering to a seal</h3>
+  <p>The first ideas tried brush lettering, a steaming bowl, and 母味 in a red square stamp.</p>
+  <Media src={logoSketches} alt="Six early logo ideas: Brim CC in brush lettering, a red outlined BRIM CC, a steaming bowl, a bilingual stack with Mum's Kitchen, a red 母味 stamp and 母味 with Brim in brush script" />
+  <h4>Developing the seal</h4>
+  <p>Twelve rounds turned 母味 into a circular seal, from a hand-drawn outline to the final red mark with BRIM CC beside it.</p>
+  <Media src={logoDevelopment} alt="Twelve steps of the seal: hand-drawn circles with 母味, refined in black, then in red, ending with the seal next to the BRIM CC wordmark" />
+  <h4>Final logo</h4>
+  <p>The final mark sets the 母味 seal in deep red next to BRIM CC, with "Mum's Kitchen" in handwriting underneath. The seal also works on its own, with "Mum's Kitchen" curved over the top.</p>
+  <Media src={logoFinal} alt="Final logo: the red 母味 seal with BRIM CC and Mum's Kitchen" />
+  <div class="media-row">
+    <Media src={logoSeal} alt="The seal on its own, with Mum's Kitchen curved over the top and BRIM CC below" />
+    <Media src={logoVersions} alt="The logo in red and dark grey on white, and in grey on black" />
+  </div>
+  <Callout kind="decision">
+    <p>A seal stamp is a Chinese mark of trust and authorship; 母味 is written like Japanese calligraphy. One mark holds both cultures, and James's name for the food.</p>
+  </Callout>
+</Section>
+
+<Section num="05" title="Visual System" id="system">
+  <h3>Type and colour</h3>
+  <h4>Typography</h4>
+  <p>After trying Brush Script MT and Playball, the final system uses MADE TOMMY as the primary typeface, Ting Tong as a handwritten secondary, and Hiragino Kaku Gothic for Japanese text.</p>
+  <Media src={typeImg} alt="Typography rounds: Brush Script MT and Noto Serif SC, Playball and Noto Serif SC, and the final MADE TOMMY, Ting Tong and Hiragino Kaku Gothic" />
+  <h4>Colour</h4>
+  <p>The first palette had a bright red (#C1102C). The final one is calmer: dark grey #383838, mid grey #636565, light grey #CCCCCC and the seal red #8C1B1C.</p>
+  <Media src={palette} alt="Colour palettes: the first with near-black, bright red and light grey; the final with dark grey, mid grey, light grey and seal red" />
+</Section>
+
+<Section num="06" title="Applications" id="applications">
+  <h3>On the street, the table and in your pocket</h3>
+  <h4>Instagram</h4>
+  <p>Posts announce the opening hours, show the sign lit up at night, and feature dishes like the katsu kare don.</p>
+  <Media src={instagram} alt="Three Instagram posts: WE ARE OPEN with the hours, the lit-up Brim CC sign at night, and a katsu kare don" />
+  <h4>Menu</h4>
+  <p>A set of tall menu cards (entrée, salad, donburi and noodles) in English and Japanese on textured paper, with the seal at the top.</p>
+  <Media src={menu} alt="Menu cards: the cover with the logo and メニュー, entrée and salad, donburi and noodles, and the cards fanned out on a wooden table" />
+  <h4>Business card</h4>
+  <p>The business card is embossed on off-white paper, with the logo on the front and a handwritten line on the back.</p>
+  <Media src={businessCard} alt="Embossed business cards: the front with the logo and the back with a handwritten line, and both cards on a grey surface" />
+</Section>
