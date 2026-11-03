@@ -4,16 +4,17 @@ import { text, localeOf, type Text } from '../../lib/i18n';
 
 interface Props {
   value: number;
+  prefix?: string;
   suffix?: string;
   label: Text;
 }
 
 const locale = localeOf(Astro.currentLocale);
-const { value, suffix = '', label } = Astro.props;
+const { value, prefix = '', suffix = '', label } = Astro.props;
 ---
 
 <div class="stat">
-  <p class="stat__value"><span data-reveal="counter">{value}</span>{suffix}</p>
+  <p class="stat__value">{prefix}<span data-reveal="counter">{value}</span>{suffix}</p>
   <p class="stat__label">{text(locale, label)}</p>
 </div>
 

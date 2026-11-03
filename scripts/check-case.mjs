@@ -231,7 +231,7 @@ const scrollTo = async (page, selector) => {
     next: document.querySelector('.next__title').textContent,
   }));
   check('Hero: title and subtitle, no category label', nba.hero === 'NBA Research Lab' && !nba.label && nba.sub === 'Over or under, answered in one place', nba.sub);
-  check('Seven sections in order', nba.sections.join('|') === 'Challenge|Ideation|Solution|Interaction Details|Share Image|Shipping It|Learnings', nba.sections.join(', '));
+  check('Eight sections in order', nba.sections.join('|') === 'Challenge|Ideation|Solution|Interaction Details|Share Image|Shipping It|Results|Learnings', nba.sections.join(', '));
   check('Goal, Decision and Fix callouts', nba.callouts.join('|') === 'Goal|Decision|Fix', nba.callouts.join(', '));
   check('Eight images (two side-by-side pairs of sketches); next project is Circula', nba.images === 8 && nba.rows === 2 && nba.next === 'Circula', `${nba.images} images, ${nba.rows} rows, next ${nba.next}`);
 

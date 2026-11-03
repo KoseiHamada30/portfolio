@@ -199,6 +199,18 @@ const accentKey = entry.id === 'nba-research-lab' ? 'nba-lab' : entry.id;
     line-height: 1.5;
   }
 
+  /* a row of big numbers (Stat), wrapping to one per line on phones */
+  .case-prose .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: var(--space-6) var(--gutter);
+    margin: var(--space-7) 0 0;
+  }
+
+  .case-prose .stat-row .stat__value {
+    font-size: var(--fs-h1);
+  }
+
   .case-prose .muted {
     font-size: var(--fs-small);
     color: var(--ink-500);
