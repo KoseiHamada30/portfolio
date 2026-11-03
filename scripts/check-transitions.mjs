@@ -74,7 +74,7 @@ const after = (page, pattern) => page.waitForURL(pattern).then(() => ready(page)
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(300);
   await record(page);
-  await page.click('[data-nav-item="work"]');
+  await page.click('[data-nav-home]');
   await after(page, /\/portfolio\/$/);
   vt = await recorded(page);
   const active = await page.evaluate(() => document.querySelector('[data-stage-slide].is-active')?.dataset.id);
@@ -109,27 +109,26 @@ const after = (page, pattern) => page.waitForURL(pattern).then(() => ready(page)
 
   // ---------------------------------------------------------- Work ↔ About
   console.log('\nWork ↔ About');
-  const bar = () => page.evaluate(() => new DOMMatrix(getComputedStyle(document.querySelector('[data-nav-bar]')).transform).e);
-  const barWork = await bar();
   await record(page);
   await page.click('[data-nav-item="about"]');
   await after(page, /\/about\/$/);
   vt = await recorded(page);
-  const barAbout = await bar();
-  const aboutBox = await page.evaluate(() => {
-    const links = document.querySelector('.nav__links').getBoundingClientRect();
+  const barOk = await page.evaluate(() => {
+    const bar = document.querySelector('[data-nav-bar]');
     const r = document.createRange();
     r.selectNodeContents(document.querySelector('[data-nav-item="about"]'));
-    return r.getBoundingClientRect().left - links.left;
+    const text = r.getBoundingClientRect();
+    const b = bar.getBoundingClientRect();
+    return getComputedStyle(bar).opacity === '1' && Math.abs(b.left - text.left) < 2;
   });
   check('Section: Work fades out (300ms), then About fades in (360ms) — stage ↔ paper, no overlap', vt.kind === 'section' && has(vt.anims, 'old', 'vt-fade-out', 300) && has(vt.anims, 'new', 'vt-fade-in', 360), JSON.stringify(vt));
-  check('The nav bar slides from Work to About', barAbout > barWork + 10 && Math.abs(barAbout - aboutBox) < 2, `${barWork.toFixed(0)} → ${barAbout.toFixed(0)}px`);
+  check('The nav bar sits under About', barOk);
   check('Bar is animated (CSS transition on transform)', await page.evaluate(() => getComputedStyle(document.querySelector('[data-nav-bar]')).transitionProperty.includes('transform')));
 
   // ---------------------------------------------------------- leaks
   console.log('\nRapid back/forward');
   // history now: … Work, About. Build a few more entries, then hammer back/forward.
-  await page.click('[data-nav-item="work"]');
+  await page.click('[data-nav-home]');
   await after(page, /\/portfolio\/$/);
   const baseTriggers = await page.evaluate(() => window.__motion.triggers());
   const before = await setups(page);

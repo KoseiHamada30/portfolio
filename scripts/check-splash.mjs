@@ -125,7 +125,7 @@ function recordSplash() {
   await page.waitForFunction(() => window.__motion?.setups() >= 1, null, { timeout: 15000 });
   await page.click('[data-nav-item="about"]');
   await page.waitForURL(/\/about\/$/);
-  await page.click('[data-nav-item="work"]');
+  await page.click('[data-nav-home]');
   await page.waitForURL(/\/portfolio\/$/);
   await page.waitForTimeout(500);
   check('Navigating back to Work: no splash', !(await page.evaluate(() => document.documentElement.classList.contains('splash-on'))));
@@ -149,7 +149,7 @@ function recordSplash() {
   await page.evaluate(() => localStorage.removeItem('locale'));
   await page.goto(`${BASE}/about/`);
   await page.waitForFunction(() => window.__motion?.setups() >= 1);
-  await page.click('[data-nav-item="work"]');
+  await page.click('[data-nav-home]');
   await page.waitForURL(/\/portfolio\/$/);
   await page.waitForTimeout(500);
   check('Landing on /about, then clicking Work: no splash', !(await page.evaluate(() => document.documentElement.classList.contains('splash-on'))));

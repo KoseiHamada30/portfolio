@@ -45,23 +45,15 @@ const watch = (page) => {
   const up = await nav.evaluate((el) => ({ hidden: el.classList.contains('is-hidden'), top: el.getBoundingClientRect().top }));
   check('Scrolling up shows it again', !up.hidden && up.top === 0);
 
-  // Active link + persistence across a ClientRouter navigation (DESIGN.md §8: "Work, About")
+  // Active link + persistence across a ClientRouter navigation (Kosei 2026-11-03: links are just "About")
   await page.goto(`${BASE}/`);
   await ready(page);
   await page.evaluate(() => (document.querySelector('[data-nav]').__persisted = true));
   const home = await page.evaluate(() => {
-    const work = document.querySelector('[data-nav-item="work"]');
     return {
-      current: work.getAttribute('aria-current'),
-      // the sliding bar (nav.ts) sits under the current item's text
-      underline: (() => {
-        const bar = document.querySelector('[data-nav-bar]');
-        const r = document.createRange();
-        r.selectNodeContents(work);
-        const text = r.getBoundingClientRect();
-        const b = bar.getBoundingClientRect();
-        return getComputedStyle(bar).opacity === '1' && Math.abs(b.left - text.left) < 2 && Math.abs(b.width - text.width) < 2 && b.top > text.bottom - 2;
-      })(),
+      items: [...document.querySelectorAll('[data-nav-item]')].map((i) => i.dataset.navItem).join(','),
+      comma: !!document.querySelector('.nav__comma'),
+      underline: getComputedStyle(document.querySelector('[data-nav-bar]')).opacity === '1',
       color: getComputedStyle(document.querySelector('[data-nav]')).color,
       about: document.querySelector('[data-nav-item="about"]').textContent.trim(),
       contact: document.querySelector('.stage__contact')?.getAttribute('href'),
@@ -70,8 +62,7 @@ const watch = (page) => {
       footer: !!document.getElementById('contact'),
     };
   });
-  check('Work is current on / and underlined (sliding bar)', home.current === 'page' && home.underline === true, String(home.underline));
-  check('Nav reads "Work, About"', home.about === 'About');
+  check('Nav links are just "About" (no ", Work"); nothing underlined on /', home.items === 'about' && !home.comma && home.about === 'About' && !home.underline, home.items);
   check('Nav text is light on the stage', home.color === 'rgb(237, 235, 228)', home.color);
   check('No footer on the stage; Contact sits bottom-left and goes to About#contact', !home.footer && home.corner && !home.navContact && home.contact?.endsWith('/about/#contact'), home.contact);
   await page.mouse.move(0, 400);
@@ -82,11 +73,18 @@ const watch = (page) => {
     path: location.pathname,
     persisted: document.querySelector('[data-nav]').__persisted === true,
     info: document.querySelector('[data-nav-item="about"]').getAttribute('aria-current'),
-    work: document.querySelector('[data-nav-item="work"]').getAttribute('aria-current'),
+    underline: (() => {
+      const bar = document.querySelector('[data-nav-bar]');
+      const r = document.createRange();
+      r.selectNodeContents(document.querySelector('[data-nav-item="about"]'));
+      const text = r.getBoundingClientRect();
+      const b = bar.getBoundingClientRect();
+      return getComputedStyle(bar).opacity === '1' && Math.abs(b.left - text.left) < 2 && Math.abs(b.width - text.width) < 2 && b.top > text.bottom - 2;
+    })(),
     color: getComputedStyle(document.querySelector('[data-nav]')).color,
   }));
   check('Nav element persisted across navigation', after.persisted && after.path.endsWith('/about/'));
-  check('About becomes current', after.info === 'page' && after.work === null);
+  check('About becomes current and underlined (bar)', after.info === 'page' && after.underline === true);
   check('Nav text turns dark on paper', after.color === 'rgb(14, 14, 14)', after.color);
   await page.close();
 }
@@ -177,7 +175,7 @@ const watch = (page) => {
     const c = await page.evaluate(() => ({
       custom: !!document.querySelector('[data-cursor-root]') || document.documentElement.classList.contains('has-cursor'),
       html: getComputedStyle(document.documentElement).cursor,
-      link: getComputedStyle(document.querySelector('[data-nav-item="work"]')).cursor,
+      link: getComputedStyle(document.querySelector('[data-nav-home]')).cursor,
     }));
     check(`Native cursor on ${path} (pointer on links)`, !c.custom && c.html === 'auto' && c.link === 'pointer', `${c.html} / ${c.link}`);
   }
@@ -222,7 +220,7 @@ const watch = (page) => {
     order.push(await k.evaluate(() => document.activeElement?.dataset.navItem ?? (document.activeElement?.hasAttribute('data-lang-toggle') ? 'lang' : document.activeElement?.textContent?.trim().slice(0, 12))));
   }
   const normalised = order.map((s) => String(s).replace(/\s+/g, ''));
-  check('Tab order: brand → Work → About → language', normalised.join(',') === 'KOSEI©,work,about,lang', order.join(' → '));
+  check('Tab order: brand → About → language', normalised.slice(0, 3).join(',') === 'KOSEI©,about,lang', order.join(' → '));
   await k.close();
 }
 
