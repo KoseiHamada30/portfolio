@@ -80,7 +80,6 @@ const subline = (item: Item) => {
   </div>
 
   <div class="stage-index" data-stage-index hidden>
-    <p class="stage-index__note" role="note">{t(locale, 'stage.largerScreen')}</p>
     <ol class="stage-index__list">
       {
         items.map((item, i) => (
@@ -362,11 +361,15 @@ const subline = (item: Item) => {
     inset: auto 0 0;
   }
 
-  /* Portrait tablets: slides are shorter than the stage (tokens.css --slide-h), so the title and
-     subline sit just under the slide instead of at the bottom of the screen (Kosei 2026-11-03). */
-  @media (min-width: 761px) and (max-aspect-ratio: 3/4) {
+  /* Phones and portrait tablets: slides are shorter than the stage (tokens.css --slide-h), so the
+     title and subline sit just under the slide instead of at the bottom of the screen (Kosei 2026-11-03). */
+  @media (max-width: 760px), (min-width: 761px) and (max-aspect-ratio: 3/4) {
     .stage.is-virtual .stage__titles {
       inset: calc(50% + var(--slide-h) / 2 + var(--space-5)) 0 auto;
+    }
+
+    .stage:not(.is-virtual) .stage__slide .stage__caption {
+      inset: calc(100% + var(--space-5)) 0 auto;
     }
 
     .stage__titles .stage__caption {
@@ -451,34 +454,6 @@ const subline = (item: Item) => {
   /* Long titles (data-fit, StageCaption) shrink to the slide width */
   .stage__title-inner[data-fit] {
     font-size: min(var(--fs-slide), calc(var(--slide-w) * 0.112));
-  }
-
-  /* Phones: no view toggle, and a note that the stage is built for a larger screen
-     (both from the tuner edit made in another session, 2026-11-03) */
-  .stage-index__note {
-    display: none;
-  }
-
-  @media (max-width: 760px) {
-    .js .stage__views {
-      display: none;
-    }
-
-    .stage-index__note {
-      display: block;
-      justify-self: center;
-      max-width: 32ch;
-      margin: 0 0 var(--space-6);
-      padding: var(--space-2) var(--space-4);
-      border: 1px solid color-mix(in oklab, var(--stage-ink) 25%, transparent);
-      border-radius: var(--radius-sm);
-      font-family: var(--font-mono);
-      font-size: var(--fs-label);
-      letter-spacing: 0.02em;
-      line-height: 1.4;
-      text-align: center;
-      color: color-mix(in oklab, var(--stage-ink) 80%, transparent);
-    }
   }
 
   /* Rows share one grid (subgrid): number at the left edge, the title and its line left-aligned
@@ -609,13 +584,6 @@ const subline = (item: Item) => {
       column-gap: var(--space-3);
     }
 
-  }
-
-  @media (max-width: 760px) {
-    /* clear the view toggle */
-    .stage__caption {
-      bottom: calc(var(--space-5) + 48px);
-    }
   }
 
   /* hover preview: only with a mouse on screens wider than a tablet */

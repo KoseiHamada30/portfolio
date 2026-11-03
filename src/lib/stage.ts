@@ -522,14 +522,12 @@ function setupViews(root: HTMLElement, signal: AbortSignal) {
   const track = root.querySelector<HTMLElement>('[data-stage-track]');
   const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-view-option]')];
   if (!index || !track) return;
-  // Phones always get the Index list (the view toggle is hidden there, with a "larger screen" note);
-  // a phone visit doesn't overwrite the remembered desktop choice. From the tuner edit, 2026-11-03.
-  const phone = matchMedia('(width <= 760px)');
+  // Phones get the slideshow too, with the view toggle (Kosei 2026-11-03; they used to be list-only).
 
   const show = (view: string, animate: boolean) => {
     root.dataset.view = view;
     buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.viewOption === view)));
-    if (!phone.matches) writeStore(STORE_VIEW, view);
+    writeStore(STORE_VIEW, view);
     const isIndex = view === 'index';
     if (isIndex) index.hidden = false;
     track.inert = isIndex;
@@ -556,9 +554,7 @@ function setupViews(root: HTMLElement, signal: AbortSignal) {
   buttons.forEach((button) =>
     button.addEventListener('click', () => show(button.dataset.viewOption ?? 'stage', true), { signal }),
   );
-  const initial = () => (phone.matches || readStore(STORE_VIEW) === 'index' ? 'index' : 'stage');
-  show(initial(), false);
-  phone.addEventListener('change', () => show(initial(), false), { signal });
+  show(readStore(STORE_VIEW) === 'index' ? 'index' : 'stage', false);
 
   // Hover / focus preview: monochrome first, colour blooms in (CSS)
   const preview = root.querySelector<HTMLElement>('[data-index-preview]');
