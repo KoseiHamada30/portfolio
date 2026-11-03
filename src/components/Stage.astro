@@ -434,17 +434,36 @@ const subline = (item: Item) => {
     display: none;
   }
 
-  /* Phones only: the stage is built for a larger screen */
+  /* Long titles (data-fit, StageCaption) shrink to the slide width */
+  .stage__title-inner[data-fit] {
+    font-size: min(var(--fs-slide), calc(var(--slide-w) * 0.112));
+  }
+
+  /* Phones: no view toggle, and a note that the stage is built for a larger screen
+     (both from the tuner edit made in another session, 2026-11-03) */
   .stage-index__note {
     display: none;
-    margin: 0 0 var(--space-5);
-    font-size: var(--fs-small);
-    color: color-mix(in oklab, var(--stage-ink) 70%, transparent);
   }
 
   @media (max-width: 760px) {
+    .js .stage__views {
+      display: none;
+    }
+
     .stage-index__note {
       display: block;
+      justify-self: center;
+      max-width: 32ch;
+      margin: 0 0 var(--space-6);
+      padding: var(--space-2) var(--space-4);
+      border: 1px solid color-mix(in oklab, var(--stage-ink) 25%, transparent);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: var(--fs-label);
+      letter-spacing: 0.02em;
+      line-height: 1.4;
+      text-align: center;
+      color: color-mix(in oklab, var(--stage-ink) 80%, transparent);
     }
   }
 

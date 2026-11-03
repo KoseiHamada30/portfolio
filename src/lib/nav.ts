@@ -51,12 +51,13 @@ function syncPage() {
   updateScroll(true);
 }
 
-/** One bar under the current item; a CSS transition slides it between Work and About (§8.4). */
-function placeBar(el: HTMLElement) {
+/** One bar under the current item (or the hovered one); a CSS transition slides it between Work
+ *  and About (§8.4). It is the only underline, so hover never shows two lines. */
+function placeBar(el: HTMLElement, target?: HTMLElement) {
   const links = el.querySelector<HTMLElement>('.nav__links');
   const bar = el.querySelector<HTMLElement>('[data-nav-bar]');
   if (!links || !bar) return;
-  const current = links.querySelector<HTMLElement>('[data-nav-item][aria-current="page"]');
+  const current = target ?? links.querySelector<HTMLElement>('[data-nav-item][aria-current="page"]');
   // Hidden links (case sheets show "Close") have no box: keep the bar where it was.
   if (!current || links.offsetParent === null) {
     links.classList.toggle('has-bar', Boolean(current));
@@ -127,4 +128,20 @@ export function startNav(): void {
   };
   document.fonts?.ready.then(replace);
   window.addEventListener('resize', replace, { passive: true });
+
+  // Hover (and keyboard focus) moves the bar to that item; leaving puts it back on the current page.
+  const show = (event: Event) => {
+    const item = (event.target as Element | null)?.closest<HTMLElement>('[data-nav] [data-nav-item]');
+    const el = nav();
+    if (item && el) placeBar(el, item);
+  };
+  const back = (event: Event) => {
+    const el = nav();
+    const to = (event as FocusEvent | PointerEvent).relatedTarget as Node | null;
+    if (el && !el.querySelector('.nav__links')?.contains(to)) placeBar(el);
+  };
+  document.addEventListener('pointerover', show);
+  document.addEventListener('focusin', show);
+  document.addEventListener('pointerout', (e) => (e.target as Element | null)?.closest?.('[data-nav] .nav__links') && back(e));
+  document.addEventListener('focusout', (e) => (e.target as Element | null)?.closest?.('[data-nav] .nav__links') && back(e));
 }

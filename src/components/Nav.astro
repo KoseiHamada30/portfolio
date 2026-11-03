@@ -168,7 +168,8 @@ const aboutHref = url(locale, 'about');
     pointer-events: none;
   }
 
-  .nav__links:global(.has-bar) .nav__item[aria-current='page']:not(:hover) {
+  /* with the bar, no text underline at all (hover moves the bar instead) */
+  .nav__links:global(.has-bar) .nav__item {
     text-decoration-color: transparent;
   }
 
@@ -178,7 +179,7 @@ const aboutHref = url(locale, 'about');
 
   .nav__links:global(.bar-ready) .nav__bar {
     transition:
-      transform var(--dur-section) var(--ease-sheet),
+      transform 450ms var(--ease-out-expo),
       opacity var(--dur-fast) var(--ease-out);
   }
 
