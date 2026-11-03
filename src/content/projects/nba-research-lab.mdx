@@ -40,8 +40,8 @@ import share from '../../assets/projects/nba-research-lab/share.webp';
     it in English — TODO(kosei): Japanese translation. */}
 
 <div class="case-intro">
-  <p class="lead">Dimers is Cipher Sports Technology Group's flagship brand, an app and website that gives sports bettors model projections alongside odds from every major sportsbook. NBA Research Lab is a new part of the Dimers app for researching NBA player props. It puts Dimers' projections, every sportsbook's line and each player's recent games on one screen, so a bettor can answer one question fast: over or under?</p>
-  <p class="lead">I designed it as a product design intern at Cipher Sports, from whiteboard sketches to an interactive prototype that became the team's spec, and through to QA on TestFlight builds.</p>
+  <p class="lead">Dimers is Cipher Sports Technology Group's flagship brand: an app and website that helps US sports fans find betting opportunities. Its models price every game and player prop, and show where those numbers disagree with the sportsbooks. NBA Research Lab (the internal name) is a new way to explore Dimers' NBA player projections in the app's Projections tab, included with Dimers Pro. It brings Dimers' projections, consensus and individual sportsbook lines and each player's recent games into one place, so a bettor can answer one question fast: over or under?</p>
+  <p class="lead">I designed it as a product design intern at Cipher Sports, two days a week, from discovery and whiteboard sketches to an interactive prototype that became the team's spec, and through to QA on TestFlight builds.</p>
   <MetaGrid items={[
     { label: 'Type', value: 'Product design (UX/UI)' },
     { label: 'Duration', value: '3 months, ongoing' },
@@ -52,15 +52,24 @@ import share from '../../assets/projects/nba-research-lab/share.webp';
 
 <Section num="01" title="Challenge" id="challenge">
   <h3>"Do I go over or under?"</h3>
-  <p>Dimers already had a projection model and odds from every major sportsbook, but nowhere to research a single player prop. To decide on "Anthony Edwards, over 28.5 points" a bettor had to jump between a stats site for recent games, a sportsbook for the line, and Dimers for the projection.</p>
-  <p>The goal was one place that answers the question in seconds and makes clear where each number comes from: our model, the market, or the player's own history.</p>
+  <p>Dimers' models already projected every NBA player prop and showed where they disagreed with the market. But when users wanted to properly research a prop, they left for tools like props.cash or ESPN, and the session left with them. To decide on "Anthony Edwards, over 28.5 points" a bettor jumped between a stats site for recent games, a sportsbook for the line, and Dimers for the projection.</p>
+  <p>It was an open problem from the roadmap and a discovery-led brief: working out what the product should be mattered as much as designing it well. The scope was one sport and one section of the app. Basketball is the biggest prop-betting sport, so the aim was a settled direction before the NBA season tipped off in late October.</p>
+  <p>The goal was a research experience inside Dimers that lets bettors do their homework and make their own decisions, rather than relying only on Dimers' recommended bets. Showing the numbers behind each projection builds trust, shows the value of Dimers' data, and gives Pro subscribers a reason to come back every game night.</p>
   <Callout kind="goal">
-    <p>Every element on the page answers one thing: how does this player do against this line?</p>
+    <p>Research a prop without leaving Dimers. Every element answers one thing: how does this player do against this line?</p>
   </Callout>
+  <h4>Design principles</h4>
+  <ul>
+    <li><b>Mobile-first</b>: if it only works on a big canvas, it's not the answer.</li>
+    <li><b>Clarity over density</b>: the most decision-useful information comes first.</li>
+    <li><b>Progressive depth</b>: advanced users can go deeper, but no one is forced into expert mode.</li>
+    <li><b>Research, not noise</b>: every module has to help answer a betting question.</li>
+  </ul>
 </Section>
 
 <Section num="02" title="Ideation" id="ideation">
   <h3>Starting on the whiteboard</h3>
+  <p>The design question of the whole project was how to show the data so it is both informative and easy to read: a player's history turned into charts where the insight is obvious at a glance, with recent performance as context for the projection rather than the headline.</p>
   <p>I started by listing what a bettor needs before placing a prop: availability, the Dimers projection, bookmaker odds, historical stats, the game log and the bet itself. Then I sorted them into an order: projections and bookmakers side by side, then trend stats, then the game log.</p>
   <div class="media-row">
     <Media src={sketchNeeds} alt="Whiteboard: six circles listing what a bettor needs: availability, Dimers projection, bookmaker odds, historical stats, game log and the bet" />
@@ -83,7 +92,7 @@ import share from '../../assets/projects/nba-research-lab/share.webp';
 <Section num="03" title="Solution" id="solution">
   <h3>From a slate to a single prop</h3>
   <h4>1. Projections list</h4>
-  <p>Every player on tonight's slate in one sortable list: recent games as dots above or below the line, the line, our projection and the gap between them.</p>
+  <p>Every NBA player expected on tonight's slate, across points, rebounds, assists and more, in one sortable list: recent games as dots above or below the line, the line, our projection and the gap between them.</p>
   <h4>2. Player page</h4>
   <p>A stat strip (a dot marks stats where the model found value), line chips for the consensus and each sportsbook, and a hit-rate chart that shows how often the player cleared the line in his last 5, 10 or 20 games, head to head, home or away. Tonight's projection sits at the end as a dashed yellow bar.</p>
   <Media src={screens} alt="The projections list, a player page with a best bet selected, and the player page scrolled with its header collapsed" />
