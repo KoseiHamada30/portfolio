@@ -1,7 +1,6 @@
 ---
-// "Try it" block (Kosei 2026-11-03: "bigger and highlighted since this interactive prototype should
-// get attention"): a panel on the project's soft accent with a live label, a large heading, a short
-// intro (slot) and the prototype embed with its full-screen link.
+// "Try it" card (Kosei 2026-11-03: bigger so the prototype gets attention, but plain: no accent
+// highlight, label or full-screen link): a large heading, a short intro (slot) and the embed.
 //   <TryIt embed="prototypes/nba-research-lab.html" title="…" height="…">intro</TryIt>
 import Media from './Media.astro';
 import { t, localeOf, type Text } from '../../lib/i18n';
@@ -17,7 +16,6 @@ const { embed, title, height } = Astro.props;
 ---
 
 <section class="try" aria-labelledby="try-it" data-reveal="fade">
-  <p class="try__label"><span class="try__dot" aria-hidden="true"></span>{t(locale, 'case.interactive')}</p>
   <h3 class="try__title" id="try-it">{t(locale, 'case.tryIt')}</h3>
   <div class="try__intro"><slot /></div>
   <Media embed={embed} title={title} height={height} />
@@ -27,43 +25,13 @@ const { embed, title, height } = Astro.props;
   .try {
     margin: var(--space-8) 0 0;
     padding: var(--space-7) var(--space-6) var(--space-6);
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border: 1px solid var(--line);
     border-radius: var(--radius-lg);
-    /* mixed here: --accent-soft is resolved on :root, before the project accent applies */
-    background: color-mix(in oklab, var(--accent) 10%, var(--paper-100));
-  }
-
-  .try__label {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-
-  .try__dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: try-pulse 1.8s var(--ease-in-out) infinite;
-  }
-
-  @keyframes try-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
-    50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 0%, transparent); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .try__dot { animation: none; }
+    background: var(--paper-0);
   }
 
   .try__title {
-    margin: var(--space-3) 0 0;
+    margin: 0;
     font-size: var(--fs-h1);
     line-height: var(--lh-head);
     letter-spacing: var(--tracking-head);
