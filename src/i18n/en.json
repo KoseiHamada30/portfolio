@@ -313,6 +313,7 @@
   "case.before": "Before",
   "case.after": "After",
   "case.openFigma": "Open the prototype in Figma",
+  "case.openPrototype": "Open the prototype full screen",
   "about.title": "About",
   "about.email": "Email",
   "about.linkedin": "LinkedIn",

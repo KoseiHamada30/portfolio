@@ -6,6 +6,8 @@
 //                                                                 centred in the viewport (case.ts);
 //                                                                 poster = same name .jpg
 //   <Media embed="https://embed.figma.com/…" title="…" />         lazy iframe (Figma prototypes)
+//   <Media embed="prototype/nba-research-lab.html" height="…" />   local prototype from public/, with a
+//                                                                 full-screen link
 // size: "content" (column width, default) | "medium" (max 720px) | "narrow" (max 600px), centred.
 // Wrap several in <div class="media-row"> to sit them side by side.
 import type { ImageMetadata } from 'astro';
@@ -22,16 +24,20 @@ interface Props {
   caption?: Text;
   frame?: 'phone' | 'none';
   size?: 'content' | 'medium' | 'narrow';
+  /** CSS height for an embed (overrides the Figma player height). */
+  height?: string;
 }
 
 const locale = localeOf(Astro.currentLocale);
-const { src, video, embed, alt, title, caption, frame = 'none', size = 'content' } = Astro.props;
+const { src, video, embed, alt, title, caption, frame = 'none', size = 'content', height } = Astro.props;
 const label = alt ? text(locale, alt) : '';
 const image = src && 'en' in src && 'ja' in src && !('src' in src) ? src[locale] : (src as ImageMetadata | undefined);
 const widths = size === 'content' ? [800, 1200, 1600] : [600, 900, 1400];
 const sizes = size === 'narrow' ? '600px' : size === 'medium' ? '720px' : '(min-width: 1100px) 52rem, 92vw';
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 // Figma prototypes also get a plain link: some hosts block embedded frames.
+// A local embed (a prototype in public/) is served under the base and opens full screen in a new tab.
+const localEmbed = embed && !/^https?:/.test(embed) ? `${base}${embed}` : null;
 const figmaLink = embed?.includes('embed.figma.com') ? embed.replace('embed.figma.com', 'www.figma.com').replace(/&?embed-host=[^&]*/, '') : null;
 ---
 
@@ -55,7 +61,14 @@ const figmaLink = embed?.includes('embed.figma.com') ? embed.replace('embed.figm
   }
   {
     embed && (
-      <iframe src={embed} title={title ? text(locale, title) : label} loading="lazy" allowfullscreen />
+      <iframe src={localEmbed ?? embed} title={title ? text(locale, title) : label} loading="lazy" allowfullscreen style={height ? `height:${height}` : undefined} />
+    )
+  }
+  {
+    localEmbed && (
+      <p class="media__link">
+        <LinkBullet href={localEmbed} external locale={locale}>{t(locale, 'case.openPrototype')}</LinkBullet>
+      </p>
     )
   }
   {
