@@ -30,6 +30,13 @@ const up = '';
 for (const page of PAGES) {
   let html = fs.readFileSync(path.join(dist, page), 'utf8');
   glyphs += html.replace(/<[^>]+>/g, '');
+  // One size per image (Kosei 2026-11-03: the artifact holds at most 512 files): src becomes the
+  // largest srcset candidate up to 1600w and srcset is dropped. The real site keeps every size.
+  html = html.replace(/<img\b[^>]*\ssrcset="([^"]+)"[^>]*>/g, (tag, set) => {
+    const c = set.split(',').map((s) => s.trim().split(/\s+/)).map(([u, w]) => ({ u, w: parseInt(w) }));
+    const fit = c.filter((x) => x.w <= 1600).sort((a, b) => b.w - a.w)[0] ?? c.sort((a, b) => a.w - b.w)[0];
+    return tag.replace(/\ssrcset="[^"]+"/, '').replace(/\ssrc="[^"]+"/, ` src="${fit.u}"`);
+  });
   html = html.replace(/(?:https:\/\/koseihamada30\.github\.io)?\/portfolio\/([^"'\s)?#,]*)/g, (_, p) => {
     if (p.startsWith('_astro/')) assets.add(p.slice(7));
     else if (/\.\w+$/.test(p) && p !== 'favicon.svg' && fs.existsSync(path.join(dist, p))) publicFiles.add(p);
