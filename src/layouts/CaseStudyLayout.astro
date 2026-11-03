@@ -152,7 +152,6 @@ const accentKey = entry.id === 'nba-research-lab' ? 'nba-lab' : entry.id;
   }
 
   .case-prose p {
-    max-width: var(--text-width);
     margin: var(--space-4) 0 0;
   }
 
@@ -177,7 +176,6 @@ const accentKey = entry.id === 'nba-research-lab' ? 'nba-lab' : entry.id;
   }
 
   .case-prose ul {
-    max-width: var(--text-width);
     margin: var(--space-4) 0 0;
     padding-left: 1.1em;
   }
@@ -189,6 +187,12 @@ const accentKey = entry.id === 'nba-research-lab' ? 'nba-lab' : entry.id;
   .case-prose b,
   .case-prose strong {
     font-weight: 600;
+  }
+
+  /* Kosei 2026-11-03: text runs the full width of the column, to its right edge (no 68ch / JA 36em
+     cap from typography.css); the extra class outweighs :lang(ja) p */
+  .case-body .case-prose :is(p, ul, ol) {
+    max-width: none;
   }
 
   .case-prose .lead {
