@@ -9,7 +9,7 @@ import NextProject from '../components/case/NextProject.astro';
 import { t, url, pick, type Locale } from '../lib/i18n';
 
 interface Props {
-  entry: CollectionEntry<'projects'>;
+  entry: CollectionEntry<'projects'> | CollectionEntry<'sidequests'>;
   locale: Locale;
 }
 

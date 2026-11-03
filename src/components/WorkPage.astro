@@ -13,14 +13,14 @@ interface Props {
 }
 
 const { project, locale } = Astro.props;
-const isCase = project.collection === 'projects' && project.data.caseStudy;
+const isCase = project.data.caseStudy;
 const { Content } = isCase ? await render(project) : { Content: null };
 const accentKey = project.id === 'nba-research-lab' ? 'nba-lab' : project.id;
 ---
 
 {
   isCase && Content ? (
-    <CaseStudyLayout entry={project as CollectionEntry<'projects'>} locale={locale}>
+    <CaseStudyLayout entry={project} locale={locale}>
       <Content />
     </CaseStudyLayout>
   ) : (

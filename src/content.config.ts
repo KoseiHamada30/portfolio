@@ -68,6 +68,12 @@ const sidequests = defineCollection({
       /** Line under the title on the Home stage ("What · @Where"); falls back to category, then subtitle. */
       stageLine: z.object({ en: z.string(), ja: z.string() }).optional(),
       summary: localized.optional(),
+      /** Case-study fields, same as projects (Honne Festa got a full page, Kosei 2026-11-03). */
+      coverPosition: z.string().optional(),
+      hero: image().optional(),
+      heroJa: image().optional(),
+      heroAlt: localized.optional(),
+      caseStudy: z.boolean().default(false),
       draft: z.boolean().default(false),
     }),
 });

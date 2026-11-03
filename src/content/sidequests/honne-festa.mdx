@@ -13,6 +13,150 @@ cover: ../../assets/sidequests/honne-festa/cover.png
 coverAlt:
   en: 'Honne Festa poster: "My proposal was submitted under my boss''s name."'
   ja: '本音フェスタのポスター「私の企画、上司の名前で提出された。」'
+caseStudy: true
+hero: ../../assets/sidequests/honne-festa/hero.webp
+heroAlt:
+  en: 'Honne Festa event poster on a city wall: the lips logo, 11/23 and the festival line in Japanese'
+  ja: '街の壁に貼られた本音フェスタのイベントポスター：唇のロゴ、11/23、日本語のキャッチコピー' # TODO(kosei): review JA
 ---
 
-{/* University of Melbourne GDES30002, Briefs 2A + 2B. Outline: AUDIT.md §7.2. */}
+import Section from '../../components/case/Section.astro';
+import MetaGrid from '../../components/case/MetaGrid.astro';
+import Media from '../../components/case/Media.astro';
+import Callout from '../../components/case/Callout.astro';
+import positioning from '../../assets/sidequests/honne-festa/positioning.webp';
+import stylescapes from '../../assets/sidequests/honne-festa/stylescapes.webp';
+import sketchesWorkshop from '../../assets/sidequests/honne-festa/sketches-workshop.webp';
+import sketchesLips from '../../assets/sidequests/honne-festa/sketches-lips.webp';
+import wordmarks from '../../assets/sidequests/honne-festa/wordmarks.webp';
+import badges from '../../assets/sidequests/honne-festa/badges.webp';
+import logoFinal from '../../assets/sidequests/honne-festa/logo-final.webp';
+import logoMono from '../../assets/sidequests/honne-festa/logo-mono.webp';
+import typeImg from '../../assets/sidequests/honne-festa/type.webp';
+import palette from '../../assets/sidequests/honne-festa/palette.webp';
+import photography from '../../assets/sidequests/honne-festa/photography.webp';
+import illustration from '../../assets/sidequests/honne-festa/illustration.webp';
+import posters from '../../assets/sidequests/honne-festa/posters.webp';
+import streetPoster from '../../assets/sidequests/honne-festa/street-poster.webp';
+import ticket from '../../assets/sidequests/honne-festa/ticket.webp';
+import lanyards from '../../assets/sidequests/honne-festa/lanyards.webp';
+import social from '../../assets/sidequests/honne-festa/social.webp';
+import signage from '../../assets/sidequests/honne-festa/signage.webp';
+import clothing from '../../assets/sidequests/honne-festa/clothing.webp';
+import minSize from '../../assets/sidequests/honne-festa/min-size.webp';
+import clearSpace from '../../assets/sidequests/honne-festa/clear-space.webp';
+import misuse from '../../assets/sidequests/honne-festa/misuse.webp';
+
+{/* University of Melbourne GDES30002, Brief 2B (Kosei 2026-11-03: "look at Brief2B_final (2).pdf since
+    its a final folio"). Text and images come from that deck; the 2A research isn't included here.
+    English only for now — TODO(kosei): Japanese translation; duration and tools. */}
+
+<div class="case-intro">
+  <p class="lead">Honne Festa is a brand identity for an annual festival about gender inequality in Japanese workplaces. In Japan, "tatemae" is the face you show at work and "honne" is what you really feel. The festival is a place for working women to say the honne out loud.</p>
+  <p class="lead">I built the identity from tone of voice to logo, visual system, applications and a style guide.</p>
+  <MetaGrid items={[
+    { label: 'Type', value: 'Brand identity (activism branding)' },
+    { label: 'Course', value: 'GDES30002, University of Melbourne' },
+    { label: 'My Role', value: 'Solo' },
+    { label: 'Year', value: '2026' },
+  ]} />
+</div>
+
+<Section num="01" title="Concept" id="concept">
+  <h3>The words you couldn't say</h3>
+  <p>Working women in Japan carry a lot they can't say out loud: organising the drinking party, watching someone else get the promotion, the daily frustrations. Honne Festa closes that gap with anonymous voice installations, panel discussions and workplace challenges for mixed-gender teams, turning private frustrations into a shared voice.</p>
+  <p>The values are honesty, solidarity and cultural specificity, rooted in Japanese feminist traditions.</p>
+  <h4>Where it sits</h4>
+  <p>Next to existing movements like #KuToo, the Flower Demo and Tokyo Pride, Honne Festa sits on the community side and on the celebratory side: a festival that people want to come to, not a corporate campaign or a protest.</p>
+  <Media src={positioning} size="medium" alt="Positioning matrix, corporate to community and activist to celebratory: Honne Festa sits at community and celebratory, apart from #KuToo, Flower Demo, W society, Happy Woman and Tokyo Pride" />
+</Section>
+
+<Section num="02" title="Tone of Voice" id="voice">
+  <h3>Loud and engaging</h3>
+  <p>Honne Festa speaks like someone who knows something is wrong and isn't pretending otherwise. It doesn't shout, it doesn't apologise, and it doesn't hide behind corporate language. It talks directly and warmly, the way working women in Japan talk every day.</p>
+  <ul>
+    <li><b>Direct without being aggressive</b>: "Women organise the nomikai. Men get the promotions." Not "Patriarchal systems oppress women in the workplace."</li>
+    <li><b>Warm and inviting</b>: "You don't have to call yourself a feminist to know something is unfair." Not "Join us in the fight against patriarchal workplace structures."</li>
+    <li><b>Honest about discomfort</b>: "For the men in the room: you're here to listen first." Not "Join us for an empowering day of connection!"</li>
+  </ul>
+</Section>
+
+<Section num="03" title="Visual Direction" id="direction">
+  <h3>Words first, warm and restrained</h3>
+  <p>Three stylescapes explored the mood, from bold red and black typography to quiet off-white and warm orange.</p>
+  <Media src={stylescapes} alt="Three stylescapes: red and black typographic posters, muted off-white and grey Japanese layouts, and warm orange festival imagery" />
+  <p>Four references set the direction:</p>
+  <ul>
+    <li><b>Experimental Jetset</b>: type over imagery. The festival is built on women's words, so the words carry the design.</li>
+    <li><b>Stephan Bundi</b>: bold type-led posters with clear hierarchy, so typographic work still feels like an event.</li>
+    <li><b>Noritake</b>: simple line illustrations of everyday moments and lots of empty space, for a human, Japanese touch.</li>
+    <li><b>Muji and Kenya Hara</b>: warmth and restraint, so the brand feels credible to the businessmen it needs to reach.</li>
+  </ul>
+</Section>
+
+<Section num="04" title="Logo" id="logo">
+  <h3>From sketches to a mouth</h3>
+  <p>The logo started as hand-lettering in a workshop and turned into lips: a mouth that speaks, and one that has been kept closed.</p>
+  <div class="media-row">
+    <Media src={sketchesWorkshop} alt="Logo sketches: the first workshop exercise and early hand-lettered HONNE FESTA iterations" />
+    <Media src={sketchesLips} alt="Logo sketches: lips drawn around HONNE and 本音, open and closed mouths" />
+  </div>
+  <h4>Wordmark and badge</h4>
+  <p>I tried two routes on screen: a wordmark with the lips replacing the O, and a badge with the name inside the mouth.</p>
+  <div class="media-row">
+    <Media src={wordmarks} alt="Wordmark explorations: HONNE FESTA in serif and sans type, with lips in place of the O" />
+    <Media src={badges} alt="Badge explorations: 本音 and FESTA written inside a mouth shape" />
+  </div>
+  <h4>Final logo</h4>
+  <p>The final logo wraps a lips outline around HONNE FESTA and 本音フェスタ, in dark ruby or in black and white.</p>
+  <Media src={logoFinal} alt="Final logo in dark ruby and black on light grey, and in dark ruby and white on black" />
+  <Media src={logoMono} alt="Final logo in black on light grey and in white on black" />
+  <Callout kind="decision">
+    <p>The lips are the whole idea: speech and silence in one shape. The same mouth works as the logo, as an illustration and as a pattern.</p>
+  </Callout>
+</Section>
+
+<Section num="05" title="Visual System" id="system">
+  <h3>Type, colour, photos and the mouth</h3>
+  <h4>Typography</h4>
+  <p>The first set used Shippori Mincho. The final system is Sofia Pro for headlines, Tsukushi A Maru Gothic for Japanese text, Inter for English text, and Anton for the staff lanyards.</p>
+  <Media src={typeImg} size="medium" alt="Typography development: Shippori Mincho in the first version; Sofia Pro, Tsukushi A Maru Gothic, Inter and Anton in the final version" />
+  <h4>Colour</h4>
+  <p>The first palette had green and olive. The final one is warmer and calmer: off-white #F5F4F2, grey #ADA9A8, beige #C3B99D, dark ruby #670000 and near-black #2C2A2B.</p>
+  <Media src={palette} alt="Colour palette: off-white, grey, beige, dark ruby and near-black, with their uses and values" />
+  <h4>Photography</h4>
+  <p>Office photos are turned black and white, except for one woman who stays in colour. Her quiet presence is the point: familiar, a little uncomfortable, never staged.</p>
+  <Media src={photography} alt="Black and white office photos where one woman stays in colour, with the Honne Festa logo and tagline" />
+  <h4>Illustration</h4>
+  <p>The mouth comes in four versions: solid black, outline, dark ruby and off-white. Next to the tagline "The words you couldn't say — say them here" it works as punctuation. It can also scale up into a pattern and fade in opacity, like voices that are there but not heard.</p>
+  <Media src={illustration} alt="The mouth mark in black, outline, dark ruby and off-white, next to the tagline and vertical Japanese text" />
+</Section>
+
+<Section num="06" title="Applications" id="applications">
+  <h3>The festival, out in the world</h3>
+  <h4>Posters</h4>
+  <p>The posters lead with one sentence many women have lived: 「私の企画、上司の名前で提出された。」 ("My proposal was submitted under my boss's name."). The event poster gives the date, 11/23 at Shiba Park.</p>
+  <Media src={posters} alt="Posters: the quote poster and the event poster with the date, on a wall and in a bus shelter" />
+  <Media src={streetPoster} size="medium" alt="Quote poster on a street wall: 私の企画、上司の名前で提出された。" />
+  <h4>Ticket and lanyards</h4>
+  <div class="media-row">
+    <Media src={ticket} alt="Digital event ticket in a phone wallet, in dark and light versions" />
+    <Media src={lanyards} alt="Staff and media lanyards in grey with beige and white mouth shapes" />
+  </div>
+  <h4>Social, signage and clothing</h4>
+  <Media src={social} alt="Instagram profile for honne_official with a three-post grid: the date, the logo and the location" />
+  <div class="media-row">
+    <Media src={signage} alt="Event A-frame signs at the entrance with the logo and the date" />
+    <Media src={clothing} alt="Grey Honne Festa T-shirts with the logo on the front and the back" />
+  </div>
+</Section>
+
+<Section num="07" title="Style Guide" id="guide">
+  <h3>Keeping it consistent</h3>
+  <p>The style guide covers the minimum size (the wordmark is more formal and works better small), clear space, incorrect usage, the type hierarchy and the palette.</p>
+  <div class="media-row">
+    <Media src={minSize} alt="Minimum size: the wordmark and the logo at 160 by 80 pixels and larger" />
+    <Media src={clearSpace} alt="Clear space rule: circles the size of the O around the logo" />
+  </div>
+  <Media src={misuse} alt="Incorrect usage: the logo rotated, blurred, stretched, too small and in off-brand colours" />
+</Section>
