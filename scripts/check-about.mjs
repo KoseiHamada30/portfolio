@@ -53,7 +53,7 @@ const scrollEnd = (page, fraction) =>
   check('Name label and the v1 greeting as the statement', info.name === 'K.H.' && info.lead.startsWith("Hello, I'm Kosei"), info.lead);
   check('EMAIL / LINKEDIN / RESUME rows', info.contact.join('|') === 'Email|LinkedIn|Resume' && info.links[0] === 'mailto:koseidama35@gmail.com' && info.links[1].includes('linkedin') && info.links[2].includes('drive.google'));
   check('Sections: About me, Experience, Education, Skills, Who I am (no Tools)', info.headings.join('|') === 'About Me|Experience|Education|Skills|"Who I am"', info.headings.join(' | '));
-  check('Experience adds the Cipher internship (dates TODO)', info.experience[0] === 'NBA Research Lab' && info.experience.length === 3, info.experience.join(', '));
+  check('Experience: Cipher internship (dates TODO) and Circula, no Nandemo Draft', info.experience[0] === 'NBA Research Lab' && info.experience.length === 2, info.experience.join(', '));
   check('Rows fade in as they enter; six "Who I am" photos', info.rows >= 10 && info.photos === 6, `${info.rows} rows`);
   check('Portrait is sticky on the left half; About is current in the nav', info.portraitSticky === 'sticky' && info.navCurrent === 'page');
   check('No footer (the page flows into Work); no "Go to Work →" link in the ending', !info.footer && !info.cta);
