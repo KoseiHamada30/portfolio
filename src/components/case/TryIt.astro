@@ -1,6 +1,7 @@
 ---
 // "Try it" card (Kosei 2026-11-03: bigger so the prototype gets attention, but plain: no accent
 // highlight, label or full-screen link): a large heading, a short intro (slot) and the embed.
+// Placed between sections, so its heading is an h2 (not in the reading rail).
 //   <TryIt embed="prototypes/nba-research-lab.html" title="…" height="…">intro</TryIt>
 import Media from './Media.astro';
 import { t, localeOf, type Text } from '../../lib/i18n';
@@ -16,14 +17,15 @@ const { embed, title, height } = Astro.props;
 ---
 
 <section class="try" aria-labelledby="try-it" data-reveal="fade">
-  <h3 class="try__title" id="try-it">{t(locale, 'case.tryIt')}</h3>
+  <h2 class="try__title" id="try-it">{t(locale, 'case.tryIt')}</h2>
   <div class="try__intro"><slot /></div>
   <Media embed={embed} title={title} height={height} />
 </section>
 
 <style>
   .try {
-    margin: var(--space-8) 0 0;
+    /* sits between two sections (Kosei: between 05 and 06), so it keeps their spacing */
+    margin: clamp(var(--space-9), 10vw, var(--space-11)) 0 0;
     padding: var(--space-7) var(--space-6) var(--space-6);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
@@ -32,9 +34,11 @@ const { embed, title, height } = Astro.props;
 
   .try__title {
     margin: 0;
+    font-family: var(--font-grotesk);
     font-size: var(--fs-h1);
+    font-weight: 700;
     line-height: var(--lh-head);
-    letter-spacing: var(--tracking-head);
+    letter-spacing: -0.03em;
   }
 
   .try__intro {
