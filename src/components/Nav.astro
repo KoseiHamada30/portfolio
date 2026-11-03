@@ -183,7 +183,8 @@ const aboutHref = url(locale, 'about');
       opacity var(--dur-fast) var(--ease-out);
   }
 
-  /* Case-study sheets swap "Work, About" for "Close" (nav.ts keeps its href per page) */
+  /* Case-study sheets add "Close" after "Work, About" (Kosei 2026-11-03: About must stay reachable
+     from project pages); nav.ts keeps its href per page */
   .nav__close {
     display: none;
     align-items: center;
@@ -192,10 +193,6 @@ const aboutHref = url(locale, 'about');
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.25em;
-  }
-
-  :global(body[data-page='case']) .nav__links {
-    display: none;
   }
 
   :global(body[data-page='case']) .nav__close {

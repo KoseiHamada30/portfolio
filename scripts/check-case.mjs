@@ -41,7 +41,7 @@ const scrollTo = async (page, selector) => {
     sections: [...document.querySelectorAll('[data-case-section]')].map((s) => s.dataset.title),
     rail: document.querySelectorAll('[data-case-rail] a').length,
     railCurrent: document.querySelectorAll('[data-case-rail] a[aria-current="true"]').length,
-    close: getComputedStyle(document.querySelector('[data-nav-close]')).display !== 'none' && getComputedStyle(document.querySelector('.nav__links')).display === 'none',
+    close: getComputedStyle(document.querySelector('[data-nav-close]')).display !== 'none' && getComputedStyle(document.querySelector('.nav__links')).display !== 'none',
     closeHref: document.querySelector('[data-nav-close]').getAttribute('href'),
     accent: getComputedStyle(document.body).getPropertyValue('--accent').trim(),
     images: [...document.querySelectorAll('.case img')].filter((i) => !i.closest('.next')).length,
@@ -55,7 +55,7 @@ const scrollTo = async (page, selector) => {
   check('Hero: "CATEGORY / App/Website design" label and big title', info.label === 'Category / App/Website design' && info.title === 'Circula', info.label);
   check('All eight v1 sections, in order', info.sections.join('|') === 'Challenge|Problem Discovery|User Research & Analysis|What is this app?|Visual Design|UX Experience|Ongoing research|Future Outlook', info.sections.join(' | '));
   check('Reading rail lists every section, none current at the top', info.rail === 8 && info.railCurrent === 0);
-  check('Nav shows "Close" back to the stage on this project', info.close && info.closeHref.endsWith('/portfolio/?p=circula'), info.closeHref);
+  check('Nav shows "Work, About" and "Close" back to the stage on this project', info.close && info.closeHref.endsWith('/portfolio/?p=circula'), info.closeHref);
   check('Circula accent applied', info.accent.toLowerCase() === '#f39237', info.accent);
   check('Every v1 image kept (hero, overview, features, screens)', info.images === 4, `${info.images} images`);
   check('Both screen recordings (web MP4) and the Figma prototype', info.videos.length === 2 && info.videos.every((v) => v.endsWith('.mp4')) && info.iframe);

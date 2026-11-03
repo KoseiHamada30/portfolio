@@ -58,7 +58,7 @@ function placeBar(el: HTMLElement, target?: HTMLElement) {
   const bar = el.querySelector<HTMLElement>('[data-nav-bar]');
   if (!links || !bar) return;
   const current = target ?? links.querySelector<HTMLElement>('[data-nav-item][aria-current="page"]');
-  // Hidden links (case sheets show "Close") have no box: keep the bar where it was.
+  // Hidden links (no box, e.g. display:none): keep the bar where it was.
   if (!current || links.offsetParent === null) {
     links.classList.toggle('has-bar', Boolean(current));
     return;
