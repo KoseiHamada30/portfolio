@@ -188,6 +188,16 @@ const tx = (value: string) => (value.includes('-') && !value.includes(' ') ? t(l
     overflow: hidden;
   }
 
+  /* a soft shade at the top so the light nav text reads on any photo */
+  .about__portrait::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 160px;
+    background: linear-gradient(rgb(0 0 0 / 0.38), transparent);
+    pointer-events: none;
+  }
+
   .about__portrait-inner {
     height: 100%;
     will-change: transform;

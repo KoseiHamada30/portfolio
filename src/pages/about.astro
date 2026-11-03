@@ -4,6 +4,6 @@ import AboutPage from '../components/AboutPage.astro';
 import { t } from '../lib/i18n';
 ---
 
-<BaseLayout locale="en" title={t('en', 'about.title')} footer={false}>
+<BaseLayout locale="en" title={t('en', 'about.title')} page="about" footer={false}>
   <AboutPage locale="en" />
 </BaseLayout>

@@ -83,6 +83,18 @@ const aboutHref = url(locale, 'about');
     display: none;
   }
 
+  /* About: before the paper backdrop appears, whatever sits on the portrait is light — the KOSEI©
+     wordmark on desktop (the photo fills the left half), the whole nav on phones (photo on top) */
+  :global(body[data-page='about']) .nav:not(:global(.is-scrolled)) .nav__brand {
+    color: var(--stage-ink);
+  }
+
+  @media (max-width: 900px) {
+    :global(body[data-page='about']) .nav:not(:global(.is-scrolled)) {
+      color: var(--stage-ink);
+    }
+  }
+
   .nav:global(.is-hidden) {
     transform: translateY(-100%);
   }
