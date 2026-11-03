@@ -25,12 +25,13 @@ interface Props {
 const { locale } = Astro.props;
 const covers = await getSplashCovers();
 const current = t(locale, 'exp-period-current');
+const ym = (y: number, m: number) =>
+  locale === 'ja' ? `${y}年${m}月` : `${'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ')[m - 1]} ${y}`;
 
 const experience: { period: string; title: Key | string; org: Key | string; place?: Key; desc?: Key; todo?: boolean }[] = [
-  // Cipher internship: date left blank (Kosei 2026-11-03)
-  { period: '', title: 'NBA Research Lab', org: 'Cipher Sports Technology Group', desc: 'exp-nba-desc' },
-  // Circula: period removed in the Site Tuner (Kosei 2026-11-03)
-  { period: '', title: 'exp-circula-title', org: 'exp-circula-company', place: 'exp-location-melbourne', desc: 'exp-circula-desc' },
+  // Dates from Kosei (2026-11-03): Cipher Aug 2026–present, Circula Sep 2025–Jul 2026
+  { period: `${ym(2026, 8)}–${current}`, title: 'NBA Research Lab', org: 'Cipher Sports Technology Group', desc: 'exp-nba-desc' },
+  { period: `${ym(2025, 9)}–${ym(2026, 7)}`, title: 'exp-circula-title', org: 'exp-circula-company', place: 'exp-location-melbourne', desc: 'exp-circula-desc' },
   // Nandemo Draft internship removed (Kosei 2026-11-03)
 ];
 const education = [
