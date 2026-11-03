@@ -31,7 +31,6 @@ const aboutHref = url(locale, 'about');
         </a>
         <span class="nav__bar" aria-hidden="true" data-nav-bar></span>
       </nav>
-      <a class="nav__close" href={url(locale)} data-nav-close>{t(locale, 'case.close')}</a>
       <a
         class="nav__lang"
         href={url(alt, path)}
@@ -181,22 +180,6 @@ const aboutHref = url(locale, 'about');
     transition:
       transform 450ms var(--ease-out-expo),
       opacity var(--dur-fast) var(--ease-out);
-  }
-
-  /* Case-study sheets add "Close" after "Work, About" (Kosei 2026-11-03: About must stay reachable
-     from project pages); nav.ts keeps its href per page */
-  .nav__close {
-    display: none;
-    align-items: center;
-    min-height: 44px;
-    font-weight: 500;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.25em;
-  }
-
-  :global(body[data-page='case']) .nav__close {
-    display: inline-flex;
   }
 
   .nav__lang {

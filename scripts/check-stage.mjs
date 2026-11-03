@@ -204,7 +204,7 @@ const settle = (page) => page.waitForTimeout(1700);
   await page.waitForURL(/\/work\//);
   await ready(page, 2);
   check('Clicking the centre slide opens the project', page.url().includes('/work/'), page.url());
-  await page.click('[data-nav-close]');
+  await page.click('[data-nav-item="work"]');
   await page.waitForURL(/\/portfolio\/$/);
   await ready(page, 3);
   await settle(page);

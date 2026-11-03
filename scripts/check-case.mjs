@@ -41,8 +41,8 @@ const scrollTo = async (page, selector) => {
     sections: [...document.querySelectorAll('[data-case-section]')].map((s) => s.dataset.title),
     rail: document.querySelectorAll('[data-case-rail] a').length,
     railCurrent: document.querySelectorAll('[data-case-rail] a[aria-current="true"]').length,
-    close: getComputedStyle(document.querySelector('[data-nav-close]')).display !== 'none' && getComputedStyle(document.querySelector('.nav__links')).display !== 'none',
-    closeHref: document.querySelector('[data-nav-close]').getAttribute('href'),
+    close: !document.querySelector('[data-nav-close]') && getComputedStyle(document.querySelector('.nav__links')).display !== 'none',
+    closeHref: document.querySelector('[data-nav-item="work"]').getAttribute('href'),
     accent: getComputedStyle(document.body).getPropertyValue('--accent').trim(),
     images: [...document.querySelectorAll('.case img')].filter((i) => !i.closest('.next')).length,
     videos: [...document.querySelectorAll('video')].map((v) => v.getAttribute('src')),
@@ -55,7 +55,7 @@ const scrollTo = async (page, selector) => {
   check('Hero: "CATEGORY / App/Website design" label and big title', info.label === 'Category / App/Website design' && info.title === 'Circula', info.label);
   check('All eight v1 sections, in order', info.sections.join('|') === 'Challenge|Problem Discovery|User Research & Analysis|What is this app?|Visual Design|UX Experience|Ongoing research|Future Outlook', info.sections.join(' | '));
   check('Reading rail lists every section, none current at the top', info.rail === 8 && info.railCurrent === 0);
-  check('Nav shows "Work, About" and "Close" back to the stage on this project', info.close && info.closeHref.endsWith('/portfolio/?p=circula'), info.closeHref);
+  check('Nav is the home nav (no Close); Work goes back to the stage on this project', info.close && info.closeHref.endsWith('/portfolio/?p=circula'), info.closeHref);
   check('Circula accent applied', info.accent.toLowerCase() === '#f39237', info.accent);
   check('Every v1 image kept (hero, overview, features, screens)', info.images === 4, `${info.images} images`);
   check('Both screen recordings (web MP4) and the Figma prototype', info.videos.length === 2 && info.videos.every((v) => v.endsWith('.mp4')) && info.iframe);
@@ -102,7 +102,7 @@ const scrollTo = async (page, selector) => {
   // Close → stage, same project (scrolling up brings the nav back)
   await page.mouse.wheel(0, -400);
   await page.waitForTimeout(700);
-  await page.click('[data-nav-close]');
+  await page.click('[data-nav-item="work"]');
   await page.waitForURL(/\/portfolio\/$/);
   await ready(page, 2);
   await page.waitForTimeout(1500);
@@ -125,11 +125,11 @@ const scrollTo = async (page, selector) => {
   const ja = await page.evaluate(() => ({
     sub: document.querySelector('.case-hero__subtitle').textContent,
     first: document.querySelector('[data-case-section] h3').textContent,
-    close: document.querySelector('[data-nav-close]').getAttribute('href'),
+    close: document.querySelector('[data-nav-item="work"]').getAttribute('href'),
     alt: document.querySelector('.case-hero__cover img').alt,
   }));
   check('JA strings from the v1 translations', ja.sub === 'キャンパスでの瞬間を、見逃さない' && ja.first === 'キャンパス情報がバラバラ', `${ja.sub} / ${ja.first}`);
-  check('JA Close goes to the JA stage', ja.close.endsWith('/portfolio/ja/?p=circula'));
+  check('JA Work goes to the JA stage', ja.close.endsWith('/portfolio/ja/?p=circula'));
   await page.close();
 
   const phone = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
@@ -155,8 +155,8 @@ const scrollTo = async (page, selector) => {
   watch(ph);
   await ph.goto(`${BASE}/work/reverie/`);
   await ready(ph);
-  const p = await ph.evaluate(() => ({ close: document.querySelector('[data-nav-close]').getAttribute('href'), visible: getComputedStyle(document.querySelector('[data-nav-close]')).display }));
-  check('Placeholder pages are sheets with Close too', p.visible !== 'none' && p.close.endsWith('?p=reverie'), p.close);
+  const p = await ph.evaluate(() => ({ close: document.querySelector('[data-nav-item="work"]').getAttribute('href') }));
+  check('Placeholder pages: Work goes back to the stage on this project too', p.close.endsWith('?p=reverie'), p.close);
   await ph.close();
 }
 

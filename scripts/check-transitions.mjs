@@ -74,7 +74,7 @@ const after = (page, pattern) => page.waitForURL(pattern).then(() => ready(page)
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(300);
   await record(page);
-  await page.click('[data-nav-close]');
+  await page.click('[data-nav-item="work"]');
   await after(page, /\/portfolio\/$/);
   vt = await recorded(page);
   const active = await page.evaluate(() => document.querySelector('[data-stage-slide].is-active')?.dataset.id);

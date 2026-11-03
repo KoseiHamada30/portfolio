@@ -43,9 +43,13 @@ function syncPage() {
 
   placeBar(el);
 
-  // Case sheets: "Close" goes back to the stage on this project (the persisted nav keeps old DOM)
-  const close = el.querySelector<HTMLAnchorElement>('[data-nav-close]');
-  if (close && document.body.dataset.close) close.setAttribute('href', document.body.dataset.close);
+  // Case sheets keep the home nav (Kosei 2026-11-03: no "Close"); there "Work" goes back to the
+  // stage on this project. The persisted nav keeps old DOM, so restore the plain href elsewhere.
+  const work = el.querySelector<HTMLAnchorElement>('[data-nav-item="work"]');
+  if (work) {
+    work.dataset.home ??= work.getAttribute('href') ?? '';
+    work.setAttribute('href', document.body.dataset.close || work.dataset.home);
+  }
 
   el.classList.remove('is-hidden');
   updateScroll(true);

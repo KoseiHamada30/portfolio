@@ -30,7 +30,7 @@ interface Props {
   alternate?: boolean;
   /** 'stage' = the dark Work stage (DESIGN.md §8): light nav, no footer. */
   surface?: 'paper' | 'stage';
-  /** 'case' = a case-study sheet: the nav shows "Close" (to closeHref) instead of Work/About.
+  /** 'case' = a case-study sheet: "Work" in the nav goes to closeHref (the stage on this project).
    *  'about' = the About page: the nav goes light over the portrait until it scrolls. */
   page?: 'case' | 'about';
   closeHref?: string;
