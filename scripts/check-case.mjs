@@ -17,9 +17,9 @@ const external = [];
 const watch = (page) => {
   page.on('pageerror', (e) => errors.push(`${page.url()}: ${e}`));
   // Third-party embeds (the Figma prototype) log their own errors; only count our own resources.
-  // The NBA prototype (public/prototype/, Kosei's own export) requests its {{…}} template URLs before
+  // The NBA prototype (public/prototypes/, Kosei's own export) requests its {{…}} template URLs before
   // it renders; those 404s are inside the prototype, not the site.
-  page.on('response', (r) => r.status() >= 400 && !r.url().includes('/prototype/%7B%7B') && (new URL(r.url()).hostname === 'localhost' ? errors : external).push(`${r.status()} ${r.url()}`));
+  page.on('response', (r) => r.status() >= 400 && !r.url().includes('/prototypes/%7B%7B') && (new URL(r.url()).hostname === 'localhost' ? errors : external).push(`${r.status()} ${r.url()}`));
   page.on('console', (m) => m.type() === 'error' && !m.text().startsWith('Failed to load resource') && errors.push(`${page.url()}: ${m.text()}`));
 };
 const ready = (page, n = 1) => page.waitForFunction((n) => window.__motion?.setups() >= n, n, { timeout: 15000 });
