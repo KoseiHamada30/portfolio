@@ -105,6 +105,18 @@ function recordSplash() {
   check('Page animations played after the reveal', after.title === '1');
   console.log(`  (LCP in dev: ${after.lcp}ms)`);
 
+  // A refresh after browsing the slider still starts on NBA Research Lab (Kosei 2026-11-03)
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowRight');
+  await page.waitForTimeout(1500);
+  const moved = await page.evaluate(() => document.querySelector('[data-stage-slide].is-active')?.dataset.id);
+  await page.reload();
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => window.__motion?.setups() >= 1, null, { timeout: 15000 });
+  await page.waitForTimeout(600);
+  const fresh = await page.evaluate(() => document.querySelector('[data-stage-slide].is-active')?.dataset.id);
+  check('Refresh starts on NBA Research Lab, not the last slide viewed', moved !== 'nba-research-lab' && fresh === 'nba-research-lab', `${moved} → ${fresh}`);
+
   // Refresh plays it again; in-site navigation back to Work doesn't
   await page.reload({ waitUntil: 'commit' });
   await page.waitForSelector('[data-splash]', { state: 'attached' });

@@ -17,7 +17,9 @@ const wrap = (value: number, n: number) => ((value % n) + n) % n;
 /** Signed distance in a loop of n, in [-n/2, n/2). */
 const loopDelta = (value: number, n: number) => wrap(value + n / 2, n) - n / 2;
 
-/** Slide to start on: ?p=<slug> (Close from a case study), else the remembered one. */
+/** Slide to start on: ?p=<slug> (Close from a case study), else the remembered one when coming back
+ *  through the site (Back, language switch). A full load plays the splash and starts on the first
+ *  project, NBA Research Lab (Kosei 2026-11-03). */
 function startIndex(root: HTMLElement, n: number): number {
   const params = new URLSearchParams(location.search);
   const slug = params.get('p');
@@ -31,6 +33,7 @@ function startIndex(root: HTMLElement, n: number): number {
       return i;
     }
   }
+  if (!arrivedBy()) return 0;
   const saved = Number(readStore(STORE_INDEX));
   return Number.isInteger(saved) && saved >= 0 && saved < n ? saved : 0;
 }
