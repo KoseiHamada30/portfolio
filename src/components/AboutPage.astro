@@ -29,7 +29,8 @@ const current = t(locale, 'exp-period-current');
 const experience: { period: string; title: Key | string; org: Key | string; place?: Key; desc?: Key; todo?: boolean }[] = [
   // TODO(kosei): dates and title for the Cipher internship (Phase 7 interview)
   { period: 'TODO(kosei)', title: 'NBA Research Lab', org: 'Cipher Sports Technology Group', desc: 'exp-nba-desc', todo: true },
-  { period: `2025–${current}`, title: 'exp-circula-title', org: 'exp-circula-company', place: 'exp-location-melbourne', desc: 'exp-circula-desc' },
+  // Circula: period removed in the Site Tuner (Kosei 2026-11-03)
+  { period: '', title: 'exp-circula-title', org: 'exp-circula-company', place: 'exp-location-melbourne', desc: 'exp-circula-desc' },
   { period: `2025–${current}`, title: 'exp-draft-title', org: 'exp-draft-company', place: 'exp-location-tokyo', desc: 'exp-draft-desc' },
 ];
 const education = [
