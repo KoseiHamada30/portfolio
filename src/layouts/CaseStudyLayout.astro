@@ -73,7 +73,7 @@ const accentKey = entry.id === 'nba-research-lab' ? 'nba-lab' : entry.id;
 
   .case-body {
     display: grid;
-    grid-template-columns: 12rem minmax(0, 52rem);
+    grid-template-columns: 14rem minmax(0, 52rem);
     justify-content: space-between;
     gap: var(--gutter);
     max-width: var(--max-width);
@@ -111,7 +111,8 @@ const accentKey = entry.id === 'nba-research-lab' ? 'nba-lab' : entry.id;
     display: flex;
     gap: var(--space-2);
     padding: var(--space-1) 0;
-    font-size: var(--fs-small);
+    /* Kosei 2026-11-03: a bit bigger (was --fs-small / --fs-label) */
+    font-size: var(--fs-body);
     color: var(--ink-500);
     text-decoration: none;
     transition: color var(--dur-fast) var(--ease-out);
@@ -119,8 +120,8 @@ const accentKey = entry.id === 'nba-research-lab' ? 'nba-lab' : entry.id;
 
   .case-rail a span:first-child {
     font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    padding-top: 0.15em;
+    font-size: 0.8125rem;
+    padding-top: 0.2em;
   }
 
   .case-rail a:hover,
