@@ -166,9 +166,11 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
   const activate = makeActivator(root, slides);
   activate(wrap(Math.round(current), n), false);
   const showTitle = makeTitles(root, !reduced);
-  // Touch tablets and phones can't hover (Kosei 2026-11-03): no lens, and colour stays on the centred slide.
-  const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
-  const lenses = reduced || !canHover ? [] : addLenses(slides);
+  // Tablets and phones can't hover (Kosei 2026-11-03): at tablet width or below, or without a fine
+  // hovering pointer, there is no lens and colour stays on the centred slide. Re-checked on resize.
+  const hoverMq = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1101px)');
+  const lenses = reduced ? [] : addLenses(slides);
+  hoverMq.addEventListener('change', () => (pointer = null), { signal });
 
   // Pointer: which slide is hovered (colour + title follow it), and the eased lens position.
   let pointer: { x: number; y: number } | null = null;
@@ -298,7 +300,7 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
   };
 
   root.addEventListener('pointermove', (event) => {
-    if (!canHover || event.pointerType !== 'mouse') return;
+    if (!hoverMq.matches || event.pointerType !== 'mouse') return;
     if (!pointer) lens = { x: event.clientX, y: event.clientY, pow: 0, lastX: event.clientX, lastY: event.clientY };
     pointer = { x: event.clientX, y: event.clientY };
   }, { signal });
