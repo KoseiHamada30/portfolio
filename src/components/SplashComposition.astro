@@ -23,9 +23,11 @@ interface Props {
   cta?: { href: string; label: string };
   /** False leaves the intro slot empty (About ending: Kosei 2026-11-03 removed "Go to Work →"). */
   intro?: boolean;
+  /** False leaves the bottom-left label slot empty (About ending, Kosei 2026-11-03). */
+  label?: boolean;
 }
 
-const { locale, covers, progress = 0, cta, intro = true } = Astro.props;
+const { locale, covers, progress = 0, cta, intro = true, label = true } = Astro.props;
 const letters = [...'KOSEI©'];
 const COPIES = 4; // glyph copies per letter strip for the roll
 ---
@@ -66,7 +68,7 @@ const COPIES = 4; // glyph copies per letter strip for the roll
   </div>
 
   <div class="comp__row">
-    <p class="comp__label" lang="ja">{t(locale, 'splash.label')}</p>
+    {label ? <p class="comp__label" lang="ja">{t(locale, 'splash.label')}</p> : <span class="comp__label" aria-hidden="true" />}
     {
       !intro ? (
         <span class="comp__intro" aria-hidden="true" />

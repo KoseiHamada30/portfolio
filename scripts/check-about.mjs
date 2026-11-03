@@ -126,9 +126,10 @@ const scrollEnd = (page, fraction) =>
   const ja = await page.evaluate(() => ({
     lead: document.querySelector('.about__lead').textContent.slice(0, 6),
     cta: document.querySelector('[data-about-end]').dataset.workHref,
-    label: document.querySelector('.comp__label').textContent,
+    label: document.querySelector('[data-about-end] .comp__label').textContent,
   }));
   check('JA: v1 Japanese copy; the ending leads to the JA stage', ja.lead === 'こんにちは,' && ja.cta.endsWith('/portfolio/ja/'), `${ja.lead} ${ja.cta}`);
+  check('Ending has no bottom-left label (Kosei 2026-11-03)', ja.label === '', ja.label);
   await page.close();
 
   const phone = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
