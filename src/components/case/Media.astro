@@ -7,7 +7,8 @@
 //                                                                 poster = same name .jpg
 //   <Media embed="https://embed.figma.com/…" title="…" />         lazy iframe (Figma prototypes)
 //   <Media embed="prototypes/nba-research-lab.html" height="…" />   local prototype from public/
-// size: "content" (column width, default) | "medium" (max 720px) | "narrow" (max 600px), centred.
+// size: "content" (column width, default) | "medium" (max 720px) | "narrow" (max 600px), centred
+//       | "wide" (desktop: grows left over the reading rail to the page margin).
 // Wrap several in <div class="media-row"> to sit them side by side.
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
@@ -22,7 +23,7 @@ interface Props {
   title?: Text;
   caption?: Text;
   frame?: 'phone' | 'none';
-  size?: 'content' | 'medium' | 'narrow';
+  size?: 'content' | 'medium' | 'narrow' | 'wide';
   /** CSS height for an embed (overrides the Figma player height). */
   height?: string;
 }
@@ -31,8 +32,9 @@ const locale = localeOf(Astro.currentLocale);
 const { src, video, embed, alt, title, caption, frame = 'none', size = 'content', height } = Astro.props;
 const label = alt ? text(locale, alt) : '';
 const image = src && 'en' in src && 'ja' in src && !('src' in src) ? src[locale] : (src as ImageMetadata | undefined);
-const widths = size === 'content' ? [800, 1200, 1600] : [600, 900, 1400];
-const sizes = size === 'narrow' ? '600px' : size === 'medium' ? '720px' : '(min-width: 1100px) 52rem, 92vw';
+const widths = size === 'wide' ? [800, 1200, 1600, 2400] : size === 'content' ? [800, 1200, 1600] : [600, 900, 1400];
+const sizes =
+  size === 'narrow' ? '600px' : size === 'medium' ? '720px' : size === 'wide' ? '(min-width: 1100px) min(92vw, 1330px), 92vw' : '(min-width: 1100px) 52rem, 92vw';
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 // Figma prototypes also get a plain link: some hosts block embedded frames.
 // A local embed (a prototype in public/) is served under the base.
@@ -86,6 +88,16 @@ const figmaLink = embed?.includes('embed.figma.com') ? embed.replace('embed.figm
   .media--medium {
     max-width: 720px;
     margin-inline: auto;
+  }
+
+  /* Kosei 2026-11-03: big overview images. The text column sits right-aligned in the case grid, so
+     pull left by (content width − column width) to reach the page margin; above the sticky rail. */
+  @media (min-width: 1101px) {
+    .media--wide {
+      position: relative;
+      z-index: 2;
+      margin-left: calc(100% - (min(100vw, var(--max-width)) - 2 * var(--page-margin)));
+    }
   }
 
   /* side by side (MDX: <div class="media-row">…</div>) */
