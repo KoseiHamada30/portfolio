@@ -314,6 +314,8 @@
   "case.after": "After",
   "case.openFigma": "Open the prototype in Figma",
   "case.openPrototype": "Open the prototype full screen",
+  "case.interactive": "Interactive prototype",
+  "case.tryIt": "Try it",
   "about.title": "About",
   "about.email": "Email",
   "about.linkedin": "LinkedIn",
