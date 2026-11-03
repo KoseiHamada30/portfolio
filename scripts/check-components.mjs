@@ -140,9 +140,7 @@ const watch = (page) => {
   await page.goto(`${BASE}/work/circula/`);
   await ready(page);
 
-  const clock = await page.locator('[data-clock]').textContent();
-  const expected = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Australia/Melbourne' }).format(new Date());
-  check('Melbourne clock shows the current time', clock === expected, `MEL ${clock} (expected ${expected})`);
+  check('No Melbourne clock', (await page.locator('[data-clock]').count()) === 0);
   check('Year is current', (await page.locator('[data-year]').textContent()) === String(new Date().getFullYear()));
 
   const links = await page.evaluate(() => [...document.querySelectorAll('#contact a')].map((a) => a.getAttribute('href')));

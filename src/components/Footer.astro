@@ -1,6 +1,6 @@
 ---
 // Global footer (DESIGN.md §5.9, §6): velocity-aware marquee, click-to-copy email,
-// resume, socials, live Melbourne clock, auto year. Behaviour in src/lib/footer.ts.
+// resume, socials and the © line on one row (Kosei 2026-11-03: no clock), auto year. Behaviour in src/lib/footer.ts.
 import { t, type Locale } from '../lib/i18n';
 import { site } from '../lib/site';
 import LinkBullet from './LinkBullet.astro';
@@ -65,12 +65,7 @@ const year = new Date().getFullYear();
       </li>
     </ul>
 
-    <div class="footer__meta">
-      <p class="label footer__clock" aria-label={t(locale, 'footer.clockLabel')}>
-        {t(locale, 'footer.clockPrefix')} <time data-clock data-timezone={site.timeZone}>--:--</time>
-      </p>
-      <p class="label">{t(locale, 'footer.copyright')} <span data-year>{year}</span></p>
-    </div>
+    <p class="label footer__meta">{t(locale, 'footer.copyright')} <span data-year>{year}</span></p>
   </div>
 </footer>
 
@@ -102,7 +97,7 @@ const year = new Date().getFullYear();
   .footer__grid {
     display: grid;
     grid-template-columns: 1fr auto auto;
-    align-items: end;
+    align-items: center;
     gap: var(--space-6);
     max-width: var(--max-width);
     margin-inline: auto;
@@ -143,17 +138,8 @@ const year = new Date().getFullYear();
   }
 
   .footer__meta {
-    display: grid;
-    justify-items: end;
-    gap: var(--space-1);
-  }
-
-  .footer__meta .label {
+    margin: 0;
     color: color-mix(in oklab, var(--on-inverse) 65%, transparent);
-  }
-
-  .footer__clock time {
-    font-variant-numeric: tabular-nums;
   }
 
   @media (max-width: 860px) {
@@ -162,8 +148,9 @@ const year = new Date().getFullYear();
       align-items: start;
     }
 
-    .footer__meta {
-      justify-items: start;
+    /* line the icon glyphs up with the links and © line (the 44px hit area pads them in) */
+    .footer__socials {
+      margin-inline-start: -12px;
     }
   }
 </style>

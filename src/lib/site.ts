@@ -6,5 +6,4 @@ export const site = {
     tiktok: 'https://www.tiktok.com/@kosei_beproductiv',
     linkedin: 'https://www.linkedin.com/in/kosei-hamada/',
   },
-  timeZone: 'Australia/Melbourne',
 } as const;
