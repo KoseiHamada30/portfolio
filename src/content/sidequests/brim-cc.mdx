@@ -2,7 +2,7 @@
 title: Brim CC
 order: 1
 tier: sidequest
-subtitle: { en: 'Branding Local Business in Melbourne', ja: 'Branding Local Business in Melbourne' }
+subtitle: { en: 'Branding Local Business in Melbourne', ja: 'メルボルンの地元店のブランディング' } # TODO(kosei): review JA
 category: { en: '(Graphic design)', ja: '（グラフィックデザイン）' }
 tag: { en: 'Branding', ja: 'ブランディング' }
 year: 2026
@@ -36,90 +36,189 @@ import palette from '../../assets/sidequests/brim-cc/palette.webp';
 import instagram from '../../assets/sidequests/brim-cc/instagram.webp';
 import menu from '../../assets/sidequests/brim-cc/menu.webp';
 import businessCard from '../../assets/sidequests/brim-cc/business-card.webp';
+import L from '../../components/case/L.astro';
 
 {/* University of Melbourne GDES30002, Brief 1 (Kosei 2026-11-03: built from Branding_assignment1.pdf
-    and the branding_brimcc folder). Images are cropped from that deck. English only for now —
-    TODO(kosei): Japanese translation; duration and tools. */}
+    and the branding_brimcc folder). Images are cropped from that deck. Japanese drafted 2026-11-03 —
+    TODO(kosei): review JA; duration and tools. */}
 
 <div class="case-intro">
-  <p class="lead">Brim CC is a small Japanese eatery on Little Collins Street in Melbourne, run by James, a Chinese owner who earned his Japanese cooking through years of work. Its tagline, "Mum's Kitchen", comes from his mother's cooking.</p>
-  <p class="lead">I rebranded it around that story, with a bilingual seal mark that brings together Chinese seal culture and Japanese craft.</p>
+  <L>
+    <p class="lead">Brim CC is a small Japanese eatery on Little Collins Street in Melbourne, run by James, a Chinese owner who earned his Japanese cooking through years of work. Its tagline, "Mum's Kitchen", comes from his mother's cooking.</p>
+    <p class="lead">I rebranded it around that story, with a bilingual seal mark that brings together Chinese seal culture and Japanese craft.</p>
+    <Fragment slot="ja">
+      <p class="lead">Brim CCは、メルボルンのリトル・コリンズ・ストリートにある小さな日本食店です。オーナーのJamesは中国出身で、長年の経験を通して日本料理の腕を磨いてきました。タグライン「Mum's Kitchen」は、彼の母の料理から生まれたものです。</p>
+      <p class="lead">その物語を軸に、中国の印章文化と日本の職人技を合わせたバイリンガルの印章ロゴでリブランディングしました。</p>
+    </Fragment>
+  </L>
   <MetaGrid items={[
-    { label: 'Type', value: 'Brand identity (rebrand)' },
-    { label: 'Course', value: 'GDES30002, University of Melbourne' },
-    { label: 'My Role', value: 'Solo / Branding designer' },
-    { label: 'Year', value: '2026' },
+    { label: { en: 'Type', ja: '種類' }, value: { en: 'Brand identity (rebrand)', ja: 'ブランドアイデンティティ（リブランディング）' } },
+    { label: { en: 'Course', ja: '授業' }, value: { en: 'GDES30002, University of Melbourne', ja: 'GDES30002、メルボルン大学' } },
+    { label: { en: 'My Role', ja: '担当' }, value: { en: 'Solo / Branding designer', ja: '個人 / ブランディングデザイナー' } },
+    { label: { en: 'Year', ja: '年' }, value: '2026' },
   ]} />
 </div>
 
-<Section num="01" title="Problem" id="problem">
-  <h3>A story nobody can see</h3>
-  <p>Brim CC's branding was close to nonexistent: one illuminated sign in three mismatched typefaces, plastic letters inside, a Facebook page last updated in 2020, and Japanese decorations that felt borrowed rather than designed.</p>
-  <p>Interviewing James, I learned that "Brim CC" stands for Believe, Credit and Quality, and that "Mum's Kitchen" came straight from his mother. None of that was in the brand. The richest surface in the shop was the community wall, covered in notes, origami cranes and messages in Japanese, Korean, English and Chinese left by customers.</p>
-  <Media src={currentBrand} alt="The current Brim CC: the illuminated sign, the dining room, the community wall of notes and origami cranes, the food display and the counter" />
-  <p>Nearby competitors like Don Don and Onsen Japanese compete on quick, affordable Japanese food. Brim CC could stand apart on its story.</p>
+<Section num="01" title={{ en: 'Problem', ja: '課題' }} id="problem">
+  <L>
+    <h3>A story nobody can see</h3>
+    <p>Brim CC's branding was close to nonexistent: one illuminated sign in three mismatched typefaces, plastic letters inside, a Facebook page last updated in 2020, and Japanese decorations that felt borrowed rather than designed.</p>
+    <p>Interviewing James, I learned that "Brim CC" stands for Believe, Credit and Quality, and that "Mum's Kitchen" came straight from his mother. None of that was in the brand. The richest surface in the shop was the community wall, covered in notes, origami cranes and messages in Japanese, Korean, English and Chinese left by customers.</p>
+    <Fragment slot="ja">
+      <h3>誰にも見えていない物語</h3>
+      <p>Brim CCのブランディングはほぼ存在しない状態でした。3種類のちぐはぐな書体を使った電飾看板がひとつ、店内にはプラスチックの文字、2020年で更新が止まったFacebookページ、そしてデザインというより借り物のように見える和風の装飾。</p>
+      <p>Jamesへのインタビューで、「Brim CC」がBelieve（信念）、Credit（信用）、Quality（品質）の頭文字であること、「Mum's Kitchen」が彼の母から来ていることを知りました。しかし、そのどれもブランドに表れていませんでした。店内でいちばん豊かだったのは、お客さんが日本語、韓国語、英語、中国語で残したメモや折り鶴で埋め尽くされたコミュニティウォールでした。</p>
+    </Fragment>
+  </L>
+  <Media src={currentBrand} alt={{ en: 'The current Brim CC: the illuminated sign, the dining room, the community wall of notes and origami cranes, the food display and the counter', ja: '現在のBrim CC：電飾看板、客席、メモと折り鶴のコミュニティウォール、料理のディスプレイ、カウンター' }} />
+  <L>
+    <p>Nearby competitors like Don Don and Onsen Japanese compete on quick, affordable Japanese food. Brim CC could stand apart on its story.</p>
+    <p slot="ja">近くのDon DonやOnsen Japaneseなどの競合は、手早く安い日本食で勝負しています。Brim CCは、その物語で差をつけることができました。</p>
+  </L>
 </Section>
 
-<Section num="02" title="Strategy" id="strategy">
-  <h3>Make the invisible visible</h3>
-  <p>The goal was for Brim CC to become Melbourne CBD's most honest multicultural dining spot, where James's Chinese heritage and his Japanese craft are both visible, and where a Japanese expat, an international student or a city worker all feel welcome.</p>
+<Section num="02" title={{ en: 'Strategy', ja: '戦略' }} id="strategy">
+  <L>
+    <h3>Make the invisible visible</h3>
+    <p>The goal was for Brim CC to become Melbourne CBD's most honest multicultural dining spot, where James's Chinese heritage and his Japanese craft are both visible, and where a Japanese expat, an international student or a city worker all feel welcome.</p>
+    <Fragment slot="ja">
+      <h3>見えないものを、見えるように</h3>
+      <p>目標は、Brim CCをメルボルンCBDでいちばん正直な多文化の食堂にすること。Jamesの中国のルーツと日本料理の技術の両方が見え、日本人の駐在者も、留学生も、街で働く人も、誰もが歓迎されていると感じられる場所です。</p>
+    </Fragment>
+  </L>
   <Callout kind="goal">
-    <p>Put James's values (Believe, Credit, Quality) into the identity, and move "Mum's Kitchen" from a buried tagline to its emotional heart.</p>
+    <L>
+      <p>Put James's values (Believe, Credit, Quality) into the identity, and move "Mum's Kitchen" from a buried tagline to its emotional heart.</p>
+      <p slot="ja">Jamesの価値観（Believe、Credit、Quality）をアイデンティティに込め、「Mum's Kitchen」を埋もれたタグラインからブランドの感情的な核へと移す。</p>
+    </L>
   </Callout>
-  <p>The concept: a bilingual mark that combines a Chinese seal stamp with Japanese calligraphy, handmade and warm, so anyone walking past on Little Collins Street understands who made this place and why.</p>
-  <p>A short brand story set the tone: an overseas student between lectures, cold and hungry, finds a curry don in eight minutes and a wall of notes from people like her, and decides to come back next week.</p>
+  <L>
+    <p>The concept: a bilingual mark that combines a Chinese seal stamp with Japanese calligraphy, handmade and warm, so anyone walking past on Little Collins Street understands who made this place and why.</p>
+    <p>A short brand story set the tone: an overseas student between lectures, cold and hungry, finds a curry don in eight minutes and a wall of notes from people like her, and decides to come back next week.</p>
+    <Fragment slot="ja">
+      <p>コンセプトは、中国の印章と日本の書道を組み合わせた、手づくりの温かみのあるバイリンガルのロゴ。リトル・コリンズ・ストリートを通りかかる誰もが、この店を誰がなぜつくったのかを理解できるようにしました。</p>
+      <p>トーンは短いブランドストーリーで決めました。講義の合間、寒くてお腹を空かせた留学生が、8分でカレー丼にありつき、自分と同じような人たちのメモで埋まった壁を見つけて、来週また来ようと決める。</p>
+    </Fragment>
+  </L>
 </Section>
 
-<Section num="03" title="Visual Direction" id="direction">
-  <h3>Seal red, ink black and warm timber</h3>
-  <Media src={stylescape} alt="Three stylescapes: black and white type with a red seal, red and green Chinese street signage, and warm vintage Asian print with brown tones" />
-  <p>Four references set the direction:</p>
-  <ul>
-    <li><b>Mirá (a São Paulo bakery)</b>: Japanese script used as an equal voice next to the Latin wordmark. This led to pairing "Brim CC" with 母味, meaning mother's taste.</li>
-    <li><b>Zoe Cui's Women in Chinese Characters</b>: Chinese characters as a design language in deep red, black and white, which set the seal red.</li>
-    <li><b>Studio Rejane Dal Bello</b>: minimal black on light grey, where type leads. This shaped the supporting text and layouts.</li>
-    <li><b>The Japanese ryokan</b>: omotenashi, warm timber and quiet craft, matching James's "warm and friendly home feeling".</li>
-  </ul>
+<Section num="03" title={{ en: 'Visual Direction', ja: 'ビジュアルの方向性' }} id="direction">
+  <L>
+    <h3>Seal red, ink black and warm timber</h3>
+    <h3 slot="ja">印章の赤、墨の黒、温かな木</h3>
+  </L>
+  <Media src={stylescape} alt={{ en: 'Three stylescapes: black and white type with a red seal, red and green Chinese street signage, and warm vintage Asian print with brown tones', ja: '3つのスタイルスケープ：赤い印章を添えた白黒のタイポグラフィ、赤と緑の中国の街の看板、茶色を基調としたレトロなアジアの印刷物' }} />
+  <L>
+    <p>Four references set the direction:</p>
+    <ul>
+      <li><b>Mirá (a São Paulo bakery)</b>: Japanese script used as an equal voice next to the Latin wordmark. This led to pairing "Brim CC" with 母味, meaning mother's taste.</li>
+      <li><b>Zoe Cui's Women in Chinese Characters</b>: Chinese characters as a design language in deep red, black and white, which set the seal red.</li>
+      <li><b>Studio Rejane Dal Bello</b>: minimal black on light grey, where type leads. This shaped the supporting text and layouts.</li>
+      <li><b>The Japanese ryokan</b>: omotenashi, warm timber and quiet craft, matching James's "warm and friendly home feeling".</li>
+    </ul>
+    <Fragment slot="ja">
+      <p>方向性を決めた4つのリファレンス：</p>
+      <ul>
+        <li><b>Mirá（サンパウロのベーカリー）</b>：日本語の文字を、欧文のロゴと対等な声として使っています。ここから「Brim CC」と「母の味」を意味する「母味」を組み合わせる案が生まれました。</li>
+        <li><b>Zoe CuiのWomen in Chinese Characters</b>：深い赤、黒、白で漢字をデザイン言語として扱っていて、印章の赤を決めるきっかけになりました。</li>
+        <li><b>Studio Rejane Dal Bello</b>：明るいグレーに黒だけのミニマルな表現で、文字が主役。補足テキストとレイアウトの指針になりました。</li>
+        <li><b>日本の旅館</b>：おもてなし、温かな木、静かな職人技。Jamesの言う「温かく親しみのある家のような感じ」と重なります。</li>
+      </ul>
+    </Fragment>
+  </L>
 </Section>
 
-<Section num="04" title="Logo" id="logo">
-  <h3>From brush lettering to a seal</h3>
-  <p>The first ideas tried brush lettering, a steaming bowl, and 母味 in a red square stamp.</p>
-  <Media src={logoSketches} alt="Six early logo ideas: Brim CC in brush lettering, a red outlined BRIM CC, a steaming bowl, a bilingual stack with Mum's Kitchen, a red 母味 stamp and 母味 with Brim in brush script" />
-  <h4>Developing the seal</h4>
-  <p>Twelve rounds turned 母味 ("mother's taste", written in Chinese and Japanese characters) into a circular seal, from a hand-drawn outline to the final red mark with BRIM CC beside it.</p>
-  <Media src={logoDevelopment} alt="Twelve steps of the seal: hand-drawn circles with 母味, refined in black, then in red, ending with the seal next to the BRIM CC wordmark" />
-  <h4>Final logo</h4>
-  <p>The final mark sets the 母味 seal in deep red next to BRIM CC, with "Mum's Kitchen" in handwriting underneath. The seal also works on its own, with "Mum's Kitchen" curved over the top.</p>
-  <Media src={logoFinal} alt="Final logo: the red 母味 seal with BRIM CC and Mum's Kitchen" />
+<Section num="04" title={{ en: 'Logo', ja: 'ロゴ' }} id="logo">
+  <L>
+    <h3>From brush lettering to a seal</h3>
+    <p>The first ideas tried brush lettering, a steaming bowl, and 母味 in a red square stamp.</p>
+    <Fragment slot="ja">
+      <h3>筆文字から印章へ</h3>
+      <p>最初は、筆文字、湯気の立つどんぶり、赤い角印に入れた「母味」などを試しました。</p>
+    </Fragment>
+  </L>
+  <Media src={logoSketches} alt={{ en: "Six early logo ideas: Brim CC in brush lettering, a red outlined BRIM CC, a steaming bowl, a bilingual stack with Mum's Kitchen, a red 母味 stamp and 母味 with Brim in brush script", ja: '初期のロゴ案6つ：筆文字のBrim CC、赤い袋文字のBRIM CC、湯気の立つどんぶり、Mum\'s Kitchenを添えたバイリンガルの組み、赤い「母味」の判、筆記体のBrimと「母味」' }} />
+  <L>
+    <h4>Developing the seal</h4>
+    <p>Twelve rounds turned 母味 ("mother's taste", written in Chinese and Japanese characters) into a circular seal, from a hand-drawn outline to the final red mark with BRIM CC beside it.</p>
+    <Fragment slot="ja">
+      <h4>印章をつくり込む</h4>
+      <p>12回の試作を経て、「母味」（中国語でも日本語でも読める「母の味」）を丸い印章に仕上げました。手描きの輪郭から、横にBRIM CCを添えた最終的な赤いロゴまでの流れです。</p>
+    </Fragment>
+  </L>
+  <Media src={logoDevelopment} alt={{ en: 'Twelve steps of the seal: hand-drawn circles with 母味, refined in black, then in red, ending with the seal next to the BRIM CC wordmark', ja: '印章の12ステップ：「母味」を手描きの円に入れ、黒で整え、赤に変え、最後にBRIM CCのロゴタイプと並べた形' }} />
+  <L>
+    <h4>Final logo</h4>
+    <p>The final mark sets the 母味 seal in deep red next to BRIM CC, with "Mum's Kitchen" in handwriting underneath. The seal also works on its own, with "Mum's Kitchen" curved over the top.</p>
+    <Fragment slot="ja">
+      <h4>最終ロゴ</h4>
+      <p>最終ロゴは、深い赤の「母味」の印章をBRIM CCの横に置き、その下に手書きの「Mum's Kitchen」を添えています。印章は単体でも使え、その場合は「Mum's Kitchen」が上に弧を描きます。</p>
+    </Fragment>
+  </L>
+  <Media src={logoFinal} alt={{ en: "Final logo: the red 母味 seal with BRIM CC and Mum's Kitchen", ja: "最終ロゴ：赤い「母味」の印章とBRIM CC、Mum's Kitchen" }} />
   <div class="media-row">
-    <Media src={logoSeal} alt="The seal on its own, with Mum's Kitchen curved over the top and BRIM CC below" />
-    <Media src={logoVersions} alt="The logo in red and dark grey on white, and in grey on black" />
+    <Media src={logoSeal} alt={{ en: "The seal on its own, with Mum's Kitchen curved over the top and BRIM CC below", ja: "印章単体：上にMum's Kitchenが弧を描き、下にBRIM CC" }} />
+    <Media src={logoVersions} alt={{ en: 'The logo in red and dark grey on white, and in grey on black', ja: '白地に赤とダークグレー、黒地にグレーのロゴ' }} />
   </div>
   <Callout kind="decision">
-    <p>A seal stamp is a Chinese mark of trust and authorship; 母味 is written like Japanese calligraphy. One mark holds both cultures, and James's name for the food.</p>
+    <L>
+      <p>A seal stamp is a Chinese mark of trust and authorship; 母味 is written like Japanese calligraphy. One mark holds both cultures, and James's name for the food.</p>
+      <p slot="ja">印章は中国で信頼と作り手の証。「母味」は日本の書道のように書かれています。ひとつのロゴに両方の文化と、Jamesが自分の料理につけた名前が込められています。</p>
+    </L>
   </Callout>
 </Section>
 
-<Section num="05" title="Visual System" id="system">
-  <h3>Type and colour</h3>
-  <h4>Typography</h4>
-  <p>After trying Brush Script MT and Playball, the final system uses MADE TOMMY as the primary typeface, Ting Tong as a handwritten secondary, and Hiragino Kaku Gothic for Japanese text.</p>
-  <Media src={typeImg} alt="Typography rounds: Brush Script MT and Noto Serif SC, Playball and Noto Serif SC, and the final MADE TOMMY, Ting Tong and Hiragino Kaku Gothic" />
-  <h4>Colour</h4>
-  <p>The first palette had a bright red (#C1102C). The final one is calmer: dark grey #383838, mid grey #636565, light grey #CCCCCC and the seal red #8C1B1C.</p>
-  <Media src={palette} alt="Colour palettes: the first with near-black, bright red and light grey; the final with dark grey, mid grey, light grey and seal red" />
+<Section num="05" title={{ en: 'Visual System', ja: 'ビジュアルシステム' }} id="system">
+  <L>
+    <h3>Type and colour</h3>
+    <h4>Typography</h4>
+    <p>After trying Brush Script MT and Playball, the final system uses MADE TOMMY as the primary typeface, Ting Tong as a handwritten secondary, and Hiragino Kaku Gothic for Japanese text.</p>
+    <Fragment slot="ja">
+      <h3>書体と色</h3>
+      <h4>タイポグラフィ</h4>
+      <p>Brush Script MTやPlayballを試した後、最終的にメイン書体をMADE TOMMY、手書き風のサブ書体をTing Tong、和文をヒラギノ角ゴシックにしました。</p>
+    </Fragment>
+  </L>
+  <Media src={typeImg} alt={{ en: 'Typography rounds: Brush Script MT and Noto Serif SC, Playball and Noto Serif SC, and the final MADE TOMMY, Ting Tong and Hiragino Kaku Gothic', ja: 'タイポグラフィの変遷：Brush Script MTとNoto Serif SC、PlayballとNoto Serif SC、最終のMADE TOMMY、Ting Tong、ヒラギノ角ゴシック' }} />
+  <L>
+    <h4>Colour</h4>
+    <p>The first palette had a bright red (#C1102C). The final one is calmer: dark grey #383838, mid grey #636565, light grey #CCCCCC and the seal red #8C1B1C.</p>
+    <Fragment slot="ja">
+      <h4>カラー</h4>
+      <p>最初のパレットには明るい赤（#C1102C）がありました。最終版はより落ち着いた、ダークグレー #383838、ミッドグレー #636565、ライトグレー #CCCCCC、印章の赤 #8C1B1C です。</p>
+    </Fragment>
+  </L>
+  <Media src={palette} alt={{ en: 'Colour palettes: the first with near-black, bright red and light grey; the final with dark grey, mid grey, light grey and seal red', ja: 'カラーパレット：黒に近い色、明るい赤、ライトグレーの初期案と、ダークグレー、ミッドグレー、ライトグレー、印章の赤の最終案' }} />
 </Section>
 
-<Section num="06" title="Applications" id="applications">
-  <h3>On the street, the table and in your pocket</h3>
-  <h4>Instagram</h4>
-  <p>Posts announce the opening hours, show the sign lit up at night, and feature dishes like the katsu kare don.</p>
-  <Media src={instagram} alt="Three Instagram posts: WE ARE OPEN with the hours, the lit-up Brim CC sign at night, and a katsu kare don" />
-  <h4>Menu</h4>
-  <p>A set of tall menu cards (entrée, salad, donburi and noodles) in English and Japanese on textured paper, with the seal at the top.</p>
-  <Media src={menu} alt="Menu cards: the cover with the logo and メニュー, entrée and salad, donburi and noodles, and the cards fanned out on a wooden table" />
-  <h4>Business card</h4>
-  <p>The business card is embossed on off-white paper, with the logo on the front and a handwritten line on the back.</p>
-  <Media src={businessCard} alt="Embossed business cards: the front with the logo and the back with a handwritten line, and both cards on a grey surface" />
+<Section num="06" title={{ en: 'Applications', ja: '展開' }} id="applications">
+  <L>
+    <h3>On the street, the table and in your pocket</h3>
+    <h4>Instagram</h4>
+    <p>Posts announce the opening hours, show the sign lit up at night, and feature dishes like the katsu kare don.</p>
+    <Fragment slot="ja">
+      <h3>街角に、テーブルに、ポケットに</h3>
+      <h4>Instagram</h4>
+      <p>営業時間のお知らせ、夜に灯る看板、カツカレー丼などの料理を投稿します。</p>
+    </Fragment>
+  </L>
+  <Media src={instagram} alt={{ en: 'Three Instagram posts: WE ARE OPEN with the hours, the lit-up Brim CC sign at night, and a katsu kare don', ja: 'Instagramの投稿3つ：営業時間入りのWE ARE OPEN、夜に灯るBrim CCの看板、カツカレー丼' }} />
+  <L>
+    <h4>Menu</h4>
+    <p>A set of tall menu cards (entrée, salad, donburi and noodles) in English and Japanese on textured paper, with the seal at the top.</p>
+    <Fragment slot="ja">
+      <h4>メニュー</h4>
+      <p>前菜、サラダ、どんぶり、麺類の縦長のメニューカード。風合いのある紙に英語と日本語で書かれ、上部に印章が入ります。</p>
+    </Fragment>
+  </L>
+  <Media src={menu} alt={{ en: 'Menu cards: the cover with the logo and メニュー, entrée and salad, donburi and noodles, and the cards fanned out on a wooden table', ja: 'メニューカード：ロゴと「メニュー」の表紙、前菜とサラダ、どんぶりと麺類、木のテーブルに広げたカード' }} />
+  <L>
+    <h4>Business card</h4>
+    <p>The business card is embossed on off-white paper, with the logo on the front and a handwritten line on the back.</p>
+    <Fragment slot="ja">
+      <h4>名刺</h4>
+      <p>名刺はオフホワイトの紙にエンボス加工で、表にロゴ、裏に手書きの一言が入ります。</p>
+    </Fragment>
+  </L>
+  <Media src={businessCard} alt={{ en: 'Embossed business cards: the front with the logo and the back with a handwritten line, and both cards on a grey surface', ja: 'エンボス加工の名刺：ロゴの表面と手書きの一言の裏面、グレーの台の上の2枚' }} />
 </Section>

@@ -1,0 +1,10 @@
+---
+// Bilingual block for MDX case studies written inline rather than through i18n keys:
+//   <L><p>English</p><Fragment slot="ja"><p>日本語</p></Fragment></L>
+// Renders no wrapper, so the section's markup is the same in both languages.
+import { localeOf } from '../../lib/i18n';
+
+const locale = localeOf(Astro.currentLocale);
+---
+
+{locale === 'ja' && Astro.slots.has('ja') ? <slot name="ja" /> : <slot />}

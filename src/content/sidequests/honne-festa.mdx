@@ -2,7 +2,7 @@
 title: Honne Festa
 order: 2
 tier: sidequest
-subtitle: { en: 'Branding Activist Movement (Gender Inequality in Japan)', ja: 'Branding Activist Movement (Gender Inequality in Japan)' }
+subtitle: { en: 'Branding Activist Movement (Gender Inequality in Japan)', ja: '社会運動のブランディング（日本のジェンダー不平等）' } # TODO(kosei): review JA
 category: { en: '(Graphic design)', ja: '（グラフィックデザイン）' }
 tag: { en: 'Branding', ja: 'ブランディング' }
 year: 2026
@@ -47,115 +47,224 @@ import clothing from '../../assets/sidequests/honne-festa/clothing.webp';
 import minSize from '../../assets/sidequests/honne-festa/min-size.webp';
 import clearSpace from '../../assets/sidequests/honne-festa/clear-space.webp';
 import misuse from '../../assets/sidequests/honne-festa/misuse.webp';
+import L from '../../components/case/L.astro';
 
 {/* University of Melbourne GDES30002, Brief 2B (Kosei 2026-11-03: "look at Brief2B_final (2).pdf since
     its a final folio"). Text and images come from that deck; the 2A research isn't included here.
-    English only for now — TODO(kosei): Japanese translation; duration and tools. */}
+    Japanese drafted 2026-11-03 — TODO(kosei): review JA; duration and tools. */}
 
 <div class="case-intro">
-  <p class="lead">Honne Festa (本音フェスタ) is a brand identity for an annual festival about gender inequality in Japanese workplaces. In Japan, "tatemae" is the face you show at work and "honne" is "what you really feel". The festival is a place for working women to say the honne out loud.</p>
-  <p class="lead">I built the identity from tone of voice to logo, visual system, applications and a style guide.</p>
+  <L>
+    <p class="lead">Honne Festa (本音フェスタ) is a brand identity for an annual festival about gender inequality in Japanese workplaces. In Japan, "tatemae" is the face you show at work and "honne" is "what you really feel". The festival is a place for working women to say the honne out loud.</p>
+    <p class="lead">I built the identity from tone of voice to logo, visual system, applications and a style guide.</p>
+    <Fragment slot="ja">
+      <p class="lead">本音フェスタ（Honne Festa）は、日本の職場におけるジェンダー不平等をテーマにした年に一度のフェスティバルのブランドアイデンティティです。日本では、職場で見せる顔が「建前」、本当に感じていることが「本音」。このフェスティバルは、働く女性がその本音を声に出せる場所です。</p>
+      <p class="lead">トーン・オブ・ボイスからロゴ、ビジュアルシステム、展開、スタイルガイドまで、アイデンティティ全体をつくりました。</p>
+    </Fragment>
+  </L>
   <MetaGrid items={[
-    { label: 'Type', value: 'Brand identity (activism branding)' },
-    { label: 'Course', value: 'GDES30002, University of Melbourne' },
-    { label: 'My Role', value: 'Solo' },
-    { label: 'Year', value: '2026' },
+    { label: { en: 'Type', ja: '種類' }, value: { en: 'Brand identity (activism branding)', ja: 'ブランドアイデンティティ（アクティビズムのブランディング）' } },
+    { label: { en: 'Course', ja: '授業' }, value: { en: 'GDES30002, University of Melbourne', ja: 'GDES30002、メルボルン大学' } },
+    { label: { en: 'My Role', ja: '担当' }, value: { en: 'Solo', ja: '個人' } },
+    { label: { en: 'Year', ja: '年' }, value: '2026' },
   ]} />
 </div>
 
-<Section num="01" title="Concept" id="concept">
-  <h3>The words you couldn't say, Honne</h3>
-  <p>Working women in Japan carry a lot they can't say out loud: organising the drinking party, watching someone else get the promotion, the daily frustrations. Honne Festa closes that gap with anonymous voice installations, panel discussions and workplace challenges for mixed-gender teams, turning private frustrations into a shared voice.</p>
-  <p>The values are honesty, solidarity and cultural specificity, rooted in Japanese feminist traditions.</p>
-  <h4>Where it sits</h4>
-  <p>Next to existing movements like #KuToo, the Flower Demo and Tokyo Pride, Honne Festa sits on the community side and on the celebratory side: a festival that people want to come to, not a corporate campaign or a protest.</p>
-  <Media src={positioning} size="medium" alt="Positioning matrix, corporate to community and activist to celebratory: Honne Festa sits at community and celebratory, apart from #KuToo, Flower Demo, W society, Happy Woman and Tokyo Pride" />
+<Section num="01" title={{ en: 'Concept', ja: 'コンセプト' }} id="concept">
+  <L>
+    <h3>The words you couldn't say, Honne</h3>
+    <p>Working women in Japan carry a lot they can't say out loud: organising the drinking party, watching someone else get the promotion, the daily frustrations. Honne Festa closes that gap with anonymous voice installations, panel discussions and workplace challenges for mixed-gender teams, turning private frustrations into a shared voice.</p>
+    <p>The values are honesty, solidarity and cultural specificity, rooted in Japanese feminist traditions.</p>
+    <h4>Where it sits</h4>
+    <p>Next to existing movements like #KuToo, the Flower Demo and Tokyo Pride, Honne Festa sits on the community side and on the celebratory side: a festival that people want to come to, not a corporate campaign or a protest.</p>
+    <Fragment slot="ja">
+      <h3>言えなかった言葉、本音</h3>
+      <p>日本で働く女性は、口に出せないことをたくさん抱えています。飲み会の幹事、自分ではない誰かの昇進、日々のもやもや。本音フェスタは、匿名の声のインスタレーション、パネルディスカッション、男女混合チームでの職場チャレンジを通して、個人のもやもやをみんなの声に変え、そのギャップを埋めます。</p>
+      <p>価値観は、正直さ、連帯、そして日本のフェミニズムの伝統に根ざした文化的な固有性です。</p>
+      <h4>立ち位置</h4>
+      <p>#KuTooやフラワーデモ、東京プライドなどの既存の運動と比べると、本音フェスタはコミュニティ寄りで、祝祭寄りの位置にあります。企業のキャンペーンでも抗議活動でもなく、人が行きたくなるフェスティバルです。</p>
+    </Fragment>
+  </L>
+  <Media src={positioning} size="medium" alt={{ en: 'Positioning matrix, corporate to community and activist to celebratory: Honne Festa sits at community and celebratory, apart from #KuToo, Flower Demo, W society, Happy Woman and Tokyo Pride', ja: '企業〜コミュニティ、運動〜祝祭の軸によるポジショニングマップ：本音フェスタは、#KuToo、フラワーデモ、W society、Happy Woman、東京プライドから離れた、コミュニティかつ祝祭の位置' }} />
 </Section>
 
-<Section num="02" title="Tone of Voice" id="voice">
-  <h3>Loud and engaging</h3>
-  <p>Honne Festa speaks like someone who knows something is wrong and isn't pretending otherwise. It doesn't shout, it doesn't apologise, and it doesn't hide behind corporate language. It talks directly and warmly, the way working women in Japan talk every day.</p>
-  <ul>
-    <li><b>Direct without being aggressive</b>: "Women organise the nomikai. Men get the promotions." Not "Patriarchal systems oppress women in the workplace."</li>
-    <li><b>Warm and inviting</b>: "You don't have to call yourself a feminist to know something is unfair." Not "Join us in the fight against patriarchal workplace structures."</li>
-    <li><b>Honest about discomfort</b>: "For the men in the room: you're here to listen first." Not "Join us for an empowering day of connection!"</li>
-  </ul>
+<Section num="02" title={{ en: 'Tone of Voice', ja: 'トーン・オブ・ボイス' }} id="voice">
+  <L>
+    <h3>Loud and engaging</h3>
+    <p>Honne Festa speaks like someone who knows something is wrong and isn't pretending otherwise. It doesn't shout, it doesn't apologise, and it doesn't hide behind corporate language. It talks directly and warmly, the way working women in Japan talk every day.</p>
+    <ul>
+      <li><b>Direct without being aggressive</b>: "Women organise the nomikai. Men get the promotions." Not "Patriarchal systems oppress women in the workplace."</li>
+      <li><b>Warm and inviting</b>: "You don't have to call yourself a feminist to know something is unfair." Not "Join us in the fight against patriarchal workplace structures."</li>
+      <li><b>Honest about discomfort</b>: "For the men in the room: you're here to listen first." Not "Join us for an empowering day of connection!"</li>
+    </ul>
+    <Fragment slot="ja">
+      <h3>力強く、引き込む</h3>
+      <p>本音フェスタは、何かがおかしいと分かっていて、それをごまかさない人のように話します。叫ばず、謝らず、企業的な言葉の陰に隠れない。日本で働く女性が毎日話しているように、率直に、温かく語りかけます。</p>
+      <ul>
+        <li><b>率直だけど攻撃的ではない</b>：「飲み会の幹事は女性。昇進するのは男性。」「家父長制のシステムが職場の女性を抑圧している」ではなく。</li>
+        <li><b>温かく、迎え入れる</b>：「フェミニストを名乗らなくても、不公平なことは分かる。」「家父長的な職場構造との闘いに加わろう」ではなく。</li>
+        <li><b>居心地の悪さにも正直に</b>：「会場の男性へ。まずは聞くために来てください。」「つながりで力をもらえる一日に参加しよう！」ではなく。</li>
+      </ul>
+    </Fragment>
+  </L>
 </Section>
 
-<Section num="03" title="Visual Direction" id="direction">
-  <h3>Words first, warm and restrained</h3>
-  <p>Three stylescapes explored the mood, from bold red and black typography to quiet off-white and warm orange.</p>
-  <Media src={stylescapes} alt="Three stylescapes: red and black typographic posters, muted off-white and grey Japanese layouts, and warm orange festival imagery" />
-  <p>Four references set the direction:</p>
-  <ul>
-    <li><b>Experimental Jetset</b>: type over imagery. The festival is built on women's words, so the words carry the design.</li>
-    <li><b>Stephan Bundi</b>: bold type-led posters with clear hierarchy, so typographic work still feels like an event.</li>
-    <li><b>Noritake</b>: simple line illustrations of everyday moments and lots of empty space, for a human, Japanese touch.</li>
-    <li><b>Muji and Kenya Hara</b>: warmth and restraint, so the brand feels credible to the businessmen it needs to reach.</li>
-  </ul>
+<Section num="03" title={{ en: 'Visual Direction', ja: 'ビジュアルの方向性' }} id="direction">
+  <L>
+    <h3>Words first, warm and restrained</h3>
+    <p>Three stylescapes explored the mood, from bold red and black typography to quiet off-white and warm orange.</p>
+    <Fragment slot="ja">
+      <h3>言葉が主役、温かく控えめに</h3>
+      <p>3つのスタイルスケープで、大胆な赤と黒のタイポグラフィから、静かなオフホワイトや温かなオレンジまで、雰囲気を探りました。</p>
+    </Fragment>
+  </L>
+  <Media src={stylescapes} alt={{ en: 'Three stylescapes: red and black typographic posters, muted off-white and grey Japanese layouts, and warm orange festival imagery', ja: '3つのスタイルスケープ：赤と黒のタイポグラフィのポスター、落ち着いたオフホワイトとグレーの和のレイアウト、温かなオレンジのフェスティバルのイメージ' }} />
+  <L>
+    <p>Four references set the direction:</p>
+    <ul>
+      <li><b>Experimental Jetset</b>: type over imagery. The festival is built on women's words, so the words carry the design.</li>
+      <li><b>Stephan Bundi</b>: bold type-led posters with clear hierarchy, so typographic work still feels like an event.</li>
+      <li><b>Noritake</b>: simple line illustrations of everyday moments and lots of empty space, for a human, Japanese touch.</li>
+      <li><b>Muji and Kenya Hara</b>: warmth and restraint, so the brand feels credible to the businessmen it needs to reach.</li>
+    </ul>
+    <Fragment slot="ja">
+      <p>方向性を決めた4つのリファレンス：</p>
+      <ul>
+        <li><b>Experimental Jetset</b>：イメージより文字。フェスティバルは女性たちの言葉でできているので、言葉がデザインを担います。</li>
+        <li><b>Stephan Bundi</b>：明確な階層を持つ、文字主体の大胆なポスター。タイポグラフィだけでもイベントらしさが出せます。</li>
+        <li><b>Noritake</b>：日常の一瞬を描くシンプルな線画と、たっぷりの余白。人の温もりと日本らしさを加えます。</li>
+        <li><b>無印良品と原研哉</b>：温かさと抑制。届けたいビジネスマンにも信頼できるブランドに感じてもらうためです。</li>
+      </ul>
+    </Fragment>
+  </L>
 </Section>
 
-<Section num="04" title="Logo" id="logo">
-  <h3>From sketches to a mouth</h3>
-  <p>The logo started as hand-lettering in a workshop and turned into lips: a mouth that speaks, and one that has been kept closed.</p>
+<Section num="04" title={{ en: 'Logo', ja: 'ロゴ' }} id="logo">
+  <L>
+    <h3>From sketches to a mouth</h3>
+    <p>The logo started as hand-lettering in a workshop and turned into lips: a mouth that speaks, and one that has been kept closed.</p>
+    <Fragment slot="ja">
+      <h3>スケッチから、口へ</h3>
+      <p>ロゴはワークショップでの手描きのレタリングから始まり、唇の形になりました。話す口であり、閉ざされてきた口でもあります。</p>
+    </Fragment>
+  </L>
   <div class="media-row">
-    <Media src={sketchesWorkshop} alt="Logo sketches: the first workshop exercise and early hand-lettered HONNE FESTA iterations" />
-    <Media src={sketchesLips} alt="Logo sketches: lips drawn around HONNE and 本音, open and closed mouths" />
+    <Media src={sketchesWorkshop} alt={{ en: 'Logo sketches: the first workshop exercise and early hand-lettered HONNE FESTA iterations', ja: 'ロゴのスケッチ：最初のワークショップの課題と、手描きのHONNE FESTAの初期案' }} />
+    <Media src={sketchesLips} alt={{ en: 'Logo sketches: lips drawn around HONNE and 本音, open and closed mouths', ja: 'ロゴのスケッチ：HONNEと「本音」を囲む唇、開いた口と閉じた口' }} />
   </div>
-  <h4>Wordmark and badge</h4>
-  <p>I tried two routes on screen: a wordmark with the lips replacing the O, and a badge with the name inside the mouth.</p>
+  <L>
+    <h4>Wordmark and badge</h4>
+    <p>I tried two routes on screen: a wordmark with the lips replacing the O, and a badge with the name inside the mouth.</p>
+    <Fragment slot="ja">
+      <h4>ロゴタイプとバッジ</h4>
+      <p>画面上で2つの方向を試しました。Oを唇に置き換えたロゴタイプと、口の中に名前を入れたバッジです。</p>
+    </Fragment>
+  </L>
   <div class="media-row">
-    <Media src={wordmarks} alt="Wordmark explorations: HONNE FESTA in serif and sans type, with lips in place of the O" />
-    <Media src={badges} alt="Badge explorations: 本音 and FESTA written inside a mouth shape" />
+    <Media src={wordmarks} alt={{ en: 'Wordmark explorations: HONNE FESTA in serif and sans type, with lips in place of the O', ja: 'ロゴタイプの検討：セリフ体とサンセリフ体のHONNE FESTA、Oの代わりに唇' }} />
+    <Media src={badges} alt={{ en: 'Badge explorations: 本音 and FESTA written inside a mouth shape', ja: 'バッジの検討：口の形の中に「本音」とFESTA' }} />
   </div>
-  <h4>Final logo</h4>
-  <p>The final logo wraps a lips outline around HONNE FESTA and 本音フェスタ, in dark ruby or in black and white.</p>
-  <Media src={logoFinal} alt="Final logo in dark ruby and black on light grey, and in dark ruby and white on black" />
-  <Media src={logoMono} alt="Final logo in black on light grey and in white on black" />
+  <L>
+    <h4>Final logo</h4>
+    <p>The final logo wraps a lips outline around HONNE FESTA and 本音フェスタ, in dark ruby or in black and white.</p>
+    <Fragment slot="ja">
+      <h4>最終ロゴ</h4>
+      <p>最終ロゴは、HONNE FESTAと「本音フェスタ」を唇の輪郭で包んだ形で、ダークルビーまたは白黒で使います。</p>
+    </Fragment>
+  </L>
+  <Media src={logoFinal} alt={{ en: 'Final logo in dark ruby and black on light grey, and in dark ruby and white on black', ja: '明るいグレー地にダークルビーと黒、黒地にダークルビーと白の最終ロゴ' }} />
+  <Media src={logoMono} alt={{ en: 'Final logo in black on light grey and in white on black', ja: '明るいグレー地に黒、黒地に白の最終ロゴ' }} />
   <Callout kind="decision">
-    <p>The lips are the whole idea: speech and silence in one shape. The same mouth works as the logo, as an illustration and as a pattern.</p>
+    <L>
+      <p>The lips are the whole idea: speech and silence in one shape. The same mouth works as the logo, as an illustration and as a pattern.</p>
+      <p slot="ja">唇がアイデアのすべて。話すことと黙ることを、ひとつの形に。同じ口が、ロゴにも、イラストにも、パターンにもなります。</p>
+    </L>
   </Callout>
 </Section>
 
-<Section num="05" title="Visual System" id="system">
-  <h3>Type, colour, photos and the mouth</h3>
-  <h4>Typography</h4>
-  <p>The first set used Shippori Mincho. The final system is Sofia Pro for headlines, Tsukushi A Maru Gothic for Japanese text, Inter for English text, and Anton for the staff lanyards.</p>
-  <Media src={typeImg} size="medium" alt="Typography development: Shippori Mincho in the first version; Sofia Pro, Tsukushi A Maru Gothic, Inter and Anton in the final version" />
-  <h4>Colour</h4>
-  <p>The first palette had green and olive. The final one is warmer and calmer: off-white #F5F4F2, grey #ADA9A8, beige #C3B99D, dark ruby #670000 and near-black #2C2A2B.</p>
-  <Media src={palette} alt="Colour palette: off-white, grey, beige, dark ruby and near-black, with their uses and values" />
-  <h4>Photography</h4>
-  <p>Office photos are turned black and white, except for one woman who stays in colour. Her quiet presence is the point: familiar, a little uncomfortable, never staged.</p>
-  <Media src={photography} alt="Black and white office photos where one woman stays in colour, with the Honne Festa logo and tagline" />
-  <h4>Illustration</h4>
-  <p>The mouth comes in four versions: solid black, outline, dark ruby and off-white. Next to the tagline "The words you couldn't say — say them here" it works as punctuation. It can also scale up into a pattern and fade in opacity, like voices that are there but not heard.</p>
-  <Media src={illustration} alt="The mouth mark in black, outline, dark ruby and off-white, next to the tagline and vertical Japanese text" />
+<Section num="05" title={{ en: 'Visual System', ja: 'ビジュアルシステム' }} id="system">
+  <L>
+    <h3>Type, colour, photos and the mouth</h3>
+    <h4>Typography</h4>
+    <p>The first set used Shippori Mincho. The final system is Sofia Pro for headlines, Tsukushi A Maru Gothic for Japanese text, Inter for English text, and Anton for the staff lanyards.</p>
+    <Fragment slot="ja">
+      <h3>書体、色、写真、そして口</h3>
+      <h4>タイポグラフィ</h4>
+      <p>最初はしっぽり明朝を使っていました。最終的には、見出しにSofia Pro、和文に筑紫A丸ゴシック、欧文にInter、スタッフ用ネックストラップにAntonを使っています。</p>
+    </Fragment>
+  </L>
+  <Media src={typeImg} size="medium" alt={{ en: 'Typography development: Shippori Mincho in the first version; Sofia Pro, Tsukushi A Maru Gothic, Inter and Anton in the final version', ja: 'タイポグラフィの変遷：初期版のしっぽり明朝と、最終版のSofia Pro、筑紫A丸ゴシック、Inter、Anton' }} />
+  <L>
+    <h4>Colour</h4>
+    <p>The first palette had green and olive. The final one is warmer and calmer: off-white #F5F4F2, grey #ADA9A8, beige #C3B99D, dark ruby #670000 and near-black #2C2A2B.</p>
+    <Fragment slot="ja">
+      <h4>カラー</h4>
+      <p>最初のパレットにはグリーンとオリーブがありました。最終版はより温かく落ち着いた、オフホワイト #F5F4F2、グレー #ADA9A8、ベージュ #C3B99D、ダークルビー #670000、黒に近い #2C2A2B です。</p>
+    </Fragment>
+  </L>
+  <Media src={palette} alt={{ en: 'Colour palette: off-white, grey, beige, dark ruby and near-black, with their uses and values', ja: 'カラーパレット：オフホワイト、グレー、ベージュ、ダークルビー、黒に近い色と、それぞれの用途と値' }} />
+  <L>
+    <h4>Photography</h4>
+    <p>Office photos are turned black and white, except for one woman who stays in colour. Her quiet presence is the point: familiar, a little uncomfortable, never staged.</p>
+    <Fragment slot="ja">
+      <h4>写真</h4>
+      <p>オフィスの写真は白黒にし、ひとりの女性だけをカラーで残します。その静かな存在感がポイントです。見慣れていて、少し居心地が悪く、決してつくり込まれていない。</p>
+    </Fragment>
+  </L>
+  <Media src={photography} alt={{ en: 'Black and white office photos where one woman stays in colour, with the Honne Festa logo and tagline', ja: 'ひとりの女性だけがカラーの白黒のオフィス写真と、本音フェスタのロゴとタグライン' }} />
+  <L>
+    <h4>Illustration</h4>
+    <p>The mouth comes in four versions: solid black, outline, dark ruby and off-white. Next to the tagline "The words you couldn't say — say them here" it works as punctuation. It can also scale up into a pattern and fade in opacity, like voices that are there but not heard.</p>
+    <Fragment slot="ja">
+      <h4>イラスト</h4>
+      <p>口のマークは、黒の塗り、輪郭線、ダークルビー、オフホワイトの4種類。タグライン「言えなかった言葉を、ここで」の横では句読点のように働きます。拡大してパターンにしたり、透明度を下げたりすることで、そこにあるのに届いていない声のようにも見せられます。</p>
+    </Fragment>
+  </L>
+  <Media src={illustration} alt={{ en: 'The mouth mark in black, outline, dark ruby and off-white, next to the tagline and vertical Japanese text', ja: '黒、輪郭線、ダークルビー、オフホワイトの口のマークと、タグライン、縦書きの日本語' }} />
 </Section>
 
-<Section num="06" title="Applications" id="applications">
-  <h3>The festival, out in the world</h3>
-  <h4>Posters</h4>
-  <p>The posters lead with one sentence many women have lived: 「私の企画、上司の名前で提出された。」 ("My proposal was submitted under my boss's name."). The event poster gives the date, 11/23 at Shiba Park.</p>
-  <Media src={posters} alt="Posters: the quote poster and the event poster with the date, on a wall and in a bus shelter" />
-  <Media src={streetPoster} size="medium" alt="Quote poster on a street wall: 私の企画、上司の名前で提出された。" />
-  <h4>Ticket and lanyards</h4>
+<Section num="06" title={{ en: 'Applications', ja: '展開' }} id="applications">
+  <L>
+    <h3>The festival, out in the world</h3>
+    <h4>Posters</h4>
+    <p>The posters lead with one sentence many women have lived: 「私の企画、上司の名前で提出された。」 ("My proposal was submitted under my boss's name."). The event poster gives the date, 11/23 at Shiba Park.</p>
+    <Fragment slot="ja">
+      <h3>フェスティバルを、街へ</h3>
+      <h4>ポスター</h4>
+      <p>ポスターは、多くの女性が経験してきた一文から始まります。「私の企画、上司の名前で提出された。」イベントポスターには、11/23、芝公園という日時と場所を載せています。</p>
+    </Fragment>
+  </L>
+  <Media src={posters} alt={{ en: 'Posters: the quote poster and the event poster with the date, on a wall and in a bus shelter', ja: 'ポスター：言葉のポスターと日付入りのイベントポスター、壁とバス停での掲示' }} />
+  <Media src={streetPoster} size="medium" alt={{ en: 'Quote poster on a street wall: 私の企画、上司の名前で提出された。', ja: '街の壁に貼られた言葉のポスター：「私の企画、上司の名前で提出された。」' }} />
+  <L>
+    <h4>Ticket and lanyards</h4>
+    <h4 slot="ja">チケットとネックストラップ</h4>
+  </L>
   <div class="media-row">
-    <Media src={ticket} alt="Digital event ticket in a phone wallet, in dark and light versions" />
-    <Media src={lanyards} alt="Staff and media lanyards in grey with beige and white mouth shapes" />
+    <Media src={ticket} alt={{ en: 'Digital event ticket in a phone wallet, in dark and light versions', ja: 'スマートフォンのウォレットに入ったデジタルチケット（ダーク版とライト版）' }} />
+    <Media src={lanyards} alt={{ en: 'Staff and media lanyards in grey with beige and white mouth shapes', ja: 'ベージュと白の口の形が入った、グレーのスタッフ用・メディア用ネックストラップ' }} />
   </div>
-  <h4>Social, signage and clothing</h4>
-  <Media src={social} alt="Instagram profile for honne_official with a three-post grid: the date, the logo and the location" />
-  <Media src={signage} alt="Event A-frame signs at the entrance with the logo and the date" />
-  <Media src={clothing} alt="Grey Honne Festa T-shirts with the logo on the front and the back" />
+  <L>
+    <h4>Social, signage and clothing</h4>
+    <h4 slot="ja">SNS、サイン、ウェア</h4>
+  </L>
+  <Media src={social} alt={{ en: 'Instagram profile for honne_official with a three-post grid: the date, the logo and the location', ja: 'honne_officialのInstagramプロフィールと3投稿のグリッド：日付、ロゴ、場所' }} />
+  <Media src={signage} alt={{ en: 'Event A-frame signs at the entrance with the logo and the date', ja: '入口に置かれた、ロゴと日付入りのA型看板' }} />
+  <Media src={clothing} alt={{ en: 'Grey Honne Festa T-shirts with the logo on the front and the back', ja: '前面と背面にロゴが入ったグレーの本音フェスタTシャツ' }} />
 </Section>
 
-<Section num="07" title="Style Guide" id="guide">
-  <h3>Keeping it consistent</h3>
-  <p>The style guide covers the minimum size (the wordmark is more formal and works better small), clear space, incorrect usage, the type hierarchy and the palette.</p>
+<Section num="07" title={{ en: 'Style Guide', ja: 'スタイルガイド' }} id="guide">
+  <L>
+    <h3>Keeping it consistent</h3>
+    <p>The style guide covers the minimum size (the wordmark is more formal and works better small), clear space, incorrect usage, the type hierarchy and the palette.</p>
+    <Fragment slot="ja">
+      <h3>一貫性を保つために</h3>
+      <p>スタイルガイドでは、最小サイズ（ロゴタイプの方がフォーマルで、小さくても読みやすい）、余白、誤った使い方、文字の階層、カラーパレットを定めています。</p>
+    </Fragment>
+  </L>
   <div class="media-row">
-    <Media src={minSize} alt="Minimum size: the wordmark and the logo at 160 by 80 pixels and larger" />
-    <Media src={clearSpace} alt="Clear space rule: circles the size of the O around the logo" />
+    <Media src={minSize} alt={{ en: 'Minimum size: the wordmark and the logo at 160 by 80 pixels and larger', ja: '最小サイズ：160×80ピクセル以上のロゴタイプとロゴ' }} />
+    <Media src={clearSpace} alt={{ en: 'Clear space rule: circles the size of the O around the logo', ja: '余白のルール：ロゴの周りにOと同じ大きさの円' }} />
   </div>
-  <Media src={misuse} alt="Incorrect usage: the logo rotated, blurred, stretched, too small and in off-brand colours" />
+  <Media src={misuse} alt={{ en: 'Incorrect usage: the logo rotated, blurred, stretched, too small and in off-brand colours', ja: '誤った使い方：回転、ぼかし、変形、小さすぎるサイズ、ブランド外の色' }} />
 </Section>

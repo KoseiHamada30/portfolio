@@ -2,11 +2,11 @@
 title: NBA Research Lab
 order: 1
 tier: spotlight
-subtitle: { en: 'Over or under, answered in one place', ja: 'Over or under, answered in one place' } # TODO(kosei): JA
+subtitle: { en: 'Over or under, answered in one place', ja: 'オーバーかアンダーか、ひとつの場所で答えを' } # TODO(kosei): review JA
 stageLine: { en: 'Sports prediction app', ja: 'スポーツ予想アプリ' } # changed in the tuner 2026-11-03
 category: { en: '(Cipher Sports Technology Group)', ja: '(Cipher Sports Technology Group)' }
 period: { en: 'Present', ja: '現在' }
-role: { en: 'Product Design Intern', ja: 'Product Design Intern' }
+role: { en: 'Product Design Intern', ja: 'プロダクトデザインインターン' }
 duration: { en: '3 months, ongoing', ja: '3ヶ月（継続中）' }
 tools: [Figma, Claude, Jira]
 accent: '#1D4ED8'
@@ -35,115 +35,224 @@ import sketchPlayer from '../../assets/projects/nba-research-lab/sketch-player.w
 import screens from '../../assets/projects/nba-research-lab/screens.webp';
 import lines from '../../assets/projects/nba-research-lab/lines.webp';
 import share from '../../assets/projects/nba-research-lab/share.webp';
+import L from '../../components/case/L.astro';
 
 {/* Phase 7: written in Kosei's other session and published to the Site Tuner on 2026-11-03; brought
-    into the source here with the same text and images. English only for now, so the JA page shows
-    it in English — TODO(kosei): Japanese translation. */}
+    into the source here with the same text and images. Japanese drafted 2026-11-03 —
+    TODO(kosei): review JA. */}
 
 <div class="case-intro">
-  <p class="lead">Dimers, Cipher Sports' flagship app and website, helps US sports fans find betting opportunities. NBA Research Lab (the internal name) is a new way to explore Dimers' NBA player projections, included with Dimers Pro: projections, sportsbook lines and recent games in one place, so a bettor can answer one question fast: over or under?</p>
-  <p class="lead">I designed it as a product design intern, two days a week, from discovery and whiteboard sketches to an interactive prototype that became the team's spec, through to QA on TestFlight.</p>
+  <L>
+    <p class="lead">Dimers, Cipher Sports' flagship app and website, helps US sports fans find betting opportunities. NBA Research Lab (the internal name) is a new way to explore Dimers' NBA player projections, included with Dimers Pro: projections, sportsbook lines and recent games in one place, so a bettor can answer one question fast: over or under?</p>
+    <p class="lead">I designed it as a product design intern, two days a week, from discovery and whiteboard sketches to an interactive prototype that became the team's spec, through to QA on TestFlight.</p>
+    <Fragment slot="ja">
+      <p class="lead">Dimersは、Cipher Sportsの主力アプリ／Webサイトで、アメリカのスポーツファンがベッティングの機会を見つけるためのサービスです。NBA Research Lab（社内名）は、Dimers Proに含まれるNBA選手予測の新しい見せ方です。予測値、スポーツブックのライン、直近の試合を一か所にまとめ、「オーバーかアンダーか」という問いにすぐ答えられるようにしました。</p>
+      <p class="lead">週2日のプロダクトデザインインターンとして、ディスカバリーとホワイトボードのスケッチから、チームの仕様書となったインタラクティブなプロトタイプ、TestFlightでのQAまでを担当しました。</p>
+    </Fragment>
+  </L>
   <MetaGrid items={[
-    { label: 'Type', value: 'Product design (UX/UI)' },
-    { label: 'Duration', value: '3 months, ongoing' },
-    { label: 'My Role', value: 'Product Design Intern' },
-    { label: 'Tools', value: 'Figma / Claude / Jira' },
+    { label: { en: 'Type', ja: '種類' }, value: { en: 'Product design (UX/UI)', ja: 'プロダクトデザイン（UX/UI）' } },
+    { label: { en: 'Duration', ja: '期間' }, value: { en: '3 months, ongoing', ja: '3ヶ月（継続中）' } },
+    { label: { en: 'My Role', ja: '担当' }, value: { en: 'Product Design Intern', ja: 'プロダクトデザインインターン' } },
+    { label: { en: 'Tools', ja: 'ツール' }, value: 'Figma / Claude / Jira' },
   ]} />
 </div>
 
-<Section num="01" title="Challenge" id="challenge">
-  <h3>"Do I go over or under?"</h3>
-  <p>Dimers' models already projected every NBA player prop, but to research one, bettors left for tools like props.cash or ESPN, and the session left with them.</p>
-  <p>The brief was discovery-led: one sport, one section of the app, and a settled direction before the NBA season tipped off in late October.</p>
+<Section num="01" title={{ en: 'Challenge', ja: '課題' }} id="challenge">
+  <L>
+    <h3>"Do I go over or under?"</h3>
+    <p>Dimers' models already projected every NBA player prop, but to research one, bettors left for tools like props.cash or ESPN, and the session left with them.</p>
+    <p>The brief was discovery-led: one sport, one section of the app, and a settled direction before the NBA season tipped off in late October.</p>
+    <Fragment slot="ja">
+      <h3>「オーバーか、アンダーか？」</h3>
+      <p>DimersのモデルはすでにすべてのNBA選手プロップを予測していましたが、ユーザーはリサーチのためにprops.cashやESPNなどの外部ツールへ移動し、そのまま戻ってきませんでした。</p>
+      <p>ブリーフはディスカバリー主導で、対象は1つのスポーツとアプリの1セクション。10月下旬のNBAシーズン開幕までに方向性を固めることがゴールでした。</p>
+    </Fragment>
+  </L>
   <Callout kind="goal">
-    <p>Let Pro subscribers research a prop and make their own call without leaving Dimers.</p>
+    <L>
+      <p>Let Pro subscribers research a prop and make their own call without leaving Dimers.</p>
+      <p slot="ja">Proユーザーが、Dimersを離れずにプロップをリサーチし、自分で判断できるようにする。</p>
+    </L>
   </Callout>
-  <p><b>Principles</b>: mobile-first, clarity over density, progressive depth, and research, not noise.</p>
+  <L>
+    <p><b>Principles</b>: mobile-first, clarity over density, progressive depth, and research, not noise.</p>
+    <p slot="ja"><b>原則</b>：モバイルファースト、情報量より分かりやすさ、段階的に深く、ノイズではなくリサーチを。</p>
+  </L>
 </Section>
 
-<Section num="02" title="Ideation" id="ideation">
-  <h3>Starting on the whiteboard</h3>
-  <p>The core question: how to show the data so it's both informative and easy to read, with recent games as context for the projection, not the headline.</p>
-  <p>I started by listing what a bettor needs before placing a prop: availability, the Dimers projection, bookmaker odds, historical stats, the game log and the bet itself. Then I sorted them into an order: projections and bookmakers side by side, then trend stats, then the game log.</p>
+<Section num="02" title={{ en: 'Ideation', ja: 'アイデア出し' }} id="ideation">
+  <L>
+    <h3>Starting on the whiteboard</h3>
+    <p>The core question: how to show the data so it's both informative and easy to read, with recent games as context for the projection, not the headline.</p>
+    <p>I started by listing what a bettor needs before placing a prop: availability, the Dimers projection, bookmaker odds, historical stats, the game log and the bet itself. Then I sorted them into an order: projections and bookmakers side by side, then trend stats, then the game log.</p>
+    <Fragment slot="ja">
+      <h3>ホワイトボードから始める</h3>
+      <p>中心となる問いは、情報量がありながら読みやすいデータの見せ方。直近の試合は主役ではなく、予測値を裏付ける文脈として見せることでした。</p>
+      <p>まず、ユーザーがプロップに賭ける前に必要な情報を書き出しました。出場可否、Dimersの予測値、ブックメーカーのオッズ、過去のスタッツ、試合ログ、そしてベットそのもの。それを、予測値とブックメーカーを並べ、次にトレンドのスタッツ、最後に試合ログという順番に整理しました。</p>
+    </Fragment>
+  </L>
   <div class="media-row">
-    <Media src={sketchNeeds} alt="Whiteboard: six circles listing what a bettor needs: availability, Dimers projection, bookmaker odds, historical stats, game log and the bet" />
-    <Media src={sketchFlow} alt="Whiteboard: player page order, from projections and bookmakers to trend stats and the game log" />
+    <Media src={sketchNeeds} alt={{ en: 'Whiteboard: six circles listing what a bettor needs: availability, Dimers projection, bookmaker odds, historical stats, game log and the bet', ja: 'ホワイトボード：ユーザーに必要な6つの情報（出場可否、Dimersの予測値、オッズ、過去のスタッツ、試合ログ、ベット）' }} />
+    <Media src={sketchFlow} alt={{ en: 'Whiteboard: player page order, from projections and bookmakers to trend stats and the game log', ja: 'ホワイトボード：予測値とブックメーカーからトレンドのスタッツ、試合ログへと続く選手ページの順番' }} />
   </div>
-  <h4>The list row</h4>
-  <p>The projections list had to show a whole slate at a glance. I sketched rows that put a player's last games next to the line, with the gap between our projection and the line on the right, so the list itself starts the answer.</p>
+  <L>
+    <h4>The list row</h4>
+    <p>The projections list had to show a whole slate at a glance. I sketched rows that put a player's last games next to the line, with the gap between our projection and the line on the right, so the list itself starts the answer.</p>
+    <Fragment slot="ja">
+      <h4>リストの行</h4>
+      <p>予測一覧では、その日の全試合を一目で見渡せる必要がありました。選手の直近の試合をラインの横に並べ、右側に予測値とラインの差を置く行をスケッチし、一覧を見るだけで答えが見え始めるようにしました。</p>
+    </Fragment>
+  </L>
   <div class="media-row">
-    <Media src={sketchRows} alt={'Whiteboard: list row explorations with icon, name, recent games against the line and the projection gap, under the question "Do I go over or under?"'} />
-    <Media src={sketchList} alt="Whiteboard: early projections list and player row ideas with recent games and the line" />
+    <Media src={sketchRows} alt={{ en: 'Whiteboard: list row explorations with icon, name, recent games against the line and the projection gap, under the question "Do I go over or under?"', ja: 'ホワイトボード：「オーバーか、アンダーか？」の問いの下、アイコン、名前、ラインに対する直近の試合、予測との差を並べたリスト行の検討' }} />
+    <Media src={sketchList} alt={{ en: 'Whiteboard: early projections list and player row ideas with recent games and the line', ja: 'ホワイトボード：直近の試合とラインを含む、初期の予測一覧と選手行のアイデア' }} />
   </div>
-  <h4>The player page</h4>
-  <p>Iterating on the player page, I removed the separate Dimers projection box and folded it into the chart as tonight's bar, and moved availability and the game log to their own Games tab so the Stats tab stays about the line.</p>
-  <Media src={sketchPlayer} alt="Whiteboard: three iterations of the player page layout, ending with Stats and Games tabs" />
+  <L>
+    <h4>The player page</h4>
+    <p>Iterating on the player page, I removed the separate Dimers projection box and folded it into the chart as tonight's bar, and moved availability and the game log to their own Games tab so the Stats tab stays about the line.</p>
+    <Fragment slot="ja">
+      <h4>選手ページ</h4>
+      <p>選手ページを改善する中で、独立していたDimersの予測ボックスをなくし、チャート上の「今夜のバー」として組み込みました。出場可否と試合ログは専用のGamesタブに移し、Statsタブはラインの判断だけに集中できるようにしました。</p>
+    </Fragment>
+  </L>
+  <Media src={sketchPlayer} alt={{ en: 'Whiteboard: three iterations of the player page layout, ending with Stats and Games tabs', ja: 'ホワイトボード：StatsタブとGamesタブに至るまでの、選手ページのレイアウト3案' }} />
   <Callout kind="decision">
-    <p>Put the line at the centre of the chart, and let the user switch it between the market consensus, any sportsbook, or a line they drag themselves.</p>
+    <L>
+      <p>Put the line at the centre of the chart, and let the user switch it between the market consensus, any sportsbook, or a line they drag themselves.</p>
+      <p slot="ja">ラインをチャートの中心に置き、市場のコンセンサス、各スポーツブック、自分でドラッグしたラインを切り替えられるようにする。</p>
+    </L>
   </Callout>
 </Section>
 
-<Section num="03" title="Solution" id="solution">
-  <h3>From a slate to a single prop</h3>
-  <h4>1. Projections list</h4>
-  <p>Every NBA player expected on tonight's slate, across points, rebounds, assists and more, in one sortable list: recent games as dots above or below the line, the line, our projection and the gap between them.</p>
-  <h4>2. Player page</h4>
-  <p>A stat strip (a dot marks stats where the model found value), line chips for the consensus and each sportsbook, and a hit-rate chart that shows how often the player cleared the line in his last 5, 10 or 20 games, head to head, home or away. Tonight's projection sits at the end as a dashed yellow bar.</p>
-  <Media src={screens} alt="The projections list, a player page with a best bet selected, and the player page scrolled with its header collapsed" />
-  <h4>3. The line decides everything</h4>
-  <p>Picking a chip moves the line, and the bars, percentages and labels all follow. When the selected sportsbook line is our best bet, the line, its tag and the bet card turn green. Other books stay blue.</p>
-  <Media src={lines} alt="Player page with the consensus line in blue, next to the same page with the best-bet sportsbook line in green" />
+<Section num="03" title={{ en: 'Solution', ja: 'ソリューション' }} id="solution">
+  <L>
+    <h3>From a slate to a single prop</h3>
+    <h4>1. Projections list</h4>
+    <p>Every NBA player expected on tonight's slate, across points, rebounds, assists and more, in one sortable list: recent games as dots above or below the line, the line, our projection and the gap between them.</p>
+    <h4>2. Player page</h4>
+    <p>A stat strip (a dot marks stats where the model found value), line chips for the consensus and each sportsbook, and a hit-rate chart that shows how often the player cleared the line in his last 5, 10 or 20 games, head to head, home or away. Tonight's projection sits at the end as a dashed yellow bar.</p>
+    <Fragment slot="ja">
+      <h3>全試合から、ひとつのプロップへ</h3>
+      <h4>1. 予測一覧</h4>
+      <p>今夜出場予定のNBA選手全員を、得点、リバウンド、アシストなどのスタッツごとに並べ替えられる一覧です。直近の試合をラインの上下に点で示し、ライン、予測値、その差を表示します。</p>
+      <h4>2. 選手ページ</h4>
+      <p>スタッツの切り替え（モデルが価値を見つけたスタッツには点が付きます）、コンセンサスと各スポーツブックのラインチップ、そして直近5・10・20試合、対戦相手別、ホーム／アウェイでラインを超えた割合を示すヒット率チャート。今夜の予測値は、最後に黄色の破線のバーとして表示されます。</p>
+    </Fragment>
+  </L>
+  <Media src={screens} alt={{ en: 'The projections list, a player page with a best bet selected, and the player page scrolled with its header collapsed', ja: '予測一覧、ベストベットを選択した選手ページ、ヘッダーが縮んだ状態でスクロールした選手ページ' }} />
+  <L>
+    <h4>3. The line decides everything</h4>
+    <p>Picking a chip moves the line, and the bars, percentages and labels all follow. When the selected sportsbook line is our best bet, the line, its tag and the bet card turn green. Other books stay blue.</p>
+    <Fragment slot="ja">
+      <h4>3. すべてはラインで決まる</h4>
+      <p>チップを選ぶとラインが動き、バー、割合、ラベルがすべて追従します。選んだスポーツブックのラインがベストベットのときは、ライン、タグ、ベットカードが緑に変わり、それ以外のブックは青のままです。</p>
+    </Fragment>
+  </L>
+  <Media src={lines} alt={{ en: 'Player page with the consensus line in blue, next to the same page with the best-bet sportsbook line in green', ja: 'コンセンサスのラインが青の選手ページと、ベストベットのスポーツブックのラインが緑の同じページ' }} />
 </Section>
 
-<Section num="04" title="Interaction Details" id="details">
-  <h3>Small things that make the chart readable</h3>
-  <ul>
-    <li><b>Numbers never sit on the line</b>: a bar's value and gap label move just above or below the line when it runs through them.</li>
-    <li><b>Tooltips from the bars only</b>: tap a bar for that game, then slide a finger to move across games. Tapping empty space does nothing.</li>
-    <li><b>A header that follows the scroll</b>: inspired by Sofascore, the headshot and name glide into the top bar as you scroll, and the matchup becomes a small line above the name.</li>
-  </ul>
-  <Media video="media/nba/player-scroll.mp4" frame="phone" alt="Player page: the header collapses into the top bar while scrolling, then a finger scrubs across the hit-rate bars" />
+<Section num="04" title={{ en: 'Interaction Details', ja: 'インタラクションの工夫' }} id="details">
+  <L>
+    <h3>Small things that make the chart readable</h3>
+    <ul>
+      <li><b>Numbers never sit on the line</b>: a bar's value and gap label move just above or below the line when it runs through them.</li>
+      <li><b>Tooltips from the bars only</b>: tap a bar for that game, then slide a finger to move across games. Tapping empty space does nothing.</li>
+      <li><b>A header that follows the scroll</b>: inspired by Sofascore, the headshot and name glide into the top bar as you scroll, and the matchup becomes a small line above the name.</li>
+    </ul>
+    <Fragment slot="ja">
+      <h3>チャートを読みやすくする小さな工夫</h3>
+      <ul>
+        <li><b>数字がラインに重ならない</b>：ラインがバーの数値や差のラベルを横切るときは、ラベルがラインのすぐ上か下に移動します。</li>
+        <li><b>ツールチップはバーからだけ</b>：バーをタップするとその試合の情報が出て、指をスライドすると試合を移動できます。何もない場所をタップしても反応しません。</li>
+        <li><b>スクロールに合わせて動くヘッダー</b>：Sofascoreを参考に、スクロールすると顔写真と名前がトップバーに滑り込み、対戦カードは名前の上の小さな一行になります。</li>
+      </ul>
+    </Fragment>
+  </L>
+  <Media video="media/nba/player-scroll.mp4" frame="phone" alt={{ en: 'Player page: the header collapses into the top bar while scrolling, then a finger scrubs across the hit-rate bars', ja: '選手ページ：スクロールでヘッダーがトップバーに収まり、指でヒット率のバーをなぞる様子' }} />
   <Callout kind="fix">
-    <p>On the first TestFlight build the page flickered near the bottom: collapsing the header resized the scroll area, which pushed the page back to the top and expanded it again. Keeping the header at one fixed height, with the player row scrolling away as part of the page, broke the loop.</p>
+    <L>
+      <p>On the first TestFlight build the page flickered near the bottom: collapsing the header resized the scroll area, which pushed the page back to the top and expanded it again. Keeping the header at one fixed height, with the player row scrolling away as part of the page, broke the loop.</p>
+      <p slot="ja">最初のTestFlightビルドでは、ページの下の方で画面がちらつきました。ヘッダーが縮むとスクロール領域のサイズが変わり、ページが上に押し戻されてヘッダーが再び広がっていたのです。ヘッダーの高さを固定し、選手の行をページの一部としてスクロールさせることで、このループを解消しました。</p>
+    </L>
   </Callout>
 </Section>
 
-<Section num="05" title="Share Image" id="share">
-  <h3>Sharing what you see</h3>
-  <p>Bettors already share picks on X and Instagram, so the player page can turn the current view into a branded image. The image always matches the state on screen: the consensus line, a sportsbook's line with its price, the best bet in green, or a line the user dragged.</p>
-  <Media src={share} alt="Two share images for Anthony Edwards: a best bet, Under 7.5 assists at DraftKings, and a DraftKings points line" />
-  <p>It comes in two sizes: a 4:5 post for X, Instagram feed, DMs and messages, and a 9:16 story. Next, taking a normal screenshot on the player page will offer the share image straight away.</p>
+<Section num="05" title={{ en: 'Share Image', ja: 'シェア画像' }} id="share">
+  <L>
+    <h3>Sharing what you see</h3>
+    <p>Bettors already share picks on X and Instagram, so the player page can turn the current view into a branded image. The image always matches the state on screen: the consensus line, a sportsbook's line with its price, the best bet in green, or a line the user dragged.</p>
+    <Fragment slot="ja">
+      <h3>見ている画面を、そのままシェア</h3>
+      <p>ユーザーはすでにXやInstagramで予想をシェアしているため、選手ページの今の表示をブランド入りの画像にできるようにしました。画像は常に画面の状態と一致します。コンセンサスのライン、価格付きのスポーツブックのライン、緑のベストベット、自分でドラッグしたラインのいずれでも同じです。</p>
+    </Fragment>
+  </L>
+  <Media src={share} alt={{ en: 'Two share images for Anthony Edwards: a best bet, Under 7.5 assists at DraftKings, and a DraftKings points line', ja: 'アンソニー・エドワーズのシェア画像2枚：DraftKingsのアシスト7.5アンダーのベストベットと、DraftKingsの得点ライン' }} />
+  <L>
+    <p>It comes in two sizes: a 4:5 post for X, Instagram feed, DMs and messages, and a 9:16 story. Next, taking a normal screenshot on the player page will offer the share image straight away.</p>
+    <p slot="ja">サイズは、X、Instagramのフィード、DMやメッセージ向けの4:5と、ストーリー向けの9:16の2種類です。今後は、選手ページで普通にスクリーンショットを撮ると、すぐにシェア画像を提案する予定です。</p>
+  </L>
 </Section>
 
-<TryIt embed="prototypes/nba-research-lab.html" height="clamp(560px, 82vh, 820px)" title="NBA Research Lab interactive prototype: projections list and player page">
-  <p>Tap a player to open their page, switch stats and sportsbook lines, tap the bars and drag the line.</p>
+<TryIt embed="prototypes/nba-research-lab.html" height="clamp(560px, 82vh, 820px)" title={{ en: 'NBA Research Lab interactive prototype: projections list and player page', ja: 'NBA Research Labのインタラクティブなプロトタイプ：予測一覧と選手ページ' }}>
+  <L>
+    <p>Tap a player to open their page, switch stats and sportsbook lines, tap the bars and drag the line.</p>
+    <p slot="ja">選手をタップしてページを開き、スタッツやスポーツブックのラインを切り替えたり、バーをタップしたり、ラインをドラッグしたりしてみてください。</p>
+  </L>
 </TryIt>
 
-<Section num="06" title="Shipping It" id="shipping">
-  <h3>A prototype as the spec</h3>
-  <p>Instead of static screens, I built an interactive prototype of every stage of the rollout. It became the team's single source of truth: stage-by-stage scope, a tracking plan, and the data each feature needs from the API.</p>
-  <ul>
-    <li><b>Staged rollout</b>: the list and player page first, then best bets and the player rail, then the scrolling header, dragging your own line and sharing.</li>
-    <li><b>Working with engineering</b>: I wrote the Jira tickets and acceptance details for each change, and answered developers' edge cases, like what happens when a best bet's price moves.</li>
-    <li><b>QA on TestFlight</b>: I tested each build on device, recorded issues and posted fixes back to the tickets with expected behaviour.</li>
-  </ul>
+<Section num="06" title={{ en: 'Shipping It', ja: 'リリースまで' }} id="shipping">
+  <L>
+    <h3>A prototype as the spec</h3>
+    <p>Instead of static screens, I built an interactive prototype of every stage of the rollout. It became the team's single source of truth: stage-by-stage scope, a tracking plan, and the data each feature needs from the API.</p>
+    <ul>
+      <li><b>Staged rollout</b>: the list and player page first, then best bets and the player rail, then the scrolling header, dragging your own line and sharing.</li>
+      <li><b>Working with engineering</b>: I wrote the Jira tickets and acceptance details for each change, and answered developers' edge cases, like what happens when a best bet's price moves.</li>
+      <li><b>QA on TestFlight</b>: I tested each build on device, recorded issues and posted fixes back to the tickets with expected behaviour.</li>
+    </ul>
+    <Fragment slot="ja">
+      <h3>プロトタイプを仕様書に</h3>
+      <p>静止画面の代わりに、リリースの各段階を再現したインタラクティブなプロトタイプを作りました。段階ごとのスコープ、トラッキング計画、各機能がAPIから必要とするデータまでを含み、チームの唯一の基準になりました。</p>
+      <ul>
+        <li><b>段階的なリリース</b>：まず一覧と選手ページ、次にベストベットと選手レール、最後にスクロールするヘッダー、ラインのドラッグ、シェア機能。</li>
+        <li><b>エンジニアとの連携</b>：変更ごとにJiraチケットと受け入れ条件を書き、ベストベットの価格が動いたらどうなるかといった開発者からのエッジケースの質問に答えました。</li>
+        <li><b>TestFlightでのQA</b>：各ビルドを実機でテストし、問題を記録して、期待する挙動とともにチケットに修正内容を戻しました。</li>
+      </ul>
+    </Fragment>
+  </L>
 </Section>
 
-<Section num="07" title="Results" id="results">
-  <h3>Live for opening night</h3>
-  <p>The Research Lab launched in the Dimers app with the start of the NBA season, and the season launch beat its revenue goal in its first two weeks (interim results, 13–27 Oct 2026).</p>
+<Section num="07" title={{ en: 'Results', ja: '成果' }} id="results">
+  <L>
+    <h3>Live for opening night</h3>
+    <p>The Research Lab launched in the Dimers app with the start of the NBA season, and the season launch beat its revenue goal in its first two weeks (interim results, 13–27 Oct 2026).</p>
+    <Fragment slot="ja">
+      <h3>開幕戦に合わせてリリース</h3>
+      <p>Research LabはNBAシーズン開幕とともにDimersアプリでリリースされ、シーズンローンチは最初の2週間で売上目標を上回りました（中間結果、2026年10月13日〜27日）。</p>
+    </Fragment>
+  </L>
   <div class="stat-row">
-    <Stat prefix="$" value={175.1} suffix="K" label="net revenue against a $170K goal" />
-    <Stat value={103} suffix="%" label="of the launch goal" />
-    <Stat prefix="+" value={35} suffix="%" label="on last season's $130.7K" />
+    <Stat prefix="$" value={175.1} suffix="K" label={{ en: 'net revenue against a $170K goal', ja: '純売上（目標$170K）' }} />
+    <Stat value={103} suffix="%" label={{ en: 'of the launch goal', ja: 'ローンチ目標の達成率' }} />
+    <Stat prefix="+" value={35} suffix="%" label={{ en: "on last season's $130.7K", ja: '前シーズン（$130.7K）比' }} />
   </div>
-  <p class="muted">Launch-wide figures across affiliate, B2B and subscriptions, not the Research Lab alone.</p>
+  <L>
+    <p class="muted">Launch-wide figures across affiliate, B2B and subscriptions, not the Research Lab alone.</p>
+    <p class="muted" slot="ja">アフィリエイト、B2B、サブスクリプションを含むローンチ全体の数値で、Research Lab単体の数値ではありません。</p>
+  </L>
 </Section>
 
-<Section num="08" title="Learnings" id="learnings">
-  <ul>
-    <li><b>Design the states, not the screen</b>: most of the work was in the edge cases: no line posted, a price that moved, a long player name, a stat with tiny numbers.</li>
-    <li><b>A working prototype speeds up decisions</b>: being able to tap through the real behaviour settled debates that screenshots never would have.</li>
-    <li><b>Shipping is part of design</b>: the details people notice, like a flicker or a cut-off letter, only show up on a real device, so QA belongs in the design process.</li>
-  </ul>
+<Section num="08" title={{ en: 'Learnings', ja: '学び' }} id="learnings">
+  <L>
+    <ul>
+      <li><b>Design the states, not the screen</b>: most of the work was in the edge cases: no line posted, a price that moved, a long player name, a stat with tiny numbers.</li>
+      <li><b>A working prototype speeds up decisions</b>: being able to tap through the real behaviour settled debates that screenshots never would have.</li>
+      <li><b>Shipping is part of design</b>: the details people notice, like a flicker or a cut-off letter, only show up on a real device, so QA belongs in the design process.</li>
+    </ul>
+    <ul slot="ja">
+      <li><b>画面ではなく、状態をデザインする</b>：作業の大半はエッジケースでした。ラインが未発表、価格の変動、長い選手名、数値がとても小さいスタッツなど。</li>
+      <li><b>動くプロトタイプは意思決定を速くする</b>：実際の挙動をタップして確かめられることで、スクリーンショットでは決着しなかった議論がまとまりました。</li>
+      <li><b>リリースまでがデザイン</b>：ちらつきや文字の欠けのように、人が気づく細部は実機でしか見えません。だからQAもデザインのプロセスの一部です。</li>
+    </ul>
+  </L>
 </Section>
