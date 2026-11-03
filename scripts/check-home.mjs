@@ -197,7 +197,7 @@ const watch = (page) => {
   const counts = [await page.evaluate(() => window.__motion.triggers())];
   for (let i = 0; i < 5; i++) {
     await navigate(page, () => page.locator('.work-card').nth(1).click());
-    await navigate(page, () => page.click('[data-nav-home]'));
+    await navigate(page, () => page.click('[data-nav-item="work"]'));
     counts.push(await page.evaluate(() => window.__motion.triggers()));
   }
   check('Home ScrollTrigger count stable over 5 round trips to a case study', counts.every((c) => c === counts[0]), counts.join(' → '));

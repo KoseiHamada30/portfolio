@@ -42,7 +42,7 @@ const scrollTo = async (page, selector) => {
     rail: document.querySelectorAll('[data-case-rail] a').length,
     railCurrent: document.querySelectorAll('[data-case-rail] a[aria-current="true"]').length,
     close: !document.querySelector('[data-nav-close]') && getComputedStyle(document.querySelector('.nav__links')).display !== 'none',
-    closeHref: document.querySelector('[data-nav-home]').getAttribute('href'),
+    closeHref: document.querySelector('[data-nav-item="work"]').getAttribute('href'),
     accent: getComputedStyle(document.body).getPropertyValue('--accent').trim(),
     images: [...document.querySelectorAll('.case img')].filter((i) => !i.closest('.next')).length,
     videos: [...document.querySelectorAll('video')].map((v) => v.getAttribute('src')),
@@ -102,7 +102,7 @@ const scrollTo = async (page, selector) => {
   // Close → stage, same project (scrolling up brings the nav back)
   await page.mouse.wheel(0, -400);
   await page.waitForTimeout(700);
-  await page.click('[data-nav-home]');
+  await page.click('[data-nav-item="work"]');
   await page.waitForURL(/\/portfolio\/$/);
   await ready(page, 2);
   await page.waitForTimeout(1500);
@@ -125,7 +125,7 @@ const scrollTo = async (page, selector) => {
   const ja = await page.evaluate(() => ({
     sub: document.querySelector('.case-hero__subtitle').textContent,
     first: document.querySelector('[data-case-section] h3').textContent,
-    close: document.querySelector('[data-nav-home]').getAttribute('href'),
+    close: document.querySelector('[data-nav-item="work"]').getAttribute('href'),
     alt: document.querySelector('.case-hero__cover img').alt,
   }));
   check('JA strings from the v1 translations', ja.sub === 'キャンパスでの瞬間を、見逃さない' && ja.first === 'キャンパス情報がバラバラ', `${ja.sub} / ${ja.first}`);
@@ -155,7 +155,7 @@ const scrollTo = async (page, selector) => {
   watch(ph);
   await ph.goto(`${BASE}/work/reverie/`);
   await ready(ph);
-  const p = await ph.evaluate(() => ({ close: document.querySelector('[data-nav-home]').getAttribute('href') }));
+  const p = await ph.evaluate(() => ({ close: document.querySelector('[data-nav-item="work"]').getAttribute('href') }));
   check('Placeholder pages: Work goes back to the stage on this project too', p.close.endsWith('?p=reverie'), p.close);
   await ph.close();
 }

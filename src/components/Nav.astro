@@ -1,6 +1,6 @@
 ---
-// Global nav (DESIGN.md §8): KOSEI© wordmark left (it goes to Work); "About" (underlined when
-// current) and language right — Kosei 2026-11-03 removed ", Work" from the links. Contact sits in the stage's bottom-left corner (Stage.astro) and the footer. Text colour follows the surface: light on the dark Work stage,
+// Global nav (DESIGN.md §8): KOSEI© wordmark left; "Work  About" (no comma; active one underlined) and
+// language right. Contact sits in the stage's bottom-left corner (Stage.astro) and the footer. Text colour follows the surface: light on the dark Work stage,
 // ink on paper pages. Persisted across same-locale navigations; behaviour in src/lib/nav.ts.
 import { t, url, otherLocale, pathWithoutLocale, type Locale } from '../lib/i18n';
 
@@ -19,10 +19,13 @@ const aboutHref = url(locale, 'about');
 
 <header class="nav" data-nav transition:persist={`nav-${locale}`}>
   <div class="nav__inner">
-    <a class="nav__brand" href={url(locale)} aria-label={t(locale, 'nav.home')} data-nav-home>KOSEI©</a>
+    <a class="nav__brand" href={url(locale)} aria-label={t(locale, 'nav.home')}>KOSEI©</a>
 
     <div class="nav__end">
       <nav class="nav__links" aria-label={t(locale, 'nav.primary')}>
+        <a class="nav__item" href={url(locale)} data-nav-item="work" aria-current={section === 'work' ? 'page' : undefined}>
+          {t(locale, 'nav.work')}
+        </a>
         <a class="nav__item" href={aboutHref} data-nav-item="about" aria-current={section === 'about' ? 'page' : undefined}>
           {t(locale, 'nav.about')}
         </a>
@@ -128,8 +131,10 @@ const aboutHref = url(locale, 'about');
     position: relative;
     display: flex;
     align-items: baseline;
+    gap: var(--space-4); /* no comma between Work and About (Kosei 2026-11-03) */
     font-weight: 500;
   }
+
 
   .nav__item {
     display: inline-flex;
@@ -147,7 +152,7 @@ const aboutHref = url(locale, 'about');
     text-decoration-color: currentColor;
   }
 
-  /* With JS, one bar marks the current item (About) and follows hover (nav.ts) */
+  /* With JS, one bar marks the current item and slides between Work and About (nav.ts) */
   .nav__bar {
     position: absolute;
     top: 0;
