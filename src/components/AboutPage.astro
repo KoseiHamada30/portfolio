@@ -1,7 +1,7 @@
 ---
 // About (Phase 9, DESIGN.md §8.4), shared by /about and /ja/about. Layout after the reference: the
 // portrait sticky on the left half (subtle parallax), content on the right — statement, contact
-// rows, About me, two-column (year | item) tables, skills, tools, "Who I am" photos. It ends in the
+// rows, About me, two-column (year | item) tables, skills, "Who I am" photos (Tools removed, Kosei 2026-11-03). It ends in the
 // splash composition: scrolling through it counts to 100 and carries on into Work (src/lib/about.ts).
 // Copy is the v1 info.html wording (v1 i18n keys).
 import { Image } from 'astro:assets';
@@ -41,7 +41,6 @@ const skills: { title: Key; desc: Key }[] = [
   { title: 'skill-solution', desc: 'skill-solution-desc' },
   { title: 'skill-professional-docs', desc: 'skill-professional-docs-desc' },
 ];
-const tools = ['Figma', 'Cursor', 'Canva', 'Google Apps Script', 'Framer'];
 // v1 alt texts (English only); JA versions are new — TODO(kosei): review
 const photos = [
   { src: newYork, alt: { en: 'New York', ja: 'ニューヨーク' } },
@@ -142,13 +141,6 @@ const tx = (value: string) => (value.includes('-') && !value.includes(' ') ? t(l
           ))
         }
       </dl>
-    </section>
-
-    <section class="about__block" aria-labelledby="about-tools">
-      <h2 class="about__h" id="about-tools">Tools</h2>
-      <ul class="about__tools" data-reveal="fade">
-        {tools.map((tool) => <li>{tool}</li>)}
-      </ul>
     </section>
 
     <section class="about__block" aria-labelledby="about-photos">
@@ -332,16 +324,6 @@ const tx = (value: string) => (value.includes('-') && !value.includes(' ') ? t(l
   .about__row.is-todo dt,
   .about__row.is-todo .about__item-org {
     color: var(--ink-500);
-  }
-
-  .about__tools {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2) var(--space-5);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-weight: 500;
   }
 
   .about__photos {
