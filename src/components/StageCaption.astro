@@ -11,11 +11,13 @@ interface Props {
 }
 
 const { title, count, subline, locale } = Astro.props;
+// Long titles are marked so they can be fitted to narrow screens (kept from the tuner edit, 2026-11-03).
+const fit = title.length > 12;
 ---
 
 <span class="stage__caption">
   <span class="stage__title">
-    <span class="stage__title-inner" data-stage-title>
+    <span class="stage__title-inner" data-stage-title data-fit={fit ? '' : undefined}>
       {title}
       <sup class="stage__count">({count})</sup>
     </span>

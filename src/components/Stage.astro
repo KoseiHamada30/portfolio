@@ -80,6 +80,7 @@ const subline = (item: Item) => {
   </div>
 
   <div class="stage-index" data-stage-index hidden>
+    <p class="stage-index__note" role="note">{t(locale, 'stage.largerScreen')}</p>
     <ol class="stage-index__list">
       {
         items.map((item, i) => (
@@ -431,6 +432,20 @@ const subline = (item: Item) => {
 
   .stage-index[hidden] {
     display: none;
+  }
+
+  /* Phones only: the stage is built for a larger screen */
+  .stage-index__note {
+    display: none;
+    margin: 0 0 var(--space-5);
+    font-size: var(--fs-small);
+    color: color-mix(in oklab, var(--stage-ink) 70%, transparent);
+  }
+
+  @media (max-width: 760px) {
+    .stage-index__note {
+      display: block;
+    }
   }
 
   /* Rows share one grid (subgrid): number at the left edge, the title and its line left-aligned
