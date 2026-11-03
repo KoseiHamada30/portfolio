@@ -1,33 +1,26 @@
 ---
-// Case-study hero on the paper sheet (DESIGN.md §6, §8): the big grotesk title, right below it the
-// "CATEGORY / App design" label (Kosei 2026-11-02), the subtitle, then the cover in full colour.
+// Case-study hero on the paper sheet (DESIGN.md §6, §8): the big grotesk title, the subtitle, then
+// the cover in full colour. (The "CATEGORY / …" label under the title was removed, Kosei 2026-11-03.)
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
-import { t, pick, type Locale, type Localized } from '../../lib/i18n';
-import { unbracket } from '../../lib/content';
+import { pick, type Locale, type Localized } from '../../lib/i18n';
 import CoverPlaceholder from '../CoverPlaceholder.astro';
 
 interface Props {
   locale: Locale;
   title: string;
   subtitle?: Localized;
-  category?: Localized;
   cover?: ImageMetadata;
   coverAlt?: Localized;
   coverPosition?: string;
   accent?: string;
 }
 
-const { locale, title, subtitle, category, cover, coverAlt, accent } = Astro.props;
+const { locale, title, subtitle, cover, coverAlt, accent } = Astro.props;
 ---
 
 <header class="case-hero">
   <h1 class="case-hero__title" data-reveal="lines">{title}</h1>
-  <p class="case-hero__label">
-    <span class="case-hero__label-key">{t(locale, 'case.category')}</span>
-    <span aria-hidden="true">/</span>
-    <span>{category ? unbracket(pick(locale, category)) : t(locale, 'placeholder.text')}</span>
-  </p>
   {subtitle && <p class="case-hero__subtitle" data-reveal="fade">{pick(locale, subtitle)}</p>}
   <div class="case-hero__cover" data-reveal="image">
     {
@@ -52,20 +45,6 @@ const { locale, title, subtitle, category, cover, coverAlt, accent } = Astro.pro
     max-width: var(--max-width);
     margin-inline: auto;
     padding: calc(var(--space-10) + var(--space-4)) var(--page-margin) 0;
-  }
-
-  .case-hero__label {
-    display: flex;
-    gap: var(--space-2);
-    margin: var(--space-4) 0 0;
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-  }
-
-  .case-hero__label-key {
-    color: var(--ink-500);
   }
 
   .case-hero__title {

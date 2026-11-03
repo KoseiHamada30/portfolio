@@ -36,7 +36,7 @@ const scrollTo = async (page, selector) => {
   await page.goto(`${BASE}/work/circula/`);
   await ready(page);
   const info = await page.evaluate(() => ({
-    label: [...document.querySelectorAll('.case-hero__label span')].map((s) => s.textContent.trim()).join(' '),
+    label: document.querySelector('.case-hero__label'),
     title: document.querySelector('.case-hero__title').textContent.trim(),
     sections: [...document.querySelectorAll('[data-case-section]')].map((s) => s.dataset.title),
     rail: document.querySelectorAll('[data-case-rail] a').length,
@@ -52,7 +52,7 @@ const scrollTo = async (page, selector) => {
     next: document.querySelector('.next__title')?.textContent,
     overflow: document.documentElement.scrollWidth - innerWidth,
   }));
-  check('Hero: "CATEGORY / App/Website design" label and big title', info.label === 'Category / App/Website design' && info.title === 'Circula', info.label);
+  check('Hero: big title, no category label under it', !info.label && info.title === 'Circula', info.title);
   check('All eight v1 sections, in order', info.sections.join('|') === 'Challenge|Problem Discovery|User Research & Analysis|What is this app?|Visual Design|UX Experience|Ongoing research|Future Outlook', info.sections.join(' | '));
   check('Reading rail lists every section, none current at the top', info.rail === 8 && info.railCurrent === 0);
   check('Nav is the home nav (no Close); Work goes back to the stage on this project', info.close && info.closeHref.endsWith('/portfolio/?p=circula'), info.closeHref);
@@ -222,7 +222,7 @@ const scrollTo = async (page, selector) => {
   await ready(page);
   const nba = await page.evaluate(() => ({
     hero: document.querySelector('.case-hero__title').textContent,
-    label: document.querySelector('.case-hero__label').textContent.replace(/\s+/g, ' ').trim(),
+    label: document.querySelector('.case-hero__label'),
     sub: document.querySelector('.case-hero__subtitle').textContent,
     sections: [...document.querySelectorAll('[data-case-section]')].map((s) => s.dataset.title),
     callouts: [...document.querySelectorAll('.callout__label')].map((l) => l.textContent),
@@ -230,7 +230,7 @@ const scrollTo = async (page, selector) => {
     rows: document.querySelectorAll('.media-row').length,
     next: document.querySelector('.next__title').textContent,
   }));
-  check('Hero: title, category below it, subtitle', nba.hero === 'NBA Research Lab' && nba.label.includes('Cipher Sports Technology Group') && nba.sub === 'Over or under, answered in one place', `${nba.label} / ${nba.sub}`);
+  check('Hero: title and subtitle, no category label', nba.hero === 'NBA Research Lab' && !nba.label && nba.sub === 'Over or under, answered in one place', nba.sub);
   check('Seven sections in order', nba.sections.join('|') === 'Challenge|Ideation|Solution|Interaction Details|Share Image|Shipping It|Learnings', nba.sections.join(', '));
   check('Goal, Decision and Fix callouts', nba.callouts.join('|') === 'Goal|Decision|Fix', nba.callouts.join(', '));
   check('Eight images (two side-by-side pairs of sketches); next project is Circula', nba.images === 8 && nba.rows === 2 && nba.next === 'Circula', `${nba.images} images, ${nba.rows} rows, next ${nba.next}`);
