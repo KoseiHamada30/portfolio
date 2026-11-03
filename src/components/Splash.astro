@@ -4,7 +4,7 @@
 // Plays on every full load / refresh of the home page (not on in-site navigation back to it);
 // skipped for reduced motion and when JS is off (it needs html.splash-on, which only the inline
 // script below can set).
-import { t, type Locale } from '../lib/i18n';
+import { type Locale } from '../lib/i18n';
 import SplashComposition, { type SplashCover } from './SplashComposition.astro';
 
 interface Props {
@@ -37,7 +37,6 @@ const { locale, covers } = Astro.props;
 
 <div class="splash" aria-hidden="true" data-splash>
   <SplashComposition locale={locale} covers={covers} progress={0} />
-  <p class="splash__skip">{t(locale, 'splash.skip')}</p>
 </div>
 
 <style>
@@ -67,22 +66,5 @@ const { locale, covers } = Astro.props;
   :global(html.splash-exit main) {
     position: relative;
     z-index: 960;
-  }
-
-  /* Only visible to people who look for it; any key or click skips. */
-  .splash__skip {
-    position: absolute;
-    top: var(--space-4);
-    right: var(--page-margin);
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    color: var(--ink-500);
-    opacity: 0;
-  }
-
-  .splash:hover .splash__skip {
-    opacity: 1;
   }
 </style>
