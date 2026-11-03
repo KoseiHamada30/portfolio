@@ -29,14 +29,14 @@
   --sheet: var(--paper-100);
 
   /* Work stage slider (DESIGN.md §8.1, §8.4) — the Site Tuner can override all of these */
-  --slide-w: min(80svh, 62vw);
+  --slide-w: min(88svh, 55vw); /* Site Tuner 2026-11-03 */
   --slide-h: 100%;
-  --slide-gap: clamp(8px, 1.1vw, 20px);
-  --stage-dim-brightness: 0.55;
+  --slide-gap: 40px;
+  --stage-dim-brightness: 0.5;
   --fs-slide: clamp(3rem, 6.5vw, 6.5rem);
-  --stage-lerp: 0.09; /* position catch-up per frame at 60fps */
-  --stage-skew: 4; /* max skewX in degrees while moving */
-  --stage-scale: 0.92; /* inactive slide scale */
+  --stage-lerp: 0.08; /* position catch-up per frame at 60fps */
+  --stage-skew: 5.5; /* max skewX in degrees while moving */
+  --stage-scale: 1; /* inactive slide scale (1 = same size as the centred one) */
 
   /* Focus */
   --focus-ring: 0 0 0 2px var(--paper-100), 0 0 0 4px var(--ink-900);

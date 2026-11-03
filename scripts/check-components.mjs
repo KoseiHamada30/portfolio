@@ -223,7 +223,7 @@ const watch = (page) => {
     order.push(await k.evaluate(() => document.activeElement?.dataset.navItem ?? (document.activeElement?.hasAttribute('data-lang-toggle') ? 'lang' : document.activeElement?.textContent?.trim().slice(0, 12))));
   }
   const normalised = order.map((s) => String(s).replace(/\s+/g, ''));
-  check('Tab order: brand → Work → About → language', normalised.join(',') === 'KOSEI©,work,about,lang', order.join(' → '));
+  check('Tab order: brand → Work → About → language', normalised.join(',') === 'K.H.,work,about,lang', order.join(' → '));
   await k.close();
 }
 

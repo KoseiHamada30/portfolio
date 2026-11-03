@@ -28,7 +28,7 @@ const current = t(locale, 'exp-period-current');
 
 const experience: { period: string; title: Key | string; org: Key | string; place?: Key; desc?: Key; todo?: boolean }[] = [
   // TODO(kosei): dates and title for the Cipher internship (Phase 7 interview)
-  { period: 'TODO(kosei)', title: 'NBA Research Lab', org: 'Cipher', todo: true },
+  { period: 'TODO(kosei)', title: 'NBA Research Lab', org: 'Cipher Sports Technology Group', desc: 'exp-nba-desc', todo: true },
   { period: `2025–${current}`, title: 'exp-circula-title', org: 'exp-circula-company', place: 'exp-location-melbourne', desc: 'exp-circula-desc' },
   { period: `2025–${current}`, title: 'exp-draft-title', org: 'exp-draft-company', place: 'exp-location-tokyo', desc: 'exp-draft-desc' },
 ];
@@ -81,9 +81,8 @@ const tx = (value: string) => (value.includes('-') && !value.includes(' ') ? t(l
 
     <section class="about__block" aria-labelledby="about-me">
       <h2 class="about__h" id="about-me">About Me</h2>
-      {/* TODO(kosei): about-me-1 still mentions digital marketing (v1 wording) — send the new line */}
+      {/* about-me-2 dropped in the Site Tuner (Kosei 2026-11-03) */}
       <p data-reveal="fade">{t(locale, 'about-me-1')}</p>
-      <p data-reveal="fade">{t(locale, 'about-me-2')}</p>
       <p data-reveal="fade">{t(locale, 'about-me-3')}</p>
     </section>
 
@@ -100,7 +99,16 @@ const tx = (value: string) => (value.includes('-') && !value.includes(' ') ? t(l
                   {tx(item.org)}
                   {item.place && ` · ${t(locale, item.place)}`}
                 </span>
-                {item.desc && <span class="about__item-desc">{t(locale, item.desc)}</span>}
+                {
+                  item.desc &&
+                    (t(locale, item.desc).includes('\n') ? (
+                      <ul class="about__item-desc about__item-list">
+                        {t(locale, item.desc).split('\n').map((line) => <li>{line}</li>)}
+                      </ul>
+                    ) : (
+                      <span class="about__item-desc">{t(locale, item.desc)}</span>
+                    ))
+                }
               </dd>
             </div>
           ))
@@ -319,6 +327,16 @@ const tx = (value: string) => (value.includes('-') && !value.includes(' ') ? t(l
     font-weight: 400;
     font-size: var(--fs-small);
     line-height: var(--lh-body);
+  }
+
+  /* experience written as bullet points (one per line in the i18n string) */
+  .about__item-list {
+    margin: var(--space-2) 0 0;
+    padding-left: 1.1em;
+  }
+
+  .about__item-list li + li {
+    margin-top: var(--space-1);
   }
 
   .about__row.is-todo dt,

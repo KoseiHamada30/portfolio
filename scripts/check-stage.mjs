@@ -95,7 +95,7 @@ const settle = (page) => page.waitForTimeout(1700);
   check('One strong scroll moves exactly one slide', afterFlick === (beforeFlick + 1) % 6, `${beforeFlick} → ${afterFlick}`);
   await page.keyboard.press('ArrowLeft');
   await settle(page);
-  check('Movement adds a skew (≤ 4°)', skewDeg > 0.05 && skewDeg <= 4.01, `${skewDeg.toFixed(2)}°`);
+  check('Movement adds a skew (≤ 5.5°, Site Tuner)', skewDeg > 0.05 && skewDeg <= 5.51, `${skewDeg.toFixed(2)}°`);
 
   // keys + loop
   await page.keyboard.press('ArrowLeft');
