@@ -30,6 +30,7 @@
 
   /* Work stage slider (DESIGN.md §8.1, §8.4) — the Site Tuner can override all of these */
   --slide-w: min(80svh, 62vw);
+  --slide-h: 100%;
   --slide-gap: clamp(8px, 1.1vw, 20px);
   --stage-dim-brightness: 0.55;
   --fs-slide: clamp(3rem, 6.5vw, 6.5rem);
@@ -119,6 +120,15 @@
 @media (max-width: 760px) {
   :root {
     --slide-w: 78vw;
+  }
+}
+
+/* Portrait tablets (Kosei 2026-11-03): full-height slides became thin strips that cropped the
+   covers, so slides are wider and keep the desktop 4:5 shape, centred on the stage. */
+@media (min-width: 761px) and (max-aspect-ratio: 3/4) {
+  :root {
+    --slide-w: 72vw;
+    --slide-h: min(100%, calc(var(--slide-w) * 1.25));
   }
 }
 

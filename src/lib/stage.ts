@@ -141,7 +141,7 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
   let maxSkew = 4;
   let inactiveScale = 0.92;
   let step = 0;
-  let box = { left: 0, top: 0, w: 0, h: 0, slideW: 0 }; // measured on resize, not per frame
+  let box = { left: 0, top: 0, w: 0, h: 0, slideW: 0, slideH: 0 }; // measured on resize, not per frame
   const readTuning = () => {
     const css = getComputedStyle(root);
     const num = (name: string, fallback: number) => {
@@ -153,7 +153,7 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
     inactiveScale = num('--stage-scale', 0.92);
     step = slides[0].el.offsetWidth + (parseFloat(getComputedStyle(track).columnGap) || 0);
     const rect = track.getBoundingClientRect();
-    box = { left: rect.left, top: rect.top, w: track.clientWidth, h: track.clientHeight, slideW: slides[0].el.offsetWidth };
+    box = { left: rect.left, top: rect.top, w: track.clientWidth, h: track.clientHeight, slideW: slides[0].el.offsetWidth, slideH: slides[0].el.offsetHeight };
   };
   readTuning();
 
@@ -166,7 +166,9 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
   const activate = makeActivator(root, slides);
   activate(wrap(Math.round(current), n), false);
   const showTitle = makeTitles(root, !reduced);
-  const lenses = reduced ? [] : addLenses(slides);
+  // Touch tablets and phones can't hover (Kosei 2026-11-03): no lens, and colour stays on the centred slide.
+  const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const lenses = reduced || !canHover ? [] : addLenses(slides);
 
   // Pointer: which slide is hovered (colour + title follow it), and the eased lens position.
   let pointer: { x: number; y: number } | null = null;
@@ -177,7 +179,7 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
     const d = loopDelta(i - current, n);
     const scale = 1 - (1 - inactiveScale) * Math.min(1, Math.abs(d));
     const w = box.slideW * scale;
-    const h = box.h * scale;
+    const h = box.slideH * scale;
     const left = box.w / 2 + d * step - w / 2;
     const top = (box.h - h) / 2;
     return { d, scale, left, top, w, h };
@@ -296,7 +298,7 @@ function virtualSlider(root: HTMLElement, reduced: boolean): () => void {
   };
 
   root.addEventListener('pointermove', (event) => {
-    if (event.pointerType !== 'mouse') return;
+    if (!canHover || event.pointerType !== 'mouse') return;
     if (!pointer) lens = { x: event.clientX, y: event.clientY, pow: 0, lastX: event.clientX, lastY: event.clientY };
     pointer = { x: event.clientX, y: event.clientY };
   }, { signal });

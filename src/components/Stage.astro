@@ -176,7 +176,8 @@ const subline = (item: Item) => {
   .stage__slide {
     position: relative;
     flex: 0 0 var(--slide-w);
-    height: 100%;
+    align-self: center;
+    height: var(--slide-h);
     scroll-snap-align: center;
   }
 
@@ -197,7 +198,8 @@ const subline = (item: Item) => {
     position: absolute;
     inset: 0 auto 0 50%;
     width: var(--slide-w);
-    margin-left: calc(var(--slide-w) / -2);
+    height: var(--slide-h);
+    margin: auto 0 auto calc(var(--slide-w) / -2); /* vertically centred when shorter than the stage */
     will-change: transform;
   }
 
@@ -501,8 +503,10 @@ const subline = (item: Item) => {
     transition: opacity var(--dur-fast) var(--ease-out);
   }
 
-  .stage-index__list:hover .stage-index__link:not(:hover) {
-    opacity: 0.4;
+  @media (hover: hover) and (pointer: fine) {
+    .stage-index__list:hover .stage-index__link:not(:hover) {
+      opacity: 0.4;
+    }
   }
 
   .stage-index__link:focus-visible {
