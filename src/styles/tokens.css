@@ -121,7 +121,7 @@
    the covers, so slides are wider and keep the desktop 4:5 shape, centred on the stage. */
 @media (max-width: 760px) {
   :root {
-    --slide-w: 82vw;
+    --slide-w: min(82vw, 42svh); /* short phones: leave room for the note above and the title below */
     --slide-h: min(100%, calc(var(--slide-w) * 1.25));
   }
 }

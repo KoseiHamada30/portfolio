@@ -79,7 +79,10 @@ const subline = (item: Item) => {
     {items.map((item, i) => <Caption title={item.title} count={num(i)} subline={subline(item)} locale={locale} />)}
   </div>
 
+  <p class="stage-note stage-note--stage" role="note">{t(locale, 'stage.largerScreen')}</p>
+
   <div class="stage-index" data-stage-index hidden>
+    <p class="stage-note stage-note--index" role="note">{t(locale, 'stage.largerScreen')}</p>
     <ol class="stage-index__list">
       {
         items.map((item, i) => (
@@ -454,6 +457,49 @@ const subline = (item: Item) => {
   /* Long titles (data-fit, StageCaption) shrink to the slide width */
   .stage__title-inner[data-fit] {
     font-size: min(var(--fs-slide), calc(var(--slide-w) * 0.112));
+  }
+
+  /* Phones: a note that the portfolio is built for a larger screen, in both views (Kosei
+     2026-11-03): above the slide in the slideshow, at the top of the list in the Index view. */
+  .stage-note {
+    display: none;
+  }
+
+  @media (max-width: 760px) {
+    .stage-note {
+      display: block;
+      max-width: 32ch;
+      margin: 0;
+      padding: var(--space-2) var(--space-4);
+      border: 1px solid color-mix(in oklab, var(--stage-ink) 25%, transparent);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: var(--fs-label);
+      letter-spacing: 0.02em;
+      line-height: 1.4;
+      text-align: center;
+      color: color-mix(in oklab, var(--stage-ink) 80%, transparent);
+    }
+
+    /* centred in the space between the nav and the slide */
+    .stage-note--stage {
+      position: absolute;
+      top: calc((100% - var(--slide-h)) / 4 + var(--space-6));
+      left: 50%;
+      z-index: 3;
+      width: max-content;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .stage[data-view='index'] .stage-note--stage {
+      display: none;
+    }
+
+    .stage-note--index {
+      justify-self: center;
+      margin-bottom: var(--space-6);
+    }
   }
 
   /* Rows share one grid (subgrid): number at the left edge, the title and its line left-aligned
