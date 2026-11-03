@@ -35,13 +35,12 @@ onPage(({ mm, signal }) => {
   comp.fit();
   comp.setImage(0);
   window.addEventListener('resize', () => comp.fit(), { signal });
-  end.querySelector('[data-comp-cta]')?.addEventListener('click', resetStage, { signal });
 
   mm.add({ motion: '(prefers-reduced-motion: no-preference)', reduced: '(prefers-reduced-motion: reduce)' }, (context) => {
     const { reduced } = context.conditions as Record<string, boolean>;
 
     if (reduced) {
-      // No scroll-driven hand-off: the ending shows its final state and the "Go to Work →" link.
+      // No scroll-driven hand-off: the ending shows its final state (Work is in the nav).
       comp.setProgress(100);
       return;
     }

@@ -56,7 +56,7 @@ const scrollEnd = (page, fraction) =>
   check('Experience adds the Cipher internship (dates TODO)', info.experience[0] === 'NBA Research Lab' && info.experience.length === 3, info.experience.join(', '));
   check('Rows fade in as they enter; six "Who I am" photos', info.rows >= 10 && info.photos === 6, `${info.rows} rows`);
   check('Portrait is sticky on the left half; About is current in the nav', info.portraitSticky === 'sticky' && info.navCurrent === 'page');
-  check('No footer (the page flows into Work); "Go to Work →" in the ending', !info.footer && info.cta === 'Go to Work →');
+  check('No footer (the page flows into Work); no "Go to Work →" link in the ending', !info.footer && !info.cta);
   check('No sideways scroll', info.overflow <= 0);
 
   // parallax
@@ -117,9 +117,6 @@ const scrollEnd = (page, fraction) =>
   await scrollEnd(rp, 1);
   await rp.waitForTimeout(1000);
   check('Reduced motion: no automatic hand-off; the ending shows 100', rp.url().endsWith('/about/') && (await endProgress(rp)) === 100);
-  await rp.click('[data-comp-cta]');
-  await rp.waitForURL(/\/portfolio\/$/);
-  check('"Go to Work →" link works', rp.url().endsWith('/portfolio/'));
   await reduced.close();
 
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
@@ -128,7 +125,7 @@ const scrollEnd = (page, fraction) =>
   await ready(page);
   const ja = await page.evaluate(() => ({
     lead: document.querySelector('.about__lead').textContent.slice(0, 6),
-    cta: document.querySelector('[data-comp-cta]').getAttribute('href'),
+    cta: document.querySelector('[data-about-end]').dataset.workHref,
     label: document.querySelector('.comp__label').textContent,
   }));
   check('JA: v1 Japanese copy; the ending leads to the JA stage', ja.lead === 'こんにちは,' && ja.cta.endsWith('/portfolio/ja/'), `${ja.lead} ${ja.cta}`);
